@@ -5,25 +5,24 @@
   "author": "",
   "license": "ISC",
   "main": "",
-
   "scripts": {
     "dev": "concurrent --kill-others \"npm run dev-server\" \"npm run dev-server-assets\"",
     "dev-server": "NODE_PATH=src nodemon --exec babel-node src/server.js",
     "dev-server-assets": "babel-node src/server-assets.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-
   "babel": {
     "presets": [
       "es2015",
       "react"
     ]
   },
-
   "dependencies": {
     "express": "^4.13.3",
+    "history": "=1.13.1",
     "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.1"
   },
   "devDependencies": {
     "babel": "^6.3.13",

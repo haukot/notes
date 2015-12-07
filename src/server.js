@@ -1,34 +1,47 @@
+import express from 'express';
+
 import React from 'react';
-import ReactDom from 'react-dom';
 import {renderToString} from 'react-dom/server';
 
-
-import App from 'components/app';
-
-const renderedComponent = renderToString(<App />);
-
-
-
-import express from 'express';
+import {match, RoutingContext} from 'react-router';
+import routes from 'components/routes';
 
 const app = express();
 
-app.get('/', (req, res) => {
-    const html = `
-        <!doctype html>
-        <html>
-          <head>
-            <title>Your App</title>
-          </head>
-          <body>
-            <div id='root'>${renderedComponent}</div>
-            <script src="/assets/bundle.js"></script>
-          </body>
-        </html>
-    `;
+
+app.use((req, res, next) => {
+    // Note that req.url here should be the full URL path from
+    // the original request, including the query string.
+    match({routes, location: req.url}, (error, redirectLocation, renderProps) => {
+        if (error) {
+            res.status(500).send(error.message)
+        } else if (redirectLocation) {
+            res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+        } else if (renderProps) {
+
+            const renderedComponent = renderToString(<RoutingContext {...renderProps} />);
 
 
-    res.send(html);
+            const html = `
+                <!doctype html>
+                <html>
+                  <head>
+                    <title>Your App</title>
+                  </head>
+                  <body>
+                    <div id='root'>${renderedComponent}</div>
+                    <script src="/assets/bundle.js"></script>
+                  </body>
+                </html>
+            `;
+
+            res.status(200).send(html);
+        } else {
+            res.status(404).send('Not found')
+        }
+    });
+
+    next();
 });
 
 const server = app.listen(8080, () => {
