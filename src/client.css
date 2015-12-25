@@ -6,27 +6,31 @@ ul, ol, li {
     padding: 0;
 }
 
-$font-color: #4d4d4d;
-$main-block-background: #ecf0f1;
+$font-color: rgb(77, 77, 77);
+$main-block-background: rgb(226, 228, 230);
 $secondary-block-background: #fff;
 $block-border-radius: 4px;
-$block-margin: 10px;
+$block-indent: 10px;
 
-$highlight-color: rgba(0, 0, 0, 0.1);
-$shadow-color: rgba(0, 0, 0, 0.2);
+$highlight-color: color(black a(10%));
+$shadow-color: color(black a(20%));
 
 body {
-    background: #16a085;
+    background: rgb(0, 121, 191);
 }
 
 .kanban-board {
-
-    padding: 10px 0;
     white-space: nowrap;
 
-    > .kanban-list {
+    > * {
         width: 270px;
-        margin: 0 10px;
+        margin: $block-indent calc($block-indent/2);
+    }
+    > :first-child {
+      margin-left: $block-indent;
+    }
+    > :last-child {
+      margin-right: $block-indent;
     }
 }
 
@@ -43,23 +47,38 @@ body {
     box-shadow: 0 3px 5px $shadow-color;
 
     > * {
-        margin-top: $block-margin;
-        padding: 0 $block-margin;
+        margin-top: $block-indent;
+        padding: 0 $block-indent;
     }
-    padding-bottom: $block-margin;
+    padding-bottom: $block-indent;
 
     > .header {
         font-weight: bold;
     }
 
-    > .add {
-        cursor: pointer;
-        padding: $block-margin;
-        margin-bottom: -$block-margin;
+    > .add-kanban-card {
+        margin-bottom: -$block-indent;
+    }
+}
 
-        &:hover {
-            background: $highlight-color;
-        }
+.add-kanban-list {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+
+    border-radius: $block-border-radius;
+    background: $main-block-background;
+
+    color: $font-color;
+    box-shadow: 0 3px 5px $shadow-color;
+}
+
+.add-kanban-card {
+    cursor: pointer;
+    padding: $block-indent;
+
+    &:hover {
+        background: $highlight-color;
     }
 }
 
@@ -72,5 +91,49 @@ body {
     cursor: pointer;
     &:hover {
         background: $highlight-color;
+    }
+}
+
+.new-card-form {
+    > .field {
+        word-wrap: break-word;
+        resize: none;
+        outline: none;
+
+        display: block;
+        width: 100%;
+        height: 100px;
+        box-sizing: border-box;
+
+        border: none;
+        background: $secondary-block-background;
+        padding: 10px;
+        border-radius: $block-border-radius;
+        box-shadow: 0 1px 0 $shadow-color;
+        margin-bottom: $block-indent;
+
+
+
+    }
+
+    > .submit {
+        float: left;
+        padding: $block-indent;
+        background: lightgreen;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        &:hover {
+            background: $highlight-color;
+        }
+    }
+
+    > .cancel {
+        float: left;
+        padding: $block-indent;
+        cursor: pointer;
+        &:hover {
+            background: $highlight-color;
+        }
     }
 }

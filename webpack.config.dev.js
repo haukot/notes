@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import postcssNested from 'postcss-nested';
 import postcssImport from 'postcss-import';
 import postcssSimpleVars from 'postcss-simple-vars';
+import postcssColorFunction from 'postcss-color-function';
 
 module.exports = {
     resolve: {
@@ -33,7 +34,8 @@ module.exports = {
         return [
             postcssNested,
             postcssImport({addDependencyTo: webpack}),
-            postcssSimpleVars
+            postcssSimpleVars,
+            postcssColorFunction
         ];
     }
 };
