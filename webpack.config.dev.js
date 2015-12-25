@@ -1,5 +1,8 @@
 import path from 'path';
 import webpack from 'webpack';
+import postcssNested from 'postcss-nested';
+import postcssImport from 'postcss-import';
+import postcssSimpleVars from 'postcss-simple-vars';
 
 module.exports = {
     resolve: {
@@ -22,7 +25,15 @@ module.exports = {
     ],
     module: {
         loaders: [
-            { test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['react-hot', 'babel'] }
+            { test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['react-hot', 'babel'] },
+            { test: /\.css$/, loaders: ['style-loader', 'css-loader', 'postcss-loader'] }
         ]
+    },
+    postcss: function () {
+        return [
+            postcssNested,
+            postcssImport({addDependencyTo: webpack}),
+            postcssSimpleVars
+        ];
     }
 };

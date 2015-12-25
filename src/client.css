@@ -1,0 +1,76 @@
+@import "normalize.css";
+
+ul, ol, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+$font-color: #4d4d4d;
+$main-block-background: #ecf0f1;
+$secondary-block-background: #fff;
+$block-border-radius: 4px;
+$block-margin: 10px;
+
+$highlight-color: rgba(0, 0, 0, 0.1);
+$shadow-color: rgba(0, 0, 0, 0.2);
+
+body {
+    background: #16a085;
+}
+
+.kanban-board {
+
+    padding: 10px 0;
+    white-space: nowrap;
+
+    > .kanban-list {
+        width: 270px;
+        margin: 0 10px;
+    }
+}
+
+.kanban-list {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+
+    border-radius: $block-border-radius;
+    background: $main-block-background;
+
+
+    color: $font-color;
+    box-shadow: 0 3px 5px $shadow-color;
+
+    > * {
+        margin-top: $block-margin;
+        padding: 0 $block-margin;
+    }
+    padding-bottom: $block-margin;
+
+    > .header {
+        font-weight: bold;
+    }
+
+    > .add {
+        cursor: pointer;
+        padding: $block-margin;
+        margin-bottom: -$block-margin;
+
+        &:hover {
+            background: $highlight-color;
+        }
+    }
+}
+
+.kanban-card {
+    background: $secondary-block-background;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: $block-border-radius;
+    box-shadow: 0 1px 0 $shadow-color;
+    cursor: pointer;
+    &:hover {
+        background: $highlight-color;
+    }
+}
