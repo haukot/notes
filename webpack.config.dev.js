@@ -4,6 +4,7 @@ import postcssNested from 'postcss-nested';
 import postcssImport from 'postcss-import';
 import postcssSimpleVars from 'postcss-simple-vars';
 import postcssColorFunction from 'postcss-color-function';
+import postcssMixins from 'postcss-mixins';
 
 module.exports = {
     resolve: {
@@ -32,8 +33,9 @@ module.exports = {
     },
     postcss: function () {
         return [
-            postcssNested,
             postcssImport({addDependencyTo: webpack}),
+            postcssMixins,
+            postcssNested,
             postcssSimpleVars,
             postcssColorFunction
         ];

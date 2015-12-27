@@ -6,25 +6,36 @@ ul, ol, li {
     padding: 0;
 }
 
-$font-color: rgb(77, 77, 77);
-$main-block-background: rgb(226, 228, 230);
-$secondary-block-background: #fff;
-$block-border-radius: 4px;
 $block-indent: 10px;
+$block-border-radius: 4px;
 
-$highlight-color: color(black a(10%));
-$shadow-color: color(black a(20%));
+@define-mixin block {
+    padding: $block-indent;
 
-body {
-    background: rgb(0, 121, 191);
+    border: 1px solid #000;
+    border-radius: $block-border-radius;
+}
+
+@define-mixin action {
+    cursor: pointer;
+
+    &:hover {
+        background: color(white b(10%));
+    }
 }
 
 .kanban-board {
     white-space: nowrap;
 
+    * {
+        white-space: normal;
+    }
+
     > * {
         width: 270px;
         margin: $block-indent calc($block-indent/2);
+        display: inline-block;
+        vertical-align: top;
     }
     > :first-child {
       margin-left: $block-indent;
@@ -35,105 +46,56 @@ body {
 }
 
 .kanban-list {
-    display: inline-block;
-    vertical-align: top;
-    overflow: hidden;
+    @mixin block;
 
-    border-radius: $block-border-radius;
-    background: $main-block-background;
-
-
-    color: $font-color;
-    box-shadow: 0 3px 5px $shadow-color;
-
-    > * {
-        margin-top: $block-indent;
-        padding: 0 $block-indent;
+    > .cards {
+        /* TODO: scroll */
     }
-    padding-bottom: $block-indent;
 
     > .header {
         font-weight: bold;
     }
-
-    > .add-kanban-card {
-        margin-bottom: -$block-indent;
-    }
 }
 
 .add-kanban-list {
-    display: inline-block;
-    vertical-align: top;
-    overflow: hidden;
-
-    border-radius: $block-border-radius;
-    background: $main-block-background;
-
-    color: $font-color;
-    box-shadow: 0 3px 5px $shadow-color;
+    @mixin block;
+    @mixin action;
 }
 
 .add-kanban-card {
-    cursor: pointer;
-    padding: $block-indent;
-
-    &:hover {
-        background: $highlight-color;
-    }
+    @mixin block;
+    @mixin action;
 }
 
 .kanban-card {
-    background: $secondary-block-background;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: $block-border-radius;
-    box-shadow: 0 1px 0 $shadow-color;
-    cursor: pointer;
-    &:hover {
-        background: $highlight-color;
-    }
+    @mixin block;
+    @mixin action;
+    margin: $block-indent 0;
+
 }
 
 .new-card-form {
     > .field {
-        word-wrap: break-word;
+        @mixin  block;
+
         resize: none;
         outline: none;
 
-        display: block;
         width: 100%;
-        height: 100px;
         box-sizing: border-box;
 
-        border: none;
-        background: $secondary-block-background;
-        padding: 10px;
-        border-radius: $block-border-radius;
-        box-shadow: 0 1px 0 $shadow-color;
-        margin-bottom: $block-indent;
-
-
-
+        display: block;
+        height: 100px;
     }
 
-    > .submit {
-        float: left;
-        padding: $block-indent;
-        background: lightgreen;
-        color: white;
-        border-radius: 4px;
-        cursor: pointer;
-        &:hover {
-            background: $highlight-color;
-        }
+    > .actions {
+        margin-top: $block-indent;
     }
 
-    > .cancel {
+    > .actions > .action {
+        @mixin block;
+        @mixin action;
         float: left;
-        padding: $block-indent;
-        cursor: pointer;
-        &:hover {
-            background: $highlight-color;
-        }
+        margin-right: $block-indent;
     }
 }
