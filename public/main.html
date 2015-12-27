@@ -23,7 +23,7 @@
             <li class="kanban-card">Очевидно проверяется, что аффинное преобразование небезынтересно специфицирует косвенный контрпример. </li>
             <li class="kanban-card">Огибающая семейства поверхностей, не вдаваясь в подробности, привлекает сходящийся ряд, что несомненно приведет нас к истине.</li>
         </ul>
-        <div class="add-kanban-card">Add a card...</div>
+        <div class="add">Add a card...</div>
     </li>
 
     <li class="kanban-list">
@@ -32,8 +32,8 @@
             <li class="kanban-card">Task 1</li>
             <li class="kanban-card">Task 2</li>
         </ul>
-        <div class="new-card-form">
-            <textarea placeholder="Type..." class="field"></textarea>
+        <div class="new-kanban-card-form">
+            <textarea rows="4" placeholder="Type..." class="field"></textarea>
             <div class="actions">
                 <div class="action">Add</div>
                 <div class="action">Cancel</div>
@@ -47,13 +47,48 @@
             <li class="kanban-card -placeholder">Some task</li>
             <li
                 class="kanban-card -grabbing"
-                style="position: absolute;left: 600px;top: 50px;width: 270px;">
+                style="position: absolute;left: 650px;top: 50px;width: 270px;">
                 Task 1
             </li>
             <li class="kanban-card">Task 1</li>
             <li class="kanban-card">Task 2</li>
         </ul>
-        <div class="add-kanban-card">Add a card...</div>
+        <div class="add">Add a card...</div>
+    </li>
+
+    <li class="kanban-list">
+        <div class="edit-kanban-list-header-form">
+            <textarea class="field">Старый заголовок</textarea>
+            <div class="actions">
+                <div class="action">Save</div>
+                <div class="action">Cancel</div>
+            </div>
+        </div>
+        <ul class="cards">
+            <li class="kanban-card">Task 1</li>
+            <li class="kanban-card">Task 2</li>
+        </ul>
+        <div class="add">Add a card...</div>
+    </li>
+
+    <li class="kanban-list -placeholder">
+        <div class="header">Drag</div>
+        <ul class="cards">
+            <li class="kanban-card">Task 1</li>
+            <li class="kanban-card">Task 2</li>
+        </ul>
+        <div class="add">Add a card...</div>
+    </li>
+
+    <li
+        class="kanban-list -grabbing"
+        style="position: absolute;left: 1250px;top: 20px;width: 270px;">
+        <div class="header">Drag</div>
+        <ul class="cards">
+            <li class="kanban-card">Task 1</li>
+            <li class="kanban-card">Task 2</li>
+        </ul>
+        <div class="add">Add a card...</div>
     </li>
 
     <li class="add-kanban-list">Add a list...</li>

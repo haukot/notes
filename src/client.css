@@ -6,17 +6,28 @@ ul, ol, li {
     padding: 0;
 }
 
+textarea {
+    resize: none;
+    outline: none;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    display: block;
+}
+
 $block-indent: 10px;
 $block-border-radius: 4px;
 
-@define-mixin block {
+@define-mixin block-bordered {
     padding: $block-indent;
 
     border: 1px solid #000;
     border-radius: $block-border-radius;
+    background: white;
 }
 
-@define-mixin action-click {
+@define-mixin block-click {
     cursor: pointer;
 
     &:hover {
@@ -24,27 +35,36 @@ $block-border-radius: 4px;
     }
 }
 
-@define-mixin action-grab {
+@define-mixin block-grab {
     cursor: grab;
 
     &.-grabbing {
         cursor: grabbing;
-        transform: rotate(5deg);
-     }
+        transform: rotate(2deg);
+    }
+
+    &.-placeholder {
+        $color: color(white b(20%));
+        background: $color;
+        color: $color;
+
+        * {
+            visibility: hidden;
+        }
+    }
 }
 
 .kanban-board {
     white-space: nowrap;
-
-    * {
-        white-space: normal;
-    }
 
     > * {
         width: 270px;
         margin: $block-indent calc($block-indent/2);
         display: inline-block;
         vertical-align: top;
+        * {
+            white-space: normal;
+        }
     }
     > :first-child {
       margin-left: $block-indent;
@@ -55,64 +75,74 @@ $block-border-radius: 4px;
 }
 
 .kanban-list {
-    @mixin block;
+    @mixin block-bordered;
+    @mixin block-grab;
+
+    > .header {
+        font-weight: bold;
+        cursor: pointer;
+        display: inline;
+    }
 
     > .cards {
         /* TODO: scroll */
     }
 
-    > .header {
-        font-weight: bold;
+    > .cards > .kanban-card {
+        margin: $block-indent 0;
+    }
+
+    > .add {
+        cursor: pointer;
+        display: inline;
     }
 }
 
 .add-kanban-list {
-    @mixin block;
-    @mixin action-click;
-}
-
-.add-kanban-card {
-    @mixin block;
-    @mixin action-click;
+    @mixin block-bordered;
+    @mixin block-click;
 }
 
 .kanban-card {
-    @mixin block;
-    @mixin action-grab;
-    @mixin action-click;
-
-    margin: $block-indent 0;
-    background: white;
-
-    &.-placeholder {
-        $color: color(white b(20%));
-        background: $color;
-        color: $color;
-    }
+    @mixin block-bordered;
+    @mixin block-grab;
+    @mixin block-click;
 }
 
-.new-card-form {
+.new-kanban-card-form {
     > .field {
-        @mixin  block;
-
-        resize: none;
-        outline: none;
-
-        width: 100%;
-        box-sizing: border-box;
-
-        display: block;
-        height: 100px;
+        @mixin block-bordered;
     }
 
     > .actions {
         margin-top: $block-indent;
+        clear: fix;
     }
 
     > .actions > .action {
-        @mixin block;
-        @mixin action-click;
+        @mixin block-bordered;
+        @mixin block-click;
         float: left;
         margin-right: $block-indent;
+    }
+}
+
+.edit-kanban-list-header-form {
+    margin-bottom: calc(2 * $block-indent);
+
+    > .field {
+        @mixin block-bordered;
+    }
+
+    > .actions {
+        margin-top: $block-indent;
+        clear: fix;
+    }
+
+    > .actions > .action {
+      @mixin block-bordered;
+      @mixin block-click;
+      float: left;
+      margin-right: $block-indent;
     }
 }
