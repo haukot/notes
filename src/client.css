@@ -16,12 +16,21 @@ $block-border-radius: 4px;
     border-radius: $block-border-radius;
 }
 
-@define-mixin action {
+@define-mixin action-click {
     cursor: pointer;
 
     &:hover {
         background: color(white b(10%));
     }
+}
+
+@define-mixin action-grab {
+    cursor: grab;
+
+    &.-grabbing {
+        cursor: grabbing;
+        transform: rotate(5deg);
+     }
 }
 
 .kanban-board {
@@ -59,19 +68,27 @@ $block-border-radius: 4px;
 
 .add-kanban-list {
     @mixin block;
-    @mixin action;
+    @mixin action-click;
 }
 
 .add-kanban-card {
     @mixin block;
-    @mixin action;
+    @mixin action-click;
 }
 
 .kanban-card {
     @mixin block;
-    @mixin action;
-    margin: $block-indent 0;
+    @mixin action-grab;
+    @mixin action-click;
 
+    margin: $block-indent 0;
+    background: white;
+
+    &.-placeholder {
+        $color: color(white b(20%));
+        background: $color;
+        color: $color;
+    }
 }
 
 .new-card-form {
@@ -94,7 +111,7 @@ $block-border-radius: 4px;
 
     > .actions > .action {
         @mixin block;
-        @mixin action;
+        @mixin action-click;
         float: left;
         margin-right: $block-indent;
     }

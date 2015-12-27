@@ -5,6 +5,7 @@ import postcssImport from 'postcss-import';
 import postcssSimpleVars from 'postcss-simple-vars';
 import postcssColorFunction from 'postcss-color-function';
 import postcssMixins from 'postcss-mixins';
+import autoprefixer from 'autoprefixer';
 
 module.exports = {
     resolve: {
@@ -37,7 +38,8 @@ module.exports = {
             postcssMixins,
             postcssNested,
             postcssSimpleVars,
-            postcssColorFunction
+            postcssColorFunction,
+            autoprefixer({ browsers: ['last 2 versions'] })
         ];
     }
 };
