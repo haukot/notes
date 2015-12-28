@@ -25,6 +25,7 @@
     "react-router": "^1.0.1"
   },
   "devDependencies": {
+    "autoprefixer": "^6.2.2",
     "babel": "^6.3.13",
     "babel-cli": "^6.3.13",
     "babel-loader": "^6.2.0",
