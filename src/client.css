@@ -16,6 +16,10 @@ textarea {
     display: block;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 $block-indent: 10px;
 $block-border-radius: 4px;
 
@@ -54,17 +58,27 @@ $block-border-radius: 4px;
     }
 }
 
+body {
+    height: 100vh;
+}
+
 .kanban-board {
-    white-space: nowrap;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+
+    padding: $block-indent 0;
 
     > * {
-        width: 270px;
-        margin: $block-indent calc($block-indent/2);
-        display: inline-block;
-        vertical-align: top;
-        * {
-            white-space: normal;
-        }
+        flex-basis: 270px;
+
+        flex-shrink: 0;
+
+        margin: 0 calc($block-indent/2);
     }
     > :first-child {
       margin-left: $block-indent;
@@ -78,14 +92,21 @@ $block-border-radius: 4px;
     @mixin block-bordered;
     @mixin block-grab;
 
+    display: flex;
+    flex-direction: column;
+
+    max-height: 100%;
+
     > .header {
         font-weight: bold;
         cursor: pointer;
-        display: inline;
+        flex-shrink: 0;
     }
 
     > .cards {
-        /* TODO: scroll */
+        flex-grow: 1;
+        overflow: hidden;
+        overflow-y: auto;
     }
 
     > .cards > .kanban-card {
@@ -94,7 +115,7 @@ $block-border-radius: 4px;
 
     > .add {
         cursor: pointer;
-        display: inline;
+        flex-shrink: 0;
     }
 }
 
