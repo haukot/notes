@@ -9,7 +9,11 @@ import routes from 'components/routes';
 
 const history = createBrowserHistory();
 
-render(
-    <Router history={history} routes={routes} />,
-    document.getElementById('root')
-);
+const renderApp = () => {
+    render(
+        <Router history={history} routes={routes} />,
+        document.getElementById('root')
+    );
+};
+
+document.addEventListener('DOMContentLoaded', renderApp);

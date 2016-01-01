@@ -28,10 +28,10 @@ app.use((req, res, next) => {
                 <html>
                   <head>
                     <title>Your App</title>
+                    <script src="/assets/bundle.js"></script>
                   </head>
                   <body>
                     <div id='root'>${renderedComponent}</div>
-                    <script src="/assets/bundle.js"></script>
                   </body>
                 </html>
             `;
