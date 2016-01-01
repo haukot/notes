@@ -42,6 +42,19 @@ body {
 
 ._full-heigth { height: 100% !important; }
 
+._link-without-decorations {
+    &,
+    &:link,
+    &:active,
+    &:hover,
+    &:visited {
+        display: block;
+        color: black;
+        text-decoration: none;
+        cursor: inherit;
+    }
+}
+
 .kanban-board {
     height: 100%;
 
@@ -68,9 +81,10 @@ body {
         background: color(white b(15%));
         overflow: hidden;
         padding: $block-indent;
+        cursor: pointer;
 
         &:hover {
-            background: color(black a(15%) );
+            background: color(white b(30%));
             text-decoration: underline;
         }
     }
@@ -168,8 +182,6 @@ body {
     background: white;
     border-radius: $block-border-radius;
     padding: $block-indent;
-
-    cursor: pointer;
 
     &:hover {
         background: color(white b(10%));

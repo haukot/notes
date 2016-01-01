@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Link} from 'react-router';
 export default React.createClass({
     displayName: 'Board',
 
@@ -10,7 +10,11 @@ export default React.createClass({
                     <li className="kanban-section">
                         <div className="heading">TODO: scroll</div>
                         <ul className="kanban-cards">
-                            <li className="kanban-card"><div className="heading">Первая производная отражает интеграл по поверхности. </div></li>
+                            <li>
+                                <Link className="kanban-card _link-without-decorations" to="/123">
+                                    <div className="heading">__ОТКРЫТЬ КАРТОЧКУ__</div>
+                                </Link>
+                            </li>
                             <li className="kanban-card"><div className="heading">Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.</div></li>
                             <li className="kanban-card"><div className="heading">Критерий сходимости Коши, не вдаваясь в подробности, выведен.</div></li>
                             <li className="kanban-card"><div className="heading">Прямоугольная матрица программирует интеграл от функции комплексной переменной.</div></li>
