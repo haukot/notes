@@ -25,10 +25,6 @@ body {
     height: 100vh;
 }
 
-#root {
-    height: 100%;
-}
-
 @define-mixin grab {
     cursor: grab;
 
@@ -44,28 +40,26 @@ body {
     }
 }
 
+._full-heigth { height: 100% !important; }
+
 .kanban-board {
     height: 100%;
+
+    /* обратить внимание */
+    width: max-content;
+
+    background: green;
 
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: nowrap;
+    justify-content: space-around;
 
-    padding: $block-indent;
+    padding: $block-indent 0;
 
     > * {
         flex-basis: 270px;
-        flex-shrink: 0;
-        margin-right: $block-indent;
-    }
-    /* justify-content: space-around; */
-    /* FIXME: правый отступ */
-    &:after {
-        content: ' ';
-        height: 1px;
-        margin-left: -$block-indent;
-        flex-basis: $block-indent;
         flex-shrink: 0;
     }
 
@@ -179,5 +173,68 @@ body {
 
     &:hover {
         background: color(white b(10%));
+    }
+}
+
+body._window-is-opened {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.opened-window {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    min-height: 100vh;
+
+    background: color(black a(80%));
+
+    display: flex;
+    justify-content: center;
+}
+
+.opened-card {
+    width: 500px;
+    margin: $block-indent 0;
+    border-radius: $block-border-radius;
+    padding: calc(1.5 * $block-indent);
+
+    display: flex;
+    flex-direction: column;
+
+    background: color(white b(10%));
+
+    > .heading, .description {
+        padding: $block-indent;
+        border-radius: $block-border-radius;
+        margin-bottom: $block-indent;
+    }
+
+    > .description {
+        flex-grow: 1;
+    }
+
+    > .actions {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    > .actions > * {
+        padding: $block-indent;
+        margin-right: $block-indent;
+        border-radius: $block-border-radius;
+        background: color(white b(70%));
+        color: color(white b(2%));
+        cursor: pointer;
+
+        &:hover {
+            background: color(black a(20%));
+        }
+    }
+
+    .delete {
+        margin-right: 0;
+        margin-left: auto;
     }
 }
