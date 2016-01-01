@@ -24,6 +24,7 @@ module.exports = {
         filename: 'bundle.js',
         publicPath: '/assets/'
     },
+    //devtool: 'source-map',
     plugins: [
         new webpack.HotModuleReplacementPlugin()
     ],

@@ -21,31 +21,27 @@ textarea {
 $block-indent: 10px;
 $block-border-radius: 4px;
 
-@define-mixin grab {
-    cursor: grab;
-
-    &.-grabbing {
-        cursor: grabbing;
-        transform: rotate(2deg);
-    }
-
-    &.-placeholder {
-        $color: color(white b(20%));
-        background: $color;
-        color: $color;
-
-        * {
-            visibility: hidden;
-        }
-    }
-}
-
 body {
     height: 100vh;
 }
 
 #root {
     height: 100%;
+}
+
+@define-mixin grab {
+    cursor: grab;
+
+    &.-placeholder {
+        background: color(black a(10%));
+        > * { visibility: hidden; }
+    }
+
+    &.-grabbing {
+        cursor: grabbing;
+        transform: rotate(2deg);
+        box-shadow: 0 0 10px color(black a(40%));
+    }
 }
 
 .kanban-board {
@@ -56,20 +52,33 @@ body {
     align-items: flex-start;
     flex-wrap: nowrap;
 
-    padding: $block-indent 0;
+    padding: $block-indent;
 
     > * {
         flex-basis: 270px;
-
         flex-shrink: 0;
+        margin-right: $block-indent;
+    }
+    /* justify-content: space-around; */
+    /* FIXME: правый отступ */
+    &:after {
+        content: ' ';
+        height: 1px;
+        margin-left: -$block-indent;
+        flex-basis: $block-indent;
+        flex-shrink: 0;
+    }
 
-        margin: 0 calc($block-indent/2);
-    }
-    > :first-child {
-      margin-left: $block-indent;
-    }
-    > :last-child {
-      margin-right: $block-indent;
+    .add {
+        border-radius: $block-border-radius;
+        background: color(white b(15%));
+        overflow: hidden;
+        padding: $block-indent;
+
+        &:hover {
+            background: color(black a(15%) );
+            text-decoration: underline;
+        }
     }
 }
 
@@ -77,8 +86,8 @@ body {
     @mixin grab;
 
     border-radius: $block-border-radius;
-    padding: $block-indent;
     background: color(white b(15%));
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;
@@ -87,39 +96,64 @@ body {
     > .heading {
         align-self: flex-start;
         font-weight: bold;
+        cursor: pointer;
+        margin: $block-indent;
+    }
+
+    > .kanban-section-edit-heading-form {
+        margin: $block-indent;
     }
 
     > .kanban-cards {
         overflow-y: auto;
-        margin: $block-indent 0;
+        margin: 0 $block-indent;
     }
 
     > .add {
         cursor: pointer;
         flex-shrink: 0;
+        padding: $block-indent;
+        padding-top: calc($block-indent - 4px);
+        margin-top: 4px;
+
+        &:hover {
+            background: color(black a(15%) );
+            text-decoration: underline;
+        }
+    }
+
+    > .kanban-card-new-form {
+        margin: $block-indent;
     }
 }
 
-.kanban-section-edit-heading-form {
+.kanban-section-edit-heading-form,
+.kanban-card-new-form,
+.kanban-section-new-form {
     > .input {
         border-radius: $block-border-radius;
         padding: $block-indent;
         margin-bottom: $block-indent;
     }
 
-    > .save, .cancel {
+    > .submit, .cancel {
         float: left;
         padding: $block-indent;
         margin-right: $block-indent;
         border-radius: $block-border-radius;
-        background: color(white b(80%));
+        background: color(white b(70%));
         color: color(white b(2%));
         cursor: pointer;
 
         &:hover {
-            background: color(white b(70%));
+            background: color(black a(20%));
         }
     }
+}
+.kanban-section-new-form {
+    background: color(white b(15%));
+    border-radius: $block-border-radius;
+    padding: $block-indent;
 }
 
 .kanban-cards {
@@ -147,41 +181,3 @@ body {
         background: color(white b(10%));
     }
 }
-
-/*.new-kanban-card-form {*/
-    /*> .field {*/
-        /*@mixin block-bordered;*/
-    /*}*/
-
-    /*> .actions {*/
-        /*margin-top: $block-indent;*/
-        /*clear: fix;*/
-    /*}*/
-
-    /*> .actions > .action {*/
-        /*@mixin block-bordered;*/
-        /*@mixin block-click;*/
-        /*float: left;*/
-        /*margin-right: $block-indent;*/
-    /*}*/
-/*}*/
-
-/*.edit-kanban-list-header-form {*/
-    /*margin-bottom: calc(2 * $block-indent);*/
-
-    /*> .field {*/
-        /*@mixin block-bordered;*/
-    /*}*/
-
-    /*> .actions {*/
-        /*margin-top: $block-indent;*/
-        /*clear: fix;*/
-    /*}*/
-
-    /*> .actions > .action {*/
-      /*@mixin block-bordered;*/
-      /*@mixin block-click;*/
-      /*float: left;*/
-      /*margin-right: $block-indent;*/
-    /*}*/
-/*}*/

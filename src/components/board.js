@@ -7,15 +7,15 @@ export default React.createClass({
                 <li className="kanban-section">
                     <div className="heading">TODO: scroll</div>
                     <ul className="kanban-cards">
-                        <li className="kanban-card">Первая производная отражает интеграл по поверхности. </li>
-                        <li className="kanban-card">Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.</li>
-                        <li className="kanban-card">Критерий сходимости Коши, не вдаваясь в подробности, выведен.</li>
-                        <li className="kanban-card">Прямоугольная матрица программирует интеграл от функции комплексной переменной.</li>
-                        <li className="kanban-card">Доказательство отражает сходящийся ряд.</li>
-                        <li className="kanban-card">Предел последовательности вполне вероятен.</li>
-                        <li className="kanban-card">Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор. </li>
-                        <li className="kanban-card">Очевидно проверяется, что аффинное преобразование небезынтересно специфицирует косвенный контрпример. </li>
-                        <li className="kanban-card">Огибающая семейства поверхностей, не вдаваясь в подробности, привлекает сходящийся ряд, что несомненно приведет нас к истине.</li>
+                        <li className="kanban-card"><div className="heading">Первая производная отражает интеграл по поверхности. </div></li>
+                        <li className="kanban-card"><div className="heading">Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.</div></li>
+                        <li className="kanban-card"><div className="heading">Критерий сходимости Коши, не вдаваясь в подробности, выведен.</div></li>
+                        <li className="kanban-card"><div className="heading">Прямоугольная матрица программирует интеграл от функции комплексной переменной.</div></li>
+                        <li className="kanban-card"><div className="heading">Доказательство отражает сходящийся ряд.</div></li>
+                        <li className="kanban-card"><div className="heading">Предел последовательности вполне вероятен.</div></li>
+                        <li className="kanban-card"><div className="heading">Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор. </div></li>
+                        <li className="kanban-card"><div className="heading">Очевидно проверяется, что аффинное преобразование небезынтересно специфицирует косвенный контрпример. </div></li>
+                        <li className="kanban-card"><div className="heading">Огибающая семейства поверхностей, не вдаваясь в подробности, привлекает сходящийся ряд, что несомненно приведет нас к истине.</div></li>
                     </ul>
                     <div className="add">Add a card</div>
                 </li>
@@ -23,74 +23,78 @@ export default React.createClass({
                 <li className="kanban-section">
                     <div className="kanban-section-edit-heading-form">
                         <textarea className="input" />
-                        <div className="save">Save</div>
+                        <div className="submit">Save</div>
                         <div className="cancel">Cancel</div>
                     </div>
                     <ul className="kanban-cards">
-                        <li className="kanban-card">Task 1</li>
-                        <li className="kanban-card">Task 2</li>
+                        <li className="kanban-card"><div className="heading">Task 1</div></li>
+                        <li className="kanban-card"><div className="heading">Task 2</div></li>
                     </ul>
                     <div className="add">Add a card...</div>
                 </li>
 
 
                 <li className="kanban-section">
-                    <div className="kanban-section-edit-header-form">
-                        <div className="show">Новая задача</div>
-                    </div>
+                    <div className="heading">Новая задача</div>
                     <ul className="kanban-cards">
-                        <li className="kanban-card">Task 1</li>
-                        <li className="kanban-card">Task 2</li>
+                        <li className="kanban-card"><div className="heading">Task 1</div></li>
+                        <li className="kanban-card"><div className="heading">Task 2</div></li>
                     </ul>
                     <div className="kanban-card-new-form">
-                        <textarea rows="4" placeholder="Type..." className="heading" />
-                        <div className="add">Add</div>
+                        <textarea rows="4" placeholder="Type..." className="input" />
+                        <div className="submit">Add</div>
                         <div className="cancel">Cancel</div>
                     </div>
                 </li>
 
                 <li className="kanban-section">
-                    <div className="header">Drag</div>
-                    <ul className="cards">
-                        <li className="kanban-card -placeholder">Some task</li>
+                    <div className="heading">Drag</div>
+                    <ul className="kanban-cards">
+                        <li className="kanban-card -placeholder"><div className="heading">Some task</div></li>
                         <li
                             className="kanban-card -grabbing"
                             style={{position: 'absolute',
-                                    left: '650px',
+                                    left: '870px',
                                     top: '50px',
                                     width: '270px'}}>
-                            Task 1
+                            <div className="heading">Task 1</div>
                         </li>
-                        <li className="kanban-card">Task 1</li>
-                        <li className="kanban-card">Task 2</li>
+                        <li className="kanban-card"><div className="heading">Task 1</div></li>
+                        <li className="kanban-card"><div className="heading">Task 2</div></li>
                     </ul>
                     <div className="add">Add a card...</div>
                 </li>
 
-                <li className="kanban-list -placeholder">
-                    <div className="header">Drag</div>
-                    <ul className="cards">
-                        <li className="kanban-card">Task 1</li>
-                        <li className="kanban-card">Task 2</li>
+                <li className="kanban-section -placeholder">
+                    <div className="heading">Drag</div>
+                    <ul className="kanban-cards">
+                        <li className="kanban-card"><div className="heading">Task 1</div></li>
+                        <li className="kanban-card"><div className="heading">Task 2</div></li>
                     </ul>
                     <div className="add">Add a card...</div>
                 </li>
 
                 <li
-                    className="kanban-list -grabbing"
+                    className="kanban-section -grabbing"
                     style={{position: 'absolute',
-                            left: '1250px',
+                            left: '1150px',
                             top: '20px',
                             width: '270px'}}>
-                    <div className="header">Drag</div>
-                    <ul className="cards">
-                        <li className="kanban-card">Task 1</li>
-                        <li className="kanban-card">Task 2</li>
+                    <div className="heading">Drag</div>
+                    <ul className="kanban-cards">
+                        <li className="kanban-card"><div className="heading">Task 1</div></li>
+                        <li className="kanban-card"><div className="heading">Task 2</div></li>
                     </ul>
                     <div className="add">Add a card...</div>
                 </li>
 
-                <li className="add-kanban-list">Add a list...</li>
+                <li className="add">Add a list...</li>
+
+                <li className="kanban-section-new-form">
+                    <textarea rows="4" placeholder="Type..." className="input" />
+                    <div className="submit">Add</div>
+                    <div className="cancel">Cancel</div>
+                </li>
             </ul>
         )
     }
