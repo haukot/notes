@@ -7,7 +7,7 @@
   "main": "",
   "scripts": {
     "dev": "concurrent --kill-others \"npm run dev-server\" \"npm run dev-server-assets\"",
-    "dev-server": "NODE_PATH=src nodemon --exec babel-node src/server.js",
+    "dev-server": "nodemon --exec babel-node src/server.js",
     "dev-server-assets": "babel-node src/server-assets.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +18,7 @@
     ]
   },
   "dependencies": {
+    "app-module-path": "^1.0.5",
     "express": "^4.13.3",
     "history": "=1.13.1",
     "react": "^0.14.3",

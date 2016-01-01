@@ -1,3 +1,5 @@
+import "app-module-path/register";
+
 import express from 'express';
 
 import React from 'react';
