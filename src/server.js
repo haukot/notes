@@ -8,7 +8,6 @@ import routes from 'components/routes';
 
 const app = express();
 
-app.use(express.static('public'));
 app.use((req, res, next) => {
     // Note that req.url here should be the full URL path from
     // the original request, including the query string.

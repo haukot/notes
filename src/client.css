@@ -1,5 +1,9 @@
 @import "normalize.css";
 
+* {
+    box-sizing: border-box;
+}
+
 ul, ol, li {
     list-style: none;
     margin: 0;
@@ -9,37 +13,15 @@ ul, ol, li {
 textarea {
     resize: none;
     outline: none;
-
     width: 100%;
-    box-sizing: border-box;
-
     display: block;
-}
-
-* {
-    box-sizing: border-box;
+    border: none;
 }
 
 $block-indent: 10px;
 $block-border-radius: 4px;
 
-@define-mixin block-bordered {
-    padding: $block-indent;
-
-    border: 1px solid #000;
-    border-radius: $block-border-radius;
-    background: white;
-}
-
-@define-mixin block-click {
-    cursor: pointer;
-
-    &:hover {
-        background: color(white b(10%));
-    }
-}
-
-@define-mixin block-grab {
+@define-mixin grab {
     cursor: grab;
 
     &.-grabbing {
@@ -62,8 +44,11 @@ body {
     height: 100vh;
 }
 
-.kanban-board {
+#root {
+    height: 100%;
+}
 
+.kanban-board {
     height: 100%;
 
     display: flex;
@@ -88,28 +73,24 @@ body {
     }
 }
 
-.kanban-list {
-    @mixin block-bordered;
-    @mixin block-grab;
+.kanban-section {
+    @mixin grab;
+
+    border-radius: $block-border-radius;
+    padding: $block-indent;
+    background: color(white b(15%));
 
     display: flex;
     flex-direction: column;
-
     max-height: 100%;
 
-    > .header {
+    > .heading {
+        align-self: flex-start;
         font-weight: bold;
-        cursor: pointer;
-        flex-shrink: 0;
     }
 
-    > .cards {
-        flex-grow: 1;
-        overflow: hidden;
+    > .kanban-cards {
         overflow-y: auto;
-    }
-
-    > .cards > .kanban-card {
         margin: $block-indent 0;
     }
 
@@ -119,51 +100,88 @@ body {
     }
 }
 
-.add-kanban-list {
-    @mixin block-bordered;
-    @mixin block-click;
+.kanban-section-edit-heading-form {
+    > .input {
+        border-radius: $block-border-radius;
+        padding: $block-indent;
+        margin-bottom: $block-indent;
+    }
+
+    > .save, .cancel {
+        float: left;
+        padding: $block-indent;
+        margin-right: $block-indent;
+        border-radius: $block-border-radius;
+        background: color(white b(80%));
+        color: color(white b(2%));
+        cursor: pointer;
+
+        &:hover {
+            background: color(white b(70%));
+        }
+    }
+}
+
+.kanban-cards {
+    > .kanban-card {
+        margin: $block-indent 0;
+    }
+    > :first-child {
+        margin-top: 0;
+    }
+    > :last-child {
+        margin-bottom: 0;
+    }
 }
 
 .kanban-card {
-    @mixin block-bordered;
-    @mixin block-grab;
-    @mixin block-click;
-}
+    @mixin grab;
 
-.new-kanban-card-form {
-    > .field {
-        @mixin block-bordered;
-    }
+    background: white;
+    border-radius: $block-border-radius;
+    padding: $block-indent;
 
-    > .actions {
-        margin-top: $block-indent;
-        clear: fix;
-    }
+    cursor: pointer;
 
-    > .actions > .action {
-        @mixin block-bordered;
-        @mixin block-click;
-        float: left;
-        margin-right: $block-indent;
+    &:hover {
+        background: color(white b(10%));
     }
 }
 
-.edit-kanban-list-header-form {
-    margin-bottom: calc(2 * $block-indent);
+/*.new-kanban-card-form {*/
+    /*> .field {*/
+        /*@mixin block-bordered;*/
+    /*}*/
 
-    > .field {
-        @mixin block-bordered;
-    }
+    /*> .actions {*/
+        /*margin-top: $block-indent;*/
+        /*clear: fix;*/
+    /*}*/
 
-    > .actions {
-        margin-top: $block-indent;
-        clear: fix;
-    }
+    /*> .actions > .action {*/
+        /*@mixin block-bordered;*/
+        /*@mixin block-click;*/
+        /*float: left;*/
+        /*margin-right: $block-indent;*/
+    /*}*/
+/*}*/
 
-    > .actions > .action {
-      @mixin block-bordered;
-      @mixin block-click;
-      float: left;
-      margin-right: $block-indent;
-    }
-}
+/*.edit-kanban-list-header-form {*/
+    /*margin-bottom: calc(2 * $block-indent);*/
+
+    /*> .field {*/
+        /*@mixin block-bordered;*/
+    /*}*/
+
+    /*> .actions {*/
+        /*margin-top: $block-indent;*/
+        /*clear: fix;*/
+    /*}*/
+
+    /*> .actions > .action {*/
+      /*@mixin block-bordered;*/
+      /*@mixin block-click;*/
+      /*float: left;*/
+      /*margin-right: $block-indent;*/
+    /*}*/
+/*}*/
