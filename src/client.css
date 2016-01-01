@@ -40,7 +40,7 @@ body {
     }
 }
 
-._full-heigth { height: 100% !important; }
+._full-height { height: 100% !important; }
 
 ._link-without-decorations {
     &,

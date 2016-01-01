@@ -31,7 +31,7 @@ app.use((req, res, next) => {
                     <script src="/assets/bundle.js"></script>
                   </head>
                   <body>
-                    <div id='root' class='_full-heigth'>${renderedComponent}</div>
+                    <div id='root' class='_full-height'>${renderedComponent}</div>
                   </body>
                 </html>
             `;
