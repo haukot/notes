@@ -30,8 +30,29 @@ module.exports = {
     ],
     module: {
         loaders: [
-            { test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['react-hot', 'babel'] },
-            { test: /\.css$/, loaders: ['style-loader', 'css-loader', 'postcss-loader'] }
+            {
+                test: /\.js$/,
+                include: path.join(__dirname, 'src'),
+                loader: 'babel',
+                query: {
+                    "plugins": [
+                        ["react-transform", {
+                            "transforms": [{
+                                "transform": "react-transform-hmr",
+                                "imports": ["react"],
+                                "locals": ["module"]
+                            },{
+                                "transform": "react-transform-catch-errors",
+                                "imports": ["react", "redbox-react"]
+                            }]
+                        }]
+                    ]
+                }
+            },
+            {
+                test: /\.css$/,
+                loaders: ['style-loader', 'css-loader', 'postcss-loader']
+            }
         ]
     },
     postcss: function () {

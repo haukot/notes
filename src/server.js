@@ -1,12 +1,34 @@
 import "app-module-path/register";
 
-import express from 'express';
-
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-
 import {match, RoutingContext} from 'react-router';
-import routes from 'components/routes';
+import {Provider} from 'react-redux';
+import express from 'express';
+
+import routes from 'routes';
+import configureStore from 'store/configure-store';
+
+import {addSection} from 'actions/sections';
+
+function renderFullPage(html, initialState) {
+    return `
+        <!doctype html>
+        <html>
+          <head>
+            <title>Kanban</title>
+            <script>
+                window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+            </script>
+            <script src="/assets/bundle.js"></script>
+          </head>
+          <body>
+            <div id='root' class='_full-height'>${html}</div>
+            <div id='dev_tools'></div>
+          </body>
+        </html>
+    `
+}
 
 const app = express();
 
@@ -20,23 +42,17 @@ app.use((req, res, next) => {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
 
-            const renderedComponent = renderToString(<RoutingContext {...renderProps} />);
+            const store = configureStore();
+            store.dispatch(addSection('todo'));
 
-
-            const html = `
-                <!doctype html>
-                <html>
-                  <head>
-                    <title>Your App</title>
-                    <script src="/assets/bundle.js"></script>
-                  </head>
-                  <body>
-                    <div id='root' class='_full-height'>${renderedComponent}</div>
-                  </body>
-                </html>
-            `;
-
-            res.status(200).send(html);
+            const renderedComponent = renderToString(
+                <Provider store={store}>
+                    <RoutingContext {...renderProps} />
+                </Provider>
+            );
+            const finalState = store.getState();
+            const pageHtml = renderFullPage(renderedComponent, finalState);
+            res.status(200).send(pageHtml);
         }
     });
 

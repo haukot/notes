@@ -5,6 +5,27 @@
 https://github.com/rstacruz/rscss
 
 
-# TODO
-
-* update history; issue: https://github.com/rackt/react-router/issues/2657
+```js
+{
+    sections: [sectionId],
+    sectionsByCards: {
+        cardId: sectionId
+    },
+    entities: {
+        sections: {
+            id: {
+                id,
+                heading,
+                cards: [cardId]
+            }
+        },
+        cards: {
+            id: {
+                id,
+                heading,
+                description
+            }
+        }
+    }
+}
+```

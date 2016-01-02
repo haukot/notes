@@ -1,31 +1,36 @@
 import React from 'react';
 import {Link} from 'react-router';
 
+function Section({heading, cards}) {
+    return <li className="kanban-section">
+        <div className="heading">TODO: scroll</div>
+        <ul className="kanban-cards">
+            <li>
+                <Link className="kanban-card _link-without-decorations" to="/123">
+                    <div className="heading">__ОТКРЫТЬ КАРТОЧКУ__</div>
+                </Link>
+            </li>
+            <li className="kanban-card"><div className="heading">Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.</div></li>
+            <li className="kanban-card"><div className="heading">Критерий сходимости Коши, не вдаваясь в подробности, выведен.</div></li>
+            <li className="kanban-card"><div className="heading">Прямоугольная матрица программирует интеграл от функции комплексной переменной.</div></li>
+            <li className="kanban-card"><div className="heading">Доказательство отражает сходящийся ряд.</div></li>
+            <li className="kanban-card"><div className="heading">Предел последовательности вполне вероятен.</div></li>
+            <li className="kanban-card"><div className="heading">Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор. </div></li>
+            <li className="kanban-card"><div className="heading">Очевидно проверяется, что аффинное преобразование небезынтересно специфицирует косвенный контрпример. </div></li>
+            <li className="kanban-card"><div className="heading">Огибающая семейства поверхностей, не вдаваясь в подробности, привлекает сходящийся ряд, что несомненно приведет нас к истине.</div></li>
+        </ul>
+        <div className="add">Add a card</div>
+    </li>;
+}
+
+
 export default React.createClass({
     displayName: 'Board',
 
     render() {
         return (
             <ul className="kanban-board">
-                <li className="kanban-section">
-                    <div className="heading">TODO: scroll</div>
-                    <ul className="kanban-cards">
-                        <li>
-                            <Link className="kanban-card _link-without-decorations" to="/123">
-                                <div className="heading">__ОТКРЫТЬ КАРТОЧКУ__</div>
-                            </Link>
-                        </li>
-                        <li className="kanban-card"><div className="heading">Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.</div></li>
-                        <li className="kanban-card"><div className="heading">Критерий сходимости Коши, не вдаваясь в подробности, выведен.</div></li>
-                        <li className="kanban-card"><div className="heading">Прямоугольная матрица программирует интеграл от функции комплексной переменной.</div></li>
-                        <li className="kanban-card"><div className="heading">Доказательство отражает сходящийся ряд.</div></li>
-                        <li className="kanban-card"><div className="heading">Предел последовательности вполне вероятен.</div></li>
-                        <li className="kanban-card"><div className="heading">Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор. </div></li>
-                        <li className="kanban-card"><div className="heading">Очевидно проверяется, что аффинное преобразование небезынтересно специфицирует косвенный контрпример. </div></li>
-                        <li className="kanban-card"><div className="heading">Огибающая семейства поверхностей, не вдаваясь в подробности, привлекает сходящийся ряд, что несомненно приведет нас к истине.</div></li>
-                    </ul>
-                    <div className="add">Add a card</div>
-                </li>
+                <Section />
 
                 <li className="kanban-section">
                     <div className="kanban-section-edit-heading-form">
