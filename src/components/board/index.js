@@ -1,49 +1,33 @@
 import React from 'react';
-import {Link} from 'react-router';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-const Card = React.createClass({
-    render() {
-        const id = this.props.card.get('id');
-        const heading = this.props.card.get('heading');
-        return (
-            <li className="kanban-card">
-                <Link className="_link-without-decorations" to={`/${id}`}>
-                    <div className="heading">{heading}</div>
-                </Link>
-            </li>
-        );
-    }
-});
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-const Section = React.createClass({
-    render() {
-        const heading = this.props.section.get('heading');
-        const cards = this.props.section.get('cards');
-        return (
-            <li className="kanban-section">
-                <div className="heading">{heading}</div>
-                <ul className="kanban-cards">
-                    {cards.map(card => <Card key={card.get('id')} card={card} />)}
-                </ul>
-                <div className="add">Add a card</div>
-            </li>
-        );
-    }
-});
 
-export default React.createClass({
+import Section from './section';
+
+const Board = React.createClass({
     displayName: 'Board',
 
+    mixins: [PureRenderMixin],
+
     render() {
-        const {sections} = this.props;
+        const {sections, onSectionChange, onCardChange} = this.props;
         return (
             <ul className="kanban-board">
-                {sections.map(section => <Section key={section.get('id')} section={section} />)}
+                {sections.map(section => {
+                    return <Section key={section.get('id')}
+                                    section={section}
+                                    onChange={onSectionChange}
+                                    onCardChange={onCardChange}
+                           />
+                })}
             </ul>
         )
     }
 });
-
+export default DragDropContext(HTML5Backend)(Board);
 
 //export default React.createClass({
 //    displayName: 'Board',

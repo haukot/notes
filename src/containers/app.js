@@ -4,20 +4,22 @@ import {connect} from 'react-redux'
 import Board from 'components/board';
 import Window from 'components/window';
 import {sections} from 'queries';
+import {updateSection, updateCard} from 'actions';
 
 const App = React.createClass({
-    displayName: 'App',
-
     propTypes: {
         children: React.PropTypes.element,
         sections: React.PropTypes.object.isRequired
     },
 
     render() {
-        const {sections} = this.props;
+        const {dispatch, sections} = this.props;
         return (
             <div className="_full-height">
-                <Board sections={sections} />
+                <Board sections={sections}
+                       onSectionChange={attrs => dispatch(updateSection(attrs))}
+                       onCardChange={attrs => dispatch(updateCard(attrs))}
+                />
 
                 {React.Children.count(this.props.children) == 1 &&
                 <Window>

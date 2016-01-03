@@ -8,5 +8,7 @@ export function sections(state) {
         .map(sectionId => state
             .getIn(['entities', 'sections', sectionId])
             .updateIn(['cards'], cardsIds => cardsIds
-                .map(cardId => state.getIn(['entities', 'cards', cardId.toString()]))));
+                .map((cardId, index) => state
+                    .getIn(['entities', 'cards', cardId])
+                    .set('index', index))));
 }
