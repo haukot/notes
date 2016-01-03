@@ -12,21 +12,30 @@ function createReducer(initialState, handlers) {
     }
 }
 
+function increaseSequence(state) {
+    return state.updateIn(['sequence'], seq => seq + 1);
+}
+
+function getSequenceValue(state) {
+    return state.getIn(['sequence']);
+}
+
 const initialState = fromJS({
+    sequence: 0,
     sections: [/*sectionId*/],
-    sectionsByCards: {
-        /*cardId: sectionId*/
+    sectionsByCard: {
+        /*'cardId': sectionId*/
     },
     entities: {
         sections: {
-            /*id: {
+            /*'id': {
                 id,
                 heading,
                 cards: [cardId]
             }*/
         },
         cards: {
-            /*id: {
+            /*'id': {
                 id,
                 heading,
                 description
@@ -36,9 +45,19 @@ const initialState = fromJS({
 });
 
 export default createReducer(initialState, {
-    [ActionTypes.ADD_SECTION](state, {id, heading}) {
-        return state
-            .setIn(['entities', 'sections', id], fromJS({id, heading}))
-            .updateIn(['sections'], sections => sections.push(id));
-    }
+    [ActionTypes.ADD_SECTION](state, {heading}) {
+        const stateWithIncSeq = increaseSequence(state);
+        const id = getSequenceValue(stateWithIncSeq).toString();
+        return stateWithIncSeq
+            .updateIn(['sections'], sections => sections.push(id))
+            .setIn(['entities', 'sections', id], fromJS({id, heading, cards: []}));
+    },
+    [ActionTypes.ADD_CARD](state, {heading, sectionId}) {
+        const stateWithIncSeq = increaseSequence(state);
+        const id = getSequenceValue(stateWithIncSeq).toString();
+        return stateWithIncSeq
+            .setIn(['sectionsByCard', id], sectionId)
+            .updateIn(['entities', 'sections', sectionId, 'cards'], cards => cards.push(id))
+            .setIn(['entities', 'cards', id], fromJS({id, heading, description: ''}));
+    },
 });

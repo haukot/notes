@@ -48,7 +48,6 @@ body {
     &:active,
     &:hover,
     &:visited {
-        display: block;
         color: black;
         text-decoration: none;
         cursor: inherit;
@@ -57,9 +56,7 @@ body {
 
 .kanban-board {
     height: 100%;
-
-    /* обратить внимание */
-    width: max-content;
+    overflow-x: scroll;
 
     background: green;
 
@@ -67,13 +64,23 @@ body {
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: nowrap;
-    justify-content: space-around;
 
-    padding: $block-indent 0;
+    /* FIXME правый padding или margin не работает*/
+    padding: $block-indent;
+    &:after {
+        content: ' ';
+        height: 1px;
+        flex-basis: 10px;
+        flex-shrink: 0;
+    }
 
     > * {
         flex-basis: 270px;
         flex-shrink: 0;
+        margin-right: $block-indent;
+    }
+    > :last-child {
+        margin-right: 0;
     }
 
     .add {

@@ -1,17 +1,18 @@
 import "app-module-path/register";
 
+import express from 'express';
+
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {match, RoutingContext} from 'react-router';
 import {Provider} from 'react-redux';
-import express from 'express';
 
 import routes from 'routes';
+import {addSection, addCard} from 'actions';
+import {sectionsIds} from 'queries';
 import configureStore from 'store/configure-store';
 
-import {addSection} from 'actions/sections';
-
-function renderFullPage(html, initialState) {
+function pageTemplate(html, initialState) {
     return `
         <!doctype html>
         <html>
@@ -30,11 +31,34 @@ function renderFullPage(html, initialState) {
     `
 }
 
-const app = express();
+function render(store, renderProps) {
+    const renderedComponent = renderToString(
+        <Provider store={store}>
+            <RoutingContext {...renderProps} />
+        </Provider>
+    );
+    const finalState = store.getState();
+    return pageTemplate(renderedComponent, finalState);
+}
 
-app.use((req, res, next) => {
-    // Note that req.url here should be the full URL path from
-    // the original request, including the query string.
+function fillStore(store) {
+    store.dispatch(addSection({heading: 'Todo'}));
+    store.dispatch(addSection({heading: 'In process'}));
+    store.dispatch(addSection({heading: 'Done'}));
+
+    const [todoId, inProcessId, doneId] = sectionsIds(store.getState());
+
+    store.dispatch(addCard({sectionId: todoId, heading: 'Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.'}));
+    store.dispatch(addCard({sectionId: todoId, heading: 'Критерий сходимости Коши, не вдаваясь в подробности, выведен.'}));
+    store.dispatch(addCard({sectionId: todoId, heading: 'Прямоугольная матрица программирует интеграл от функции комплексной переменной.'}));
+
+    store.dispatch(addCard({sectionId: inProcessId, heading: 'Доказательство отражает сходящийся ряд.'}));
+    store.dispatch(addCard({sectionId: inProcessId, heading: 'Предел последовательности вполне вероятен.'}));
+
+    store.dispatch(addCard({sectionId: doneId, heading: 'Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор.'}));
+}
+
+function routerMiddleware(req, res, next) {
     match({routes, location: req.url}, (error, redirectLocation, renderProps) => {
         if (error) {
             res.status(500).send(error.message)
@@ -43,21 +67,18 @@ app.use((req, res, next) => {
         } else if (renderProps) {
 
             const store = configureStore();
-            store.dispatch(addSection('todo'));
+            fillStore(store);
+            const pageHtml = render(store, renderProps);
 
-            const renderedComponent = renderToString(
-                <Provider store={store}>
-                    <RoutingContext {...renderProps} />
-                </Provider>
-            );
-            const finalState = store.getState();
-            const pageHtml = renderFullPage(renderedComponent, finalState);
             res.status(200).send(pageHtml);
         }
     });
 
     next();
-});
+}
+
+const app = express();
+app.use(routerMiddleware);
 
 const server = app.listen(8080, () => {
     var host = server.address().address;

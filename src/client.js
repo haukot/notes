@@ -14,10 +14,6 @@ import DevTools from 'containers/dev-tools';
 const history = createBrowserHistory();
 const store = configureStore(window.__INITIAL_STATE__);
 
-
-debugger;
-
-
 const renderApp = () => {
     render(
         <Provider store={store}>
