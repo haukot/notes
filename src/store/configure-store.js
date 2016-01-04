@@ -1,6 +1,5 @@
 import {createStore, compose} from 'redux';
 import reducer from 'reducers';
-import {fromJS} from 'immutable';
 
 import DevTools from 'containers/dev-tools';
 
@@ -12,7 +11,7 @@ const finalCreateStore = compose(
 
 
 export default function configureStore(initialState) {
-    const store = finalCreateStore(reducer, fromJS(initialState));
+    const store = finalCreateStore(reducer, initialState);
 
     if (module.hot) {
          module.hot.accept('reducers', () => {

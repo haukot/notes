@@ -5,14 +5,14 @@ import {render} from 'react-dom';
 import {Router} from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import {Provider} from 'react-redux';
-
+import transit from 'transit-immutable-js';
 
 import routes from 'routes';
 import configureStore from 'store/configure-store';
 import DevTools from 'containers/dev-tools';
 
 const history = createBrowserHistory();
-const store = configureStore(window.__INITIAL_STATE__);
+const store = configureStore(transit.fromJSON(window.__INITIAL_STATE__));
 
 const renderApp = () => {
     render(

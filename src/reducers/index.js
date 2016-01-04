@@ -45,7 +45,7 @@ const initialState = fromJS({
 export default createReducer(initialState, {
     [ActionTypes.ADD_SECTION](state, {attrs}) {
         const stateWithIncSeq = increaseSequence(state);
-        const id = getSequenceValue(stateWithIncSeq).toString();
+        const id = getSequenceValue(stateWithIncSeq);
 
         const fullAttrs = Object.assign({heading: '', cards: []}, attrs, {id});
 
@@ -60,7 +60,7 @@ export default createReducer(initialState, {
 
     [ActionTypes.ADD_CARD](state, {attrs}) {
         const stateWithIncSeq = increaseSequence(state);
-        const id = getSequenceValue(stateWithIncSeq).toString();
+        const id = getSequenceValue(stateWithIncSeq);
 
         const cardsPath = ['entities', 'sections', attrs.sectionId, 'cards'];
         const fullAttrs = Object.assign(

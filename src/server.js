@@ -6,6 +6,7 @@ import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {match, RoutingContext} from 'react-router';
 import {Provider} from 'react-redux';
+import transit from 'transit-immutable-js';
 
 import routes from 'routes';
 import {addSection, addCard} from 'actions';
@@ -19,7 +20,7 @@ function pageTemplate(html, initialState) {
           <head>
             <title>Kanban</title>
             <script>
-                window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+                window.__INITIAL_STATE__ = '${transit.toJSON(initialState)}';
             </script>
             <script src="/assets/bundle.js"></script>
           </head>
