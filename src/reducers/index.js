@@ -22,68 +22,27 @@ function getSequenceValue(state) {
 
 const initialState = fromJS({
     sequence: 0,
-    sections: [/*'sectionId'*/],
-    entities: {
-        sections: {
-            /*'id': {
-                'id',
-                heading,
-                cards: [cardId]
-            }*/
-        },
-        cards: {
-            /*'id': {
-                'id',
-                'sectionId',
-                heading,
-                description
-            }*/
-        }
+    notes: {
+        /*
+          id: {
+             id, title, body, date
+          }
+         */
     }
 });
 
 export default createReducer(initialState, {
-    [ActionTypes.ADD_SECTION](state, {attrs}) {
+    [ActionTypes.ADD_NOTE](state, {attrs}) {
         const stateWithIncSeq = increaseSequence(state);
         const id = getSequenceValue(stateWithIncSeq);
 
-        const fullAttrs = Object.assign({heading: '', cards: []}, attrs, {id});
+        const fullAttrs = Object.assign({title: ""}, attrs, {id});
 
         return stateWithIncSeq
-            .updateIn(['sections'], sections => sections.push(id))
-            .setIn(['entities', 'sections', id], fromJS(fullAttrs));
+            .setIn(['notes', id], fromJS(fullAttrs));
     },
 
-    [ActionTypes.UPDATE_SECTION](state, {attrs}) {
-        return state.mergeIn(['entities', 'sections', attrs.id], attrs);
-    },
-
-    [ActionTypes.ADD_CARD](state, {attrs}) {
-        const stateWithIncSeq = increaseSequence(state);
-        const id = getSequenceValue(stateWithIncSeq);
-
-        const cardsPath = ['entities', 'sections', attrs.sectionId, 'cards'];
-        const fullAttrs = Object.assign(
-            {heading: '', description: ''},
-            attrs,
-            {id, index: state.getIn(cardsPath).size});
-
-        return stateWithIncSeq
-            .updateIn(cardsPath, cards => cards.push(id))
-            .setIn(['entities', 'cards', id], fromJS(fullAttrs));
-    },
-
-    [ActionTypes.UPDATE_CARD](state, {attrs}) {
-        const {id, sectionId, index} = attrs;
-        const fullAttrs = Object.assign({}, attrs);
-        delete fullAttrs.index;
-
-        const oldSectionId = state.getIn(['entities', 'cards', id, 'sectionId']);
-        const oldIndex = state.getIn(['entities', 'sections', oldSectionId, 'cards']).indexOf(id);
-
-        return state
-            .deleteIn(['entities', 'sections', oldSectionId, 'cards', oldIndex])
-            .updateIn(['entities', 'sections', sectionId, 'cards'], cards => cards.splice(index, 0, id))
-            .mergeIn(['entities', 'cards', id], fromJS(fullAttrs));
+    [ActionTypes.UPDATE_NOTE](state, {attrs}) {
+        return state.mergeIn(['notes', attrs.id], attrs);
     }
 });

@@ -54,6 +54,22 @@ body {
     }
 }
 
+.notes-list {
+    width: 30%;
+    background: red;
+    float: left;
+}
+
+.note-edit {
+    width: 30%;
+    background: green;
+    float: left;
+}
+
+
+
+
+
 .kanban-board {
     height: 100%;
     overflow-x: scroll;

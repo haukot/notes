@@ -1,29 +1,14 @@
 import * as types from 'constants/action-types';
 
-export function addSection(attrs) {
+export function addNote(attrs) {
     return {
-        type: types.ADD_SECTION,
+        type: types.ADD_NOTE,
         attrs
     }
 }
-
-export function updateSection(attrs) {
+export function updateNote(attrs) {
     return {
-        type: types.UPDATE_SECTION,
-        attrs
-    }
-}
-
-export function addCard(attrs) {
-    return {
-        type: types.ADD_CARD,
-        attrs
-    }
-}
-
-export function updateCard(attrs) {
-    return {
-        type: types.UPDATE_CARD,
+        type: types.UPDATE_NOTE,
         attrs
     }
 }

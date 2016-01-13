@@ -1,10 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux'
 
-import Board from 'components/board';
+import Notes from 'components/notes';
 import Window from 'components/window';
-import {sections} from 'queries';
-import {updateSection, updateCard} from 'actions';
+import {notes} from 'queries';
+import {addNote, updateNote} from 'actions';
 
 const App = React.createClass({
     propTypes: {
@@ -13,12 +13,12 @@ const App = React.createClass({
     },
 
     render() {
-        const {dispatch, sections} = this.props;
+        const {dispatch, notes} = this.props;
         return (
             <div className="_full-height">
-                <Board sections={sections}
-                       onSectionChange={attrs => dispatch(updateSection(attrs))}
-                       onCardChange={attrs => dispatch(updateCard(attrs))}
+                <Notes notes={notes}
+                       onNoteAdd={attrs => dispatch(addNote(attrs))}
+                       onNoteUpdate={attrs => dispatch(updateNote(attrs))}
                 />
 
                 {React.Children.count(this.props.children) == 1 &&
@@ -32,7 +32,7 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state) {
-    return {sections: sections(state)};
+    return {notes: notes(state)};
 }
 
 export default connect(mapStateToProps)(App);

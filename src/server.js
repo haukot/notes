@@ -9,8 +9,8 @@ import {Provider} from 'react-redux';
 import transit from 'transit-immutable-js';
 
 import routes from 'routes';
-import {addSection, addCard} from 'actions';
-import {sectionsIds} from 'queries';
+import {addNote} from 'actions';
+import {notes} from 'queries';
 import configureStore from 'store/configure-store';
 
 function pageTemplate(html, initialState) {
@@ -43,20 +43,8 @@ function render(store, renderProps) {
 }
 
 function fillStore(store) {
-    store.dispatch(addSection({heading: 'Todo'}));
-    store.dispatch(addSection({heading: 'In process'}));
-    store.dispatch(addSection({heading: 'Done'}));
-
-    const [todoId, inProcessId, doneId] = sectionsIds(store.getState());
-
-    store.dispatch(addCard({sectionId: todoId, heading: 'Линейное уравнение, не вдаваясь в подробности, порождает комплексный степенной ряд.'}));
-    store.dispatch(addCard({sectionId: todoId, heading: 'Критерий сходимости Коши, не вдаваясь в подробности, выведен.'}));
-    store.dispatch(addCard({sectionId: todoId, heading: 'Прямоугольная матрица программирует интеграл от функции комплексной переменной.'}));
-
-    store.dispatch(addCard({sectionId: inProcessId, heading: 'Доказательство отражает сходящийся ряд.'}));
-    store.dispatch(addCard({sectionId: inProcessId, heading: 'Предел последовательности вполне вероятен.'}));
-
-    store.dispatch(addCard({sectionId: doneId, heading: 'Очевидно проверяется, что теорема Гаусса - Остроградского осмысленно обуславливает экспериментальный вектор.'}));
+    store.dispatch(addNote({title: 'Todo'}));
+    store.dispatch(addNote({title: 'In process'}));
 }
 
 function routerMiddleware(req, res, next) {
