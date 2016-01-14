@@ -25,7 +25,7 @@ function pageTemplate(html, initialState) {
             <script src="/assets/bundle.js"></script>
           </head>
           <body>
-            <div id='root' class='_full-height'>${html}</div>
+            <div id='root'>${html}</div>
             <div id='dev_tools'></div>
           </body>
         </html>

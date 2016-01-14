@@ -22,6 +22,11 @@ function getSequenceValue(state) {
 
 const initialState = fromJS({
     sequence: 0,
+    view: {
+        /*
+           activeNoteId: id
+         */
+    },
     notes: {
         /*
           id: {
@@ -36,13 +41,19 @@ export default createReducer(initialState, {
         const stateWithIncSeq = increaseSequence(state);
         const id = getSequenceValue(stateWithIncSeq);
 
-        const fullAttrs = Object.assign({title: ""}, attrs, {id});
+        const fullAttrs = Object.assign(attrs, {id});
 
         return stateWithIncSeq
-            .setIn(['notes', id], fromJS(fullAttrs));
+            .setIn(['notes', id], fromJS(fullAttrs))
+            .setIn(['view', 'activeNoteId'], id);
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
         return state.mergeIn(['notes', attrs.id], attrs);
+    },
+
+    [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
+        return state.setIn(['view', 'activeNoteId'], attrs.id);
     }
+
 });

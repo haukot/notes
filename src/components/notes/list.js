@@ -19,14 +19,23 @@ export default React.createClass({
     //     this.props.onChange({id: this.props.section.get('id'), heading});
     // },
 
+    handleAddNote() {
+        this.props.onNoteAdd({});
+    },
+
+    handleSetActiveNote(noteId) {
+        this.props.onSetActiveNote({id: noteId});
+    },
+
     render() {
         return (
             <div className="notes-list">
-                <Search onChange={this.handleHeadingChange} />
-                <div className="add">Add a note</div>
-                {this.props.notes.map((note, index) => {
+                <Search onChange={this.handleSearch} />
+                <button className="button" onClick={this.handleAddNote}>Add a note</button>
+                {this.props.notes.reverse().map((note, index) => {
                     return <NoteItem key={note.get('id')}
-                    note={note}
+                                     onClick={this.handleSetActiveNote}
+                                     note={note}
                         />
                 })}
             </div>

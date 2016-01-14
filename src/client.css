@@ -1,275 +1,54 @@
 @import "normalize.css";
+@import "milligram/dist/milligram.css";
 
-* {
-    box-sizing: border-box;
+/* overrides */
+.container {
+    height: 80vh;
+    max-width: 200rem;
 }
 
-ul, ol, li {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+/* end overrides */
+
+/* utilites */
+
+.panel {
+    margin: 20px;
 }
 
-textarea {
-    resize: none;
-    outline: none;
-    width: 100%;
-    display: block;
-    border: none;
+._full-height {
+    height: 100%;
 }
 
-$block-indent: 10px;
-$block-border-radius: 4px;
-
-body {
-    height: 100vh;
-}
-
-@define-mixin grab {
-    cursor: grab;
-
-    &.-placeholder {
-        background: color(black a(10%));
-        > * { visibility: hidden; }
-    }
-
-    &.-grabbing {
-        cursor: grabbing;
-        transform: rotate(2deg);
-        box-shadow: 0 0 10px color(black a(40%));
+.clean {
+    border: 0;
+    &:focus {
+        border: 0;
+        outline: none;
     }
 }
 
-._full-height { height: 100% !important; }
+/* end utilites */
 
-._link-without-decorations {
-    &,
-    &:link,
-    &:active,
-    &:hover,
-    &:visited {
-        color: black;
-        text-decoration: none;
-        cursor: inherit;
-    }
-}
+
+/* app */
 
 .notes-list {
-    width: 30%;
-    background: red;
-    float: left;
+    border-right: 1px #cce solid;
+    height: 100%;
+}
+
+.notes-item {
+    cursor: pointer;
 }
 
 .note-edit {
-    width: 30%;
-    background: green;
-    float: left;
-}
-
-
-
-
-
-.kanban-board {
     height: 100%;
-    overflow-x: scroll;
-
-    background: green;
-
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    flex-wrap: nowrap;
-
-    /* FIXME правый padding или margin не работает*/
-    padding: $block-indent;
-    &:after {
-        content: ' ';
-        height: 1px;
-        flex-basis: 10px;
-        flex-shrink: 0;
-    }
-
-    > * {
-        flex-basis: 270px;
-        flex-shrink: 0;
-        margin-right: $block-indent;
-    }
-    > :last-child {
-        margin-right: 0;
-    }
-
-    .add {
-        border-radius: $block-border-radius;
-        background: color(white b(15%));
-        overflow: hidden;
-        padding: $block-indent;
-        cursor: pointer;
-
-        &:hover {
-            background: color(white b(30%));
-            text-decoration: underline;
-        }
-    }
 }
 
-.kanban-section {
-    @mixin grab;
-
-    border-radius: $block-border-radius;
-    background: color(white b(15%));
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-    max-height: 100%;
-
-    > .heading {
-        align-self: flex-start;
-        font-weight: bold;
-        cursor: pointer;
-        margin: $block-indent;
-    }
-
-    > .kanban-section-edit-heading-form {
-        margin: $block-indent;
-    }
-
-    > .kanban-cards {
-        overflow-y: auto;
-        margin: 0 $block-indent;
-    }
-
-    > .add {
-        cursor: pointer;
-        flex-shrink: 0;
-        padding: $block-indent;
-        padding-top: calc($block-indent - 4px);
-        margin-top: 4px;
-
-        &:hover {
-            background: color(black a(15%) );
-            text-decoration: underline;
-        }
-    }
-
-    > .kanban-card-new-form {
-        margin: $block-indent;
-    }
+.note-edit_heading {
+    border-bottom: 1px #cce solid;
 }
 
-.kanban-section-edit-heading-form,
-.kanban-card-new-form,
-.kanban-section-new-form {
-    > .input {
-        border-radius: $block-border-radius;
-        padding: $block-indent;
-        margin-bottom: $block-indent;
-    }
-
-    > .submit, .cancel {
-        float: left;
-        padding: $block-indent;
-        margin-right: $block-indent;
-        border-radius: $block-border-radius;
-        background: color(white b(70%));
-        color: color(white b(2%));
-        cursor: pointer;
-
-        &:hover {
-            background: color(black a(20%));
-        }
-    }
-}
-.kanban-section-new-form {
-    background: color(white b(15%));
-    border-radius: $block-border-radius;
-    padding: $block-indent;
-}
-
-.kanban-cards {
-    > .kanban-card {
-        margin: $block-indent 0;
-    }
-    > :first-child {
-        margin-top: 0;
-    }
-    > :last-child {
-        margin-bottom: 0;
-    }
-}
-
-.kanban-card {
-    @mixin grab;
-
-    background: white;
-    border-radius: $block-border-radius;
-    padding: $block-indent;
-
-    &:hover {
-        background: color(white b(10%));
-    }
-}
-
-body._window-is-opened {
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.opened-window {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100vw;
-    min-height: 100vh;
-
-    background: color(black a(80%));
-
-    display: flex;
-    justify-content: center;
-}
-
-.opened-card {
-    width: 500px;
-    margin: $block-indent 0;
-    border-radius: $block-border-radius;
-    padding: calc(1.5 * $block-indent);
-
-    display: flex;
-    flex-direction: column;
-
-    background: color(white b(10%));
-
-    > .heading, .description {
-        padding: $block-indent;
-        border-radius: $block-border-radius;
-        margin-bottom: $block-indent;
-    }
-
-    > .description {
-        flex-grow: 1;
-    }
-
-    > .actions {
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    > .actions > * {
-        padding: $block-indent;
-        margin-right: $block-indent;
-        border-radius: $block-border-radius;
-        background: color(white b(70%));
-        color: color(white b(2%));
-        cursor: pointer;
-
-        &:hover {
-            background: color(black a(20%));
-        }
-    }
-
-    .delete {
-        margin-right: 0;
-        margin-left: auto;
-    }
+.note-edit_body {
+    height: 90%;
 }

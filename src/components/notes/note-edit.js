@@ -12,15 +12,31 @@ export default React.createClass({
 
     mixins: [PureRenderMixin],
 
-    // handleHeadingChange(heading) {
-    //     this.props.onChange({id: this.props.section.get('id'), heading});
+    // componentDidMount() {
+    //     this.refs.title.getDOMNode().focus();
     // },
+
+    handleChange() {
+        this.props.onNodeChange({
+            id: this.props.note.get("id"),
+            title: this.refs.title.value,
+            body: this.refs.body.value
+        });
+    },
 
     render() {
         const note = this.props.note
         return (
             <div className="note-edit">
-                {note.get('title')}
+                <h5 className="note-edit_heading">
+                <input className="clean" value={note.get('title')} ref='title' onChange={this.handleChange} />
+                </h5>
+
+                <div className="note-edit_body">
+                <textarea className="clean _full-height" ref='body'
+                          value={note.get('body')}
+                          onChange={this.handleChange} />
+                </div>
             </div>
         );
     }

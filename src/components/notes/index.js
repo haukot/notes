@@ -14,12 +14,19 @@ const NotesApp = React.createClass({
     mixins: [PureRenderMixin],
 
     render() {
-        const {notes, onNoteAdd, onNoteUpdate} = this.props;
-        const note = notes.first();
+        const {notes, view, onNoteAdd, onNoteUpdate, onSetActiveNote} = this.props;
+        const activeNote = this.props.notes.get(view.get('activeNoteId'));
         return (
-            <div>
-                <NotesList notes={notes} onNoteAdd={onNoteAdd} />
-                <NoteEdit note={note} onChange={onNoteUpdate} />
+            <div className="row panel _full-height">
+                <div className="column column-20 _full-height">
+                <NotesList notes={notes}
+                           onNoteAdd={onNoteAdd}
+                           onSetActiveNote={onSetActiveNote}
+                />
+                </div>
+                <div className="column column-75 _full-height">
+                    <NoteEdit note={activeNote} onNodeChange={onNoteUpdate} />
+                </div>
             </div>
         )
     }

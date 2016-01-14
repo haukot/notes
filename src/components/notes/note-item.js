@@ -12,10 +12,14 @@ export default React.createClass({
 
     mixins: [PureRenderMixin],
 
+    handleClick() {
+        this.props.onClick(this.props.note.get('id'));
+    },
+
     render() {
         const note = this.props.note;
         return (
-                <li> {note.get('title')} </li>
+                <li className="notes-item" onClick={this.handleClick}> {note.get('title')} </li>
         );
     }
 });

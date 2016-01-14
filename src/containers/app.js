@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 
 import Notes from 'components/notes';
 import Window from 'components/window';
-import {notes} from 'queries';
-import {addNote, updateNote} from 'actions';
+import {notes, view} from 'queries';
+import {addNote, updateNote, setActiveNote} from 'actions';
 
 const App = React.createClass({
     propTypes: {
@@ -13,12 +13,14 @@ const App = React.createClass({
     },
 
     render() {
-        const {dispatch, notes} = this.props;
+        const {dispatch, notes, view} = this.props;
         return (
-            <div className="_full-height">
+            <div className="container">
                 <Notes notes={notes}
+                       view={view}
                        onNoteAdd={attrs => dispatch(addNote(attrs))}
                        onNoteUpdate={attrs => dispatch(updateNote(attrs))}
+                       onSetActiveNote={attrs => dispatch(setActiveNote(attrs))}
                 />
 
                 {React.Children.count(this.props.children) == 1 &&
@@ -32,7 +34,7 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state) {
-    return {notes: notes(state)};
+    return {notes: notes(state), view: view(state)};
 }
 
 export default connect(mapStateToProps)(App);
