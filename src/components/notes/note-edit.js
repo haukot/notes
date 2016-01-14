@@ -12,9 +12,11 @@ export default React.createClass({
 
     mixins: [PureRenderMixin],
 
-    // componentDidMount() {
-    //     this.refs.title.getDOMNode().focus();
-    // },
+    componentDidUpdate() {
+        if (this.props.note.get('title') === "") {
+            this.refs.title.focus();
+        }
+    },
 
     handleChange() {
         this.props.onNodeChange({
