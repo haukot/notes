@@ -13,7 +13,8 @@ export default React.createClass({
     mixins: [PureRenderMixin],
 
     componentDidUpdate() {
-        if (this.props.note.get('title') === "") {
+        let bodyHasFocus = this.refs.body === document.activeElement;
+        if (this.props.note.get('title') === "" && !bodyHasFocus) {
             this.refs.title.focus();
         }
     },
