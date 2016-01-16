@@ -28,6 +28,16 @@ export default React.createClass({
         });
     },
 
+    handleNoteUpdatePosition() {
+        // note with order 0 - самая верхняя в своем ряду, и не может стать более вложенной
+        if (this.props.note.get('order') !== 0) {
+            this.props.onNoteUpdatePosition({
+                id: this.props.note.get("id"),
+                parentId: this.props.note.get('prevId')
+            });
+        }
+    },
+
     handleSetActiveNote() {
         this.props.onSetActiveNote({id: this.props.note.get('id')});
     },
@@ -45,7 +55,7 @@ export default React.createClass({
     handleKeyDown(e) {
         switch(e.key) {
         case "Tab":
-            // set parent note to prev note id
+            this.handleNoteUpdatePosition();
             break;
         case "Backspace":
             if (this.props.note.get('title') === "") {
@@ -61,7 +71,7 @@ export default React.createClass({
         case "Enter":
             this.handleAddNote({after: this.props.note.get('id')});
             break;
-        case "Backspace":
+        case "Backspace", "Tab":
             e.preventDefault();
             break;
         }
@@ -79,8 +89,9 @@ export default React.createClass({
                         notes={note.get('children')}
                         activeNoteId={this.props.activeNoteId}
                         onNoteAdd={this.props.onNoteAdd}
-                        onNoteDelete={this.props.onNoteDelete}
                         onNoteUpdate={this.props.onNoteUpdate}
+                        onNoteUpdatePosition={this.props.onNoteUpdatePosition}
+                        onNoteDelete={this.props.onNoteDelete}
                         onSetActiveNote={this.props.onSetActiveNote} />);
         }
         return (

@@ -26,7 +26,7 @@ const NotesApp = React.createClass({
     render() {
         const {notes, view, onNoteAdd,
                onNoteUpdate, onNoteDelete,
-               onSetActiveNote} = this.props;
+               onSetActiveNote, onNoteUpdatePosition} = this.props;
         const activeNote = view.get('activeNote');
         return (
             <div className="row panel _full-height">
@@ -39,6 +39,7 @@ const NotesApp = React.createClass({
                            activeNoteId={view.get('activeListNoteId')}
                            onNoteAdd={onNoteAdd}
                            onNoteUpdate={onNoteUpdate}
+                           onNoteUpdatePosition={onNoteUpdatePosition}
                            onNoteDelete={onNoteDelete}
                            onSetActiveNote={onSetActiveNote}
                 />

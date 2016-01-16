@@ -54,8 +54,6 @@ export default createReducer(initialState, {
         // console.log("hui", state);
         return stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))
-            .setIn(['view', 'activeNoteId'], id)
-            .setIn(['view', 'activeListNoteId'], id)
             .updateIn(['notes', fullAttrs.parentId, 'children'],
                       (children) => {
                           let insertIndex = 0;
@@ -65,11 +63,22 @@ export default createReducer(initialState, {
                               insertIndex = children.indexOf(attrs.before) - 1;
                           }
                           return children.splice(insertIndex, 0, id);
-                      });
+                      })
+            .setIn(['view', 'activeNoteId'], id)
+            .setIn(['view', 'activeListNoteId'], id);
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
         return state.mergeIn(['notes', attrs.id], attrs);
+    },
+
+    [ActionTypes.UPDATE_NOTE_POSITION](state, {attrs}) {
+        const oldParentId = state.getIn(['notes', attrs.id, 'parentId']);
+        return state.setIn(['notes', attrs.id, 'parentId'], attrs.parentId)
+            .updateIn(['notes', oldParentId, 'children'],
+                      children => children.splice(children.indexOf(attrs.id), 1))
+            .updateIn(['notes', attrs.parentId, 'children'],
+                      children => children.push(attrs.id))
     },
 
     [ActionTypes.DELETE_NOTE](state, {attrs}) {

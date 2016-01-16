@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import Notes from 'components/notes';
 import Window from 'components/window';
 import {notes, view} from 'queries';
-import {addNote, updateNote, deleteNote, setActiveNote} from 'actions';
+import {addNote, updateNote, deleteNote, setActiveNote, updateNotePosition} from 'actions';
 
 const App = React.createClass({
     propTypes: {
@@ -19,6 +19,7 @@ const App = React.createClass({
                        view={view}
                        onNoteAdd={attrs => dispatch(addNote(attrs))}
                        onNoteUpdate={attrs => dispatch(updateNote(attrs))}
+                       onNoteUpdatePosition={attrs => dispatch(updateNotePosition(attrs))}
                        onNoteDelete={attrs => dispatch(deleteNote(attrs))}
                        onSetActiveNote={attrs => dispatch(setActiveNote(attrs))}
                 />

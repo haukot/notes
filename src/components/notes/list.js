@@ -27,6 +27,7 @@ let NotesList = React.createClass({
                             activeNoteId={this.props.activeNoteId}
                             onNoteAdd={this.props.onNoteAdd}
                             onNoteUpdate={this.props.onNoteUpdate}
+                            onNoteUpdatePosition={this.props.onNoteUpdatePosition}
                             onNoteDelete={this.props.onNoteDelete}
                             onSetActiveNote={this.props.onSetActiveNote}
                     />
