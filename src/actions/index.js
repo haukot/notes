@@ -3,7 +3,7 @@ import * as types from 'constants/action-types';
 export function addNote(attrs) {
     return {
         type: types.ADD_NOTE,
-        attrs: Object.assign({title: "", body: ""}, attrs)
+        attrs: Object.assign({title: "", body: "", parentId: 0, children: []}, attrs)
     }
 }
 export function updateNote(attrs) {

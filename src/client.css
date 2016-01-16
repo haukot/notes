@@ -27,6 +27,10 @@
     }
 }
 
+.inline {
+    display: inline-block;
+}
+
 /* end utilites */
 
 
@@ -38,8 +42,21 @@
 }
 
 .notes-item {
-    cursor: pointer;
 }
+
+.notes-item_inner {
+    display: inline-block;
+    cursor: pointer;
+    width: 85%;
+    height: 14px;
+}
+
+.notes-add_children {
+    cursor: pointer;
+    float: right;
+    margin-right: 20px;
+}
+
 
 .note-edit {
     height: 100%;

@@ -13,6 +13,7 @@ export default React.createClass({
     mixins: [PureRenderMixin],
 
     componentDidUpdate() {
+        // after add new note focus title input
         let bodyHasFocus = this.refs.body === document.activeElement;
         if (this.props.note.get('title') === "" && !bodyHasFocus) {
             this.refs.title.focus();

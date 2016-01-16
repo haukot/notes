@@ -1,10 +1,8 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 
-import Search from './search';
-import NoteItem from './note-item';
 
-export default React.createClass({
+let NotesList = React.createClass({
     displayName: 'NotesList',
 
     propTypes: {
@@ -19,26 +17,42 @@ export default React.createClass({
     //     this.props.onChange({id: this.props.section.get('id'), heading});
     // },
 
-    handleAddNote() {
-        this.props.onNoteAdd({});
+    handleAddNote(opts) {
+        this.props.onNoteAdd(opts);
     },
 
     handleSetActiveNote(noteId) {
         this.props.onSetActiveNote({id: noteId});
     },
 
+    renderNotes(notes) {
+        return (notes.reverse().map((note, index) => {
+            let children = "";
+            if (note.get('children').count() > 0) {
+                children = (<NotesList notes={note.get('children')}
+                            onNoteAdd={this.props.onNoteAdd}
+                            onSetActiveNote={this.props.onSetActiveNote} />)
+            }
+            return (
+                <li className="notes-item">
+                    <span className="notes-item_inner" onClick={() => this.handleSetActiveNote(note.get('id'))}>
+                        {note.get('title')}
+                    </span>
+
+                    <a className="notes-add_children"
+                       onClick={() => this.handleAddNote({parentId: note.get('id')})}>+</a>
+                    {children}
+                </li>
+            );
+        }));
+    },
+
     render() {
         return (
-            <div className="notes-list">
-                <Search onChange={this.handleSearch} />
-                <button className="button" onClick={this.handleAddNote}>Add a note</button>
-                {this.props.notes.reverse().map((note, index) => {
-                    return <NoteItem key={note.get('id')}
-                                     onClick={this.handleSetActiveNote}
-                                     note={note}
-                        />
-                })}
-            </div>
+            <ul>
+                {this.renderNotes(this.props.notes)}
+            </ul>
         );
     }
 });
+export default NotesList;

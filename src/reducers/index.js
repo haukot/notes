@@ -30,7 +30,7 @@ const initialState = fromJS({
     notes: {
         /*
           id: {
-             id, title, body, date
+             id, title, body, date, parentId: 0, children: [ids]
           }
          */
     }
@@ -38,10 +38,16 @@ const initialState = fromJS({
 
 export default createReducer(initialState, {
     [ActionTypes.ADD_NOTE](state, {attrs}) {
-        const stateWithIncSeq = increaseSequence(state);
+        let stateWithIncSeq = increaseSequence(state);
         const id = getSequenceValue(stateWithIncSeq);
 
         const fullAttrs = Object.assign(attrs, {id});
+
+        if (fullAttrs.parentId !== 0) {
+            stateWithIncSeq = stateWithIncSeq
+                .updateIn(['notes', fullAttrs.parentId, 'children'],
+                          (children) => children.push(id))
+        }
 
         return stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))

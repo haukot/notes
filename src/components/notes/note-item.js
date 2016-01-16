@@ -19,7 +19,9 @@ export default React.createClass({
     render() {
         const note = this.props.note;
         return (
-                <li className="notes-item" onClick={this.handleClick}> {note.get('title')} </li>
+            <li className="notes-item" onClick={this.handleClick}>
+                {note.get('title')}
+            </li>
         );
     }
 });
