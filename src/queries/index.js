@@ -1,20 +1,24 @@
 function expandNoteChildren(note, state) {
+    console.log('note', note)
     if (note.get('children').count() <= 0) return note;
     return note
         .update('children', children =>
                 children
-                .map(childId =>
-                     expandNoteChildren(state.getIn(['notes', childId]), state)
-                    )
+                .map((childId, id) => {
+                    console.log(state.getIn(['notes', childId]))
+                    let childNote = state.getIn(['notes', childId]).set('order', id);
+                    console.log('childNote', childNote)
+                    return expandNoteChildren(childNote, state);
+                })
+                .sortBy(note => note.get('order'))
                );
 }
 
 export function notes(state) {
-    let a = state.getIn(['notes'])
-        .filter(note => note.get('parentId') == 0)
-        .map((note, id) => {
-            return expandNoteChildren(note, state)
-        });
+    console.log("hui", state)
+    let a = expandNoteChildren(state.getIn(['notes', 0]), state)
+        .get('children');
+    console.log("notes", a.toJS());
     return a;
 }
 

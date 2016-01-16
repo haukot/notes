@@ -24,7 +24,8 @@ const initialState = fromJS({
     sequence: 0,
     view: {
         /*
-           activeNoteId: id
+           activeNoteId: id,
+           activeListNoteId: id
          */
     },
     notes: {
@@ -34,7 +35,12 @@ const initialState = fromJS({
           }
          */
     }
-});
+}).setIn(['notes', 0], fromJS({
+            id: 0,
+            title: "root",
+            body: "",
+            children: []
+        }));
 
 export default createReducer(initialState, {
     [ActionTypes.ADD_NOTE](state, {attrs}) {
@@ -42,24 +48,47 @@ export default createReducer(initialState, {
         const id = getSequenceValue(stateWithIncSeq);
 
         const fullAttrs = Object.assign(attrs, {id});
+        const insertIndex = 0;
 
-        if (fullAttrs.parentId !== 0) {
-            stateWithIncSeq = stateWithIncSeq
-                .updateIn(['notes', fullAttrs.parentId, 'children'],
-                          (children) => children.push(id))
-        }
-
+        // console.log("parentId", fullAttrs);
+        // console.log("hui", state);
         return stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))
-            .setIn(['view', 'activeNoteId'], id);
+            .setIn(['view', 'activeNoteId'], id)
+            .setIn(['view', 'activeListNoteId'], id)
+            .updateIn(['notes', fullAttrs.parentId, 'children'],
+                      (children) => {
+                          let insertIndex = 0;
+                          if (attrs.after || attrs.after == 0) {
+                              insertIndex = children.indexOf(attrs.after) + 1;
+                          } else if (attrs.before) {
+                              insertIndex = children.indexOf(attrs.before) - 1;
+                          }
+                          return children.splice(insertIndex, 0, id);
+                      });
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
         return state.mergeIn(['notes', attrs.id], attrs);
     },
 
+    [ActionTypes.DELETE_NOTE](state, {attrs}) {
+        const note = state.getIn(['notes', attrs.id]);
+        // TODO мб сделать фейк-ноду 0, у которой будет children?
+        // тогда это уйдет, и в queries filter тоже уйдёт
+        if (note.get('parentId') != 0) {
+            state = state.updateIn(['notes', note.get('parentId'), 'children'],
+                                   (children) => children.splice(children.indexOf(attrs.id), 1)
+                                  );
+        }
+        return state.deleteIn(['notes', attrs.id])
+            .setIn(['view', 'activeNoteId'], state.get('notes').first.id);
+    },
+
+
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
-        return state.setIn(['view', 'activeNoteId'], attrs.id);
+        return state.setIn(['view', 'activeNoteId'], attrs.id)
+            .setIn(['view', 'activeListNoteId'], attrs.id);
     }
 
 });

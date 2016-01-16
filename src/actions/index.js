@@ -12,6 +12,12 @@ export function updateNote(attrs) {
         attrs
     }
 }
+export function deleteNote(attrs) {
+    return {
+        type: types.DELETE_NOTE,
+        attrs
+    }
+}
 export function setActiveNote(attrs) {
     return {
         type: types.SET_ACTIVE_NOTE,

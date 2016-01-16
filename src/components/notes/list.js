@@ -1,5 +1,7 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin'
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
+import NoteItem from './note-item';
 
 
 let NotesList = React.createClass({
@@ -17,33 +19,17 @@ let NotesList = React.createClass({
     //     this.props.onChange({id: this.props.section.get('id'), heading});
     // },
 
-    handleAddNote(opts) {
-        this.props.onNoteAdd(opts);
-    },
-
-    handleSetActiveNote(noteId) {
-        this.props.onSetActiveNote({id: noteId});
-    },
-
     renderNotes(notes) {
-        return (notes.reverse().map((note, index) => {
-            let children = "";
-            if (note.get('children').count() > 0) {
-                children = (<NotesList
-                            notes={note.get('children')}
-                            onNoteAdd={this.props.onNoteAdd}
-                            onSetActiveNote={this.props.onSetActiveNote} />)
-            }
+        return (notes.map((note, index) => {
             return (
-                <li className="notes-item" key={note.get('id')}>
-                    <span className="notes-item_inner" onClick={() => this.handleSetActiveNote(note.get('id'))}>
-                        {note.get('title')}
-                    </span>
-
-                    <a className="notes-add_children"
-                       onClick={() => this.handleAddNote({parentId: note.get('id')})}>+</a>
-                    {children}
-                </li>
+                    <NoteItem key={note.get('id')}
+                            note={note}
+                            activeNoteId={this.props.activeNoteId}
+                            onNoteAdd={this.props.onNoteAdd}
+                            onNoteUpdate={this.props.onNoteUpdate}
+                            onNoteDelete={this.props.onNoteDelete}
+                            onSetActiveNote={this.props.onSetActiveNote}
+                    />
             );
         }));
     },
