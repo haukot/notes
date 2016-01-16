@@ -28,7 +28,7 @@ const NotesApp = React.createClass({
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
-                <div className="notes-list">
+                <div className="notes-sidebar">
                 <NotesList notes={notes}
                            onNoteAdd={onNoteAdd}
                            onSetActiveNote={onSetActiveNote}

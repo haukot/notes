@@ -15,7 +15,6 @@ export function notes(state) {
         .map((note, id) => {
             return expandNoteChildren(note, state)
         });
-    console.log("hui", a);
     return a;
 }
 

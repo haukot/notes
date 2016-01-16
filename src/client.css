@@ -36,9 +36,15 @@
 
 /* app */
 
-.notes-list {
+.notes-sidebar {
     border-right: 1px #cce solid;
     height: 100%;
+}
+
+.notes-list {
+    ul {
+        font-size: 16px;
+    }
 }
 
 .notes-item {
@@ -47,8 +53,8 @@
 .notes-item_inner {
     display: inline-block;
     cursor: pointer;
-    width: 85%;
-    height: 14px;
+    min-width: 50%;
+    height: 16px;
 }
 
 .notes-add_children {

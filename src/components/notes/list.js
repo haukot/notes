@@ -29,12 +29,13 @@ let NotesList = React.createClass({
         return (notes.reverse().map((note, index) => {
             let children = "";
             if (note.get('children').count() > 0) {
-                children = (<NotesList notes={note.get('children')}
+                children = (<NotesList
+                            notes={note.get('children')}
                             onNoteAdd={this.props.onNoteAdd}
                             onSetActiveNote={this.props.onSetActiveNote} />)
             }
             return (
-                <li className="notes-item">
+                <li className="notes-item" key={note.get('id')}>
                     <span className="notes-item_inner" onClick={() => this.handleSetActiveNote(note.get('id'))}>
                         {note.get('title')}
                     </span>
@@ -49,7 +50,7 @@ let NotesList = React.createClass({
 
     render() {
         return (
-            <ul>
+            <ul className="notes-list">
                 {this.renderNotes(this.props.notes)}
             </ul>
         );

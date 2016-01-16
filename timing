@@ -1,6 +1,7 @@
-00.50
+00.50 - base react components(green and red)
 -----
-01.55
+01.55 - add base (adding notes, css framework)
 00.40 - focus тупняк(изза того, что не знал правильное название колбека реакта после рендеринга)
 -----
-01.50 - adding nested
+01.50 - adding nested notes
+00.15 - markup fixes
