@@ -74,14 +74,10 @@ export default createReducer(initialState, {
 
     [ActionTypes.DELETE_NOTE](state, {attrs}) {
         const note = state.getIn(['notes', attrs.id]);
-        // TODO мб сделать фейк-ноду 0, у которой будет children?
-        // тогда это уйдет, и в queries filter тоже уйдёт
-        if (note.get('parentId') != 0) {
-            state = state.updateIn(['notes', note.get('parentId'), 'children'],
-                                   (children) => children.splice(children.indexOf(attrs.id), 1)
-                                  );
-        }
         return state.deleteIn(['notes', attrs.id])
+            .updateIn(['notes', note.get('parentId'), 'children'],
+                      (children) => children.splice(children.indexOf(attrs.id), 1)
+                     )
             .setIn(['view', 'activeNoteId'], state.get('notes').first.id);
     },
 
