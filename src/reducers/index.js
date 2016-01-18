@@ -56,13 +56,7 @@ export default createReducer(initialState, {
             .setIn(['notes', id], fromJS(fullAttrs))
             .updateIn(['notes', fullAttrs.parentId, 'children'],
                       (children) => {
-                          let insertIndex = 0;
-                          if (attrs.after || attrs.after == 0) {
-                              insertIndex = children.indexOf(attrs.after) + 1;
-                          } else if (attrs.before) {
-                              insertIndex = children.indexOf(attrs.before) - 1;
-                          }
-                          return children.splice(insertIndex, 0, id);
+                          return insertElement(id, 0, children, attrs)
                       })
             .setIn(['view', 'activeNoteId'], id)
             .setIn(['view', 'activeListNoteId'], id);
@@ -78,7 +72,9 @@ export default createReducer(initialState, {
             .updateIn(['notes', oldParentId, 'children'],
                       children => children.splice(children.indexOf(attrs.id), 1))
             .updateIn(['notes', attrs.parentId, 'children'],
-                      children => children.push(attrs.id))
+                      children => {
+                          return insertElement(attrs.id, children.length, children, attrs);
+                      })
     },
 
     [ActionTypes.DELETE_NOTE](state, {attrs}) {
@@ -97,3 +93,14 @@ export default createReducer(initialState, {
     }
 
 });
+
+// for immutable.js list
+function insertElement(el, initialIndex, arr, attrs) {
+    let insertIndex = initialIndex;
+    if (attrs.after || attrs.after == 0) {
+        insertIndex = arr.indexOf(attrs.after) + 1;
+    } else if (attrs.before) {
+        insertIndex = arr.indexOf(attrs.before) - 1;
+    }
+    return arr.splice(insertIndex, 0, el);
+}

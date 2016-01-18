@@ -35,7 +35,8 @@ export default React.createClass({
         if (this.props.note.get('parentId') !== 0) {
             this.props.onNoteUpdatePosition({
                 id: this.props.note.get("id"),
-                parentId: this.props.parentNote.get('parentId')
+                parentId: this.props.parentNote.get('parentId'),
+                after: this.props.parentNote.get('id')
             });
         }
         e.preventDefault();
