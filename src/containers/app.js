@@ -12,10 +12,10 @@ const App = React.createClass({
     },
 
     render() {
-        const {dispatch, notes, view} = this.props;
+        const {dispatch, rootNote, view} = this.props;
         return (
             <div className="container">
-                <Notes notes={notes}
+                <Notes rootNote={rootNote}
                        view={view}
                        onNoteAdd={attrs => dispatch(addNote(attrs))}
                        onNoteUpdate={attrs => dispatch(updateNote(attrs))}
@@ -35,7 +35,7 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state) {
-    return {notes: notes(state), view: view(state)};
+    return {rootNote: notes(state), view: view(state)};
 }
 
 export default connect(mapStateToProps)(App);

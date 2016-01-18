@@ -28,7 +28,21 @@ export default React.createClass({
         });
     },
 
-    handleNoteUpdatePosition() {
+    handleTabNoteLeft(e) {
+        // TODO мб добавить before или after какой ноды
+        // вставлять(parentId ноды)
+        // менее вложенным, чем зависеть от parentId=0 нельзя
+        if (this.props.note.get('parentId') !== 0) {
+            this.props.onNoteUpdatePosition({
+                id: this.props.note.get("id"),
+                parentId: this.props.parentNote.get('parentId')
+            });
+        }
+        e.preventDefault();
+    },
+
+
+    handleTabNoteRight(e) {
         // note with order 0 - самая верхняя в своем ряду, и не может стать более вложенной
         if (this.props.note.get('order') !== 0) {
             this.props.onNoteUpdatePosition({
@@ -36,16 +50,19 @@ export default React.createClass({
                 parentId: this.props.note.get('prevId')
             });
         }
+        e.preventDefault();
     },
 
     handleSetActiveNote() {
         this.props.onSetActiveNote({id: this.props.note.get('id')});
     },
 
-    handleAddNote(opts) {
+    handleAddNote(e, opts) {
         this.props.onNoteAdd(Object.assign(opts, {
             parentId: this.props.note.get('parentId'),
         }));
+        e.preventDefault();
+        e.stopPropagation();
     },
 
     handleRemoveNote() {
@@ -54,9 +71,6 @@ export default React.createClass({
 
     handleKeyDown(e) {
         switch(e.key) {
-        case "Tab":
-            this.handleNoteUpdatePosition();
-            break;
         case "Backspace":
             if (this.props.note.get('title') === "") {
                 this.handleRemoveNote();
@@ -68,10 +82,7 @@ export default React.createClass({
 
     handleKeyUp(e) {
         switch(e.key) {
-        case "Enter":
-            this.handleAddNote({after: this.props.note.get('id')});
-            break;
-        case "Backspace", "Tab":
+        case "Backspace":
             e.preventDefault();
             break;
         }
@@ -82,11 +93,19 @@ export default React.createClass({
     },
 
     render() {
+        // NOTE в доке reach hotkeys эта переменная была в корневом
+        // элементе вместе с HotKeys keyMap. Есть ли смысл здесь в таком?
+        const handlers = {
+            'addNote': (e) => this.handleAddNote(e, {after: this.props.note.get('id')}),
+            'tabNoteRight': this.handleTabNoteRight,
+            'tabNoteLeft': this.handleTabNoteLeft
+        };
         const note = this.props.note;
         let children = "";
         if (note.get('children').count() > 0) {
             children = (<NotesList
                         notes={note.get('children')}
+                        parentNote={note}
                         activeNoteId={this.props.activeNoteId}
                         onNoteAdd={this.props.onNoteAdd}
                         onNoteUpdate={this.props.onNoteUpdate}
@@ -95,6 +114,7 @@ export default React.createClass({
                         onSetActiveNote={this.props.onSetActiveNote} />);
         }
         return (
+                <HotKeys handlers={handlers}>
                 <li className="notes-item" key={note.get('id')}>
                  <input className="clean notes-item_inner" value={note.get('title')}
                             ref='title'
@@ -104,6 +124,7 @@ export default React.createClass({
                             onChange={this.handleNoteUpdate} />
                 {children}
                </li>
+               </HotKeys>
         );
     }
 });

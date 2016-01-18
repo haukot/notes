@@ -14,8 +14,7 @@ function expandNoteChildren(note, state) {
 }
 
 export function notes(state) {
-    let a = expandNoteChildren(state.getIn(['notes', 0]), state)
-        .get('children');
+    let a = expandNoteChildren(state.getIn(['notes', 0]), state);
     console.log("notes", a.toJS());
     return a;
 }
