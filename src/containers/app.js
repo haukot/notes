@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import Notes from 'components/notes';
 import Window from 'components/window';
-import {notes, view} from 'queries';
+import {notes, view, globalOrder} from 'queries';
 import {addNote, updateNote, deleteNote, setActiveNote, updateNotePosition} from 'actions';
 
 const App = React.createClass({
@@ -12,7 +12,7 @@ const App = React.createClass({
     },
 
     render() {
-        const {dispatch, rootNote, view} = this.props;
+        const {dispatch, rootNote, view, globalOrder} = this.props;
         return (
             <div className="container">
                 <Notes rootNote={rootNote}
@@ -35,7 +35,7 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state) {
-    return {rootNote: notes(state), view: view(state)};
+    return {rootNote: notes(state), view: view(state), globalOrder: globalOrder(state)};
 }
 
 export default connect(mapStateToProps)(App);
