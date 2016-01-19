@@ -46,6 +46,7 @@ const NotesApp = React.createClass({
 
                 <div className="notes-sidebar">
                 <NotesList notes={rootNote.get('children')}
+                           globalOrder={this.props.globalOrder}
                            parentNote={rootNote}
                            activeNoteId={view.get('activeListNoteId')}
                            onNoteAdd={onNoteAdd}

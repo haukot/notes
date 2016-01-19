@@ -24,6 +24,7 @@ let NotesList = React.createClass({
             return (
                     <NoteItem key={note.get('id')}
                             note={note}
+                            globalOrder={this.props.globalOrder}
                             parentNote={this.props.parentNote}
                             activeNoteId={this.props.activeNoteId}
                             onNoteAdd={this.props.onNoteAdd}

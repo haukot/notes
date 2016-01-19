@@ -16,6 +16,7 @@ const App = React.createClass({
         return (
             <div className="container">
                 <Notes rootNote={rootNote}
+                       globalOrder={globalOrder}
                        view={view}
                        onNoteAdd={attrs => dispatch(addNote(attrs))}
                        onNoteUpdate={attrs => dispatch(updateNote(attrs))}

@@ -29,7 +29,7 @@ function globalOrder0(state, note, counter, acc) {
 export function globalOrder(state) {
     let {counter, acc} = globalOrder0(state, state.getIn(['notes', 0]), 0, {});
     console.log("acc", fromJS(acc).toJS());
-    return acc;
+    return fromJS(acc);
 }
 // TODO мб сделать функцию, которая будет global order отдельно навешивать
 function expandNoteChildren(note, state, counter) {

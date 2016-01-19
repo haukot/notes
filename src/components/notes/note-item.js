@@ -15,7 +15,14 @@ export default React.createClass({
 
     mixins: [PureRenderMixin],
 
+    // FIXME как то объединить эти два метода?
     componentDidMount() {
+        if (this.props.note.get('id') === this.props.activeNoteId) {
+            this.refs.title.focus();
+        }
+    },
+
+    componentDidUpdate() {
         if (this.props.note.get('id') === this.props.activeNoteId) {
             this.refs.title.focus();
         }
@@ -42,7 +49,6 @@ export default React.createClass({
         e.preventDefault();
     },
 
-
     handleTabNoteRight(e) {
         // note with order 0 - самая верхняя в своем ряду, и не может стать более вложенной
         if (this.props.note.get('order') !== 0) {
@@ -51,6 +57,28 @@ export default React.createClass({
                 parentId: this.props.note.get('prevId')
             });
         }
+        e.preventDefault();
+    },
+
+    handleGoToUpNote(e) {
+        const upperElementOrderId = this.props.note.get('globalOrder') - 1;
+        const upperElement = this.props.globalOrder.get(upperElementOrderId + "");
+        if (upperElement.get('id') === 0) {
+            return;
+        }
+        this.props.onSetActiveNote({id: upperElement.get('id')});
+        e.preventDefault();
+        e.stopPropagation();
+    },
+
+    handleGoToDownNote(e) {
+        const bottomElementOrderId = this.props.note.get('globalOrder') + 1;
+        const bottomElement = this.props.globalOrder.get(bottomElementOrderId + "");
+        // последний элемент в списке
+        if (bottomElement === undefined) {
+            return;
+        }
+        this.props.onSetActiveNote({id: bottomElement.get('id')});
         e.preventDefault();
     },
 
@@ -98,8 +126,8 @@ export default React.createClass({
             'addNote': (e) => this.handleAddNote(e, {after: this.props.note.get('id')}),
             'tabNoteRight': this.handleTabNoteRight,
             'tabNoteLeft': this.handleTabNoteLeft,
-            'goToUpNote': this.hui,
-            'goToDownNote': this.hui,
+            'goToUpNote': this.handleGoToUpNote,
+            'goToDownNote': this.handleGoToDownNote,
         };
         const note = this.props.note;
         let children = "";
@@ -107,6 +135,7 @@ export default React.createClass({
             children = (<NotesList
                         notes={note.get('children')}
                         parentNote={note}
+                        globalOrder={this.props.globalOrder}
                         activeNoteId={this.props.activeNoteId}
                         onNoteAdd={this.props.onNoteAdd}
                         onNoteUpdate={this.props.onNoteUpdate}
@@ -115,17 +144,17 @@ export default React.createClass({
                         onSetActiveNote={this.props.onSetActiveNote} />);
         }
         return (
-                <HotKeys handlers={handlers}>
                 <li className="notes-item" key={note.get('id')}>
+                <HotKeys handlers={handlers}>
                  <input className="clean notes-item_inner" value={note.get('title')}
                             ref='title'
                             onClick={this.handleSetActiveNote}
                             onKeyUp={this.handleKeyUp}
                             onKeyDown={this.handleKeyDown}
                             onChange={this.handleNoteUpdate} />
+               </HotKeys>
                 {children}
                </li>
-               </HotKeys>
         );
     }
 });
