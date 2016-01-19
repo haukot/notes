@@ -94,12 +94,12 @@ export default React.createClass({
     },
 
     render() {
-        // NOTE в доке reach hotkeys эта переменная была в корневом
-        // элементе вместе с HotKeys keyMap. Есть ли смысл здесь в таком?
         const handlers = {
             'addNote': (e) => this.handleAddNote(e, {after: this.props.note.get('id')}),
             'tabNoteRight': this.handleTabNoteRight,
-            'tabNoteLeft': this.handleTabNoteLeft
+            'tabNoteLeft': this.handleTabNoteLeft,
+            'goToUpNote': this.hui,
+            'goToDownNote': this.hui,
         };
         const note = this.props.note;
         let children = "";

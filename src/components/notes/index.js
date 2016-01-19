@@ -16,7 +16,10 @@ import NoteEdit from './note-edit';
 const hotkeysMap = {
     'addNote': 'enter',
     'tabNoteRight': 'tab',
-    'tabNoteLeft': 'shift+tab'
+    'tabNoteLeft': 'shift+tab',
+    'goToUpNote': 'up',
+    'goToDownNote': 'down'
+
 };
 
 const NotesApp = React.createClass({
