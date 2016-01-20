@@ -13,7 +13,9 @@ function notesIterator(state, note, counter, acc, noteCallback, childCallback) {
                   children
                   .map((childId, id) => {
                       let child = state.getIn(['notes', childId])
-                      child = childCallback(child, children, id, newCounter, acc); // callback
+                      if (childCallback) {
+                          child = childCallback(child, children, id, newCounter, acc); // callback
+                      }
                       const expand = notesIterator(state, child, newCounter + 1,
                                                    newAcc, noteCallback, childCallback);
                       newCounter = expand.counter;
@@ -24,35 +26,15 @@ function notesIterator(state, note, counter, acc, noteCallback, childCallback) {
     return {counter: newCounter, note: newNote, acc: newAcc};
 }
 
-// global order должен быть отдельной функцией или индексом в стейте,
-// соответствием order: note
-function globalOrder0(state, note, counter, acc) {
-    let newCounter = counter;
-    let newAcc = acc;
-    newAcc[newCounter] = note;
-    console.log(note.get("id"), newCounter);
-    if (!note.get('children') || note.get('children').count() <= 0) {
-        console.log('if', newAcc, newCounter);
-        return {counter: newCounter,
-                acc: newAcc};
-    }
-    const newNote = note
-          .update('children', children =>
-                  children
-                  .map((childId, id) => {
-                      let childNote = state.getIn(['notes', childId])
-                      const expand = globalOrder0(state, childNote, newCounter + 1, newAcc);
-                      newCounter = expand.counter;
-                      newAcc = Object.assign(newAcc, expand.acc);
-                      // console.log("map", childNote.get("id"), fromJS(newAcc).toJS());
-                      return childNote;
-                  })
-                 );
-    console.log('noif', newAcc, newCounter);
-    return {counter: newCounter, acc: newAcc};
-}
 export function globalOrder(state) {
-    let {counter, acc} = globalOrder0(state, state.getIn(['notes', 0]), 0, {});
+    // let {counter, acc} = globalOrder0(state, state.getIn(['notes', 0]), 0, {});
+    let noteCallback = (note, counter, acc) => {
+        let newAcc = acc;
+        newAcc[counter] = note;
+        return {note, acc: newAcc};
+    };
+    let {counter, acc} = notesIterator(state, state.getIn(['notes', 0]), 0, {},
+                                        noteCallback, null);
     console.log("acc", fromJS(acc).toJS());
     return fromJS(acc);
 }
