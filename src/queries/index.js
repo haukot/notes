@@ -26,6 +26,8 @@ function notesIterator(state, note, counter, acc, noteCallback, childCallback) {
     return {counter: newCounter, note: newNote, acc: newAcc};
 }
 
+// TODO надо globalOrder и order засунуть в view стейт, чтобы не
+// пересчитывать на каждое движение
 export function globalOrder(state) {
     // let {counter, acc} = globalOrder0(state, state.getIn(['notes', 0]), 0, {});
     let noteCallback = (note, counter, acc) => {
