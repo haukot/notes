@@ -26,22 +26,30 @@ function notesIterator(state, note, counter, acc, noteCallback, childCallback) {
     return {counter: newCounter, note: newNote, acc: newAcc};
 }
 
+function rootNote(state, rootId) {
+    if (!rootId) {
+        rootId = 0;
+    }
+    let rootNote = state.getIn(['notes', Number(rootId)]);
+    return rootNote;
+}
+
 // TODO надо globalOrder и order засунуть в view стейт, чтобы не
 // пересчитывать на каждое движение
-export function globalOrder(state) {
+export function globalOrder(state, rootId) {
     // let {counter, acc} = globalOrder0(state, state.getIn(['notes', 0]), 0, {});
     let noteCallback = (note, counter, acc) => {
         let newAcc = acc;
         newAcc[counter] = note;
         return {note, acc: newAcc};
     };
-    let {counter, acc} = notesIterator(state, state.getIn(['notes', 0]), 0, {},
+    let {counter, acc} = notesIterator(state, rootNote(state, rootId), 0, {},
                                         noteCallback, null);
     console.log("acc", fromJS(acc).toJS());
     return fromJS(acc);
 }
 
-export function notes(state) {
+export function notes(state, rootId) {
     // let {counter, note} = expandNoteChildren(state.getIn(['notes', 0]), state, 0);
     let childCallback = (child, children, id, counter, acc) => {
         let newChild = child
@@ -53,7 +61,7 @@ export function notes(state) {
         const newNote = note.set('globalOrder', counter);
         return {note: newNote, acc}
     };
-    let {counter, note} = notesIterator(state, state.getIn(['notes', 0]), 0, {},
+    let {counter, note} = notesIterator(state, rootNote(state, rootId), 0, {},
                                         noteCallback, childCallback);
     console.log("notes", note.toJS());
     return note;

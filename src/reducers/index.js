@@ -86,7 +86,6 @@ export default createReducer(initialState, {
             .setIn(['view', 'activeNoteId'], state.get('notes').first.id);
     },
 
-
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
         return state.setIn(['view', 'activeNoteId'], attrs.id)
             .setIn(['view', 'activeListNoteId'], attrs.id);

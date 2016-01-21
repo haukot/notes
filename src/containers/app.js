@@ -35,8 +35,11 @@ const App = React.createClass({
     }
 });
 
-function mapStateToProps(state) {
-    return {rootNote: notes(state), view: view(state), globalOrder: globalOrder(state)};
+function mapStateToProps(state, props) {
+    let rootId = props.params.id;
+    return {rootNote: notes(state, rootId),
+            view: view(state),
+            globalOrder: globalOrder(state, rootId)};
 }
 
 export default connect(mapStateToProps)(App);

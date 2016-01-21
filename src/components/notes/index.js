@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 // maybe for more compicated hotkeys
 import {HotKeys} from 'react-hotkeys';
@@ -29,7 +30,7 @@ const NotesApp = React.createClass({
 
     // FIXME duplicate with list
     handleAddNote() {
-        this.props.onNoteAdd({});
+        this.props.onNoteAdd({parentId: this.props.rootNote.get('id')});
     },
 
     render() {
@@ -40,6 +41,9 @@ const NotesApp = React.createClass({
         return (
             <HotKeys keyMap={hotkeysMap}>
             <div className="row panel _full-height">
+                <Link className="_link-without-decorations" to={`/`}>
+                    home
+                </Link>
                 <div className="column column-20 _full-height">
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
 
@@ -131,7 +132,8 @@ export default React.createClass({
         };
         const note = this.props.note;
         let children = "";
-        if (note.get('children').count() > 0) {
+        let noteHasChildren = note.get('children').count() > 0;
+        if (noteHasChildren) {
             children = (<NotesList
                         notes={note.get('children')}
                         parentNote={note}
@@ -141,10 +143,14 @@ export default React.createClass({
                         onNoteUpdate={this.props.onNoteUpdate}
                         onNoteUpdatePosition={this.props.onNoteUpdatePosition}
                         onNoteDelete={this.props.onNoteDelete}
-                        onSetActiveNote={this.props.onSetActiveNote} />);
+                        onSetActiveNote={this.props.onSetActiveNote}
+                        />);
         }
         return (
                 <li className="notes-item" key={note.get('id')}>
+                <Link className="_link-without-decorations" to={`/root/${note.get('id')}`}>
+                    root
+                </Link>
                 <HotKeys handlers={handlers}>
                  <input className="clean notes-item_inner" value={note.get('title')}
                             ref='title'
