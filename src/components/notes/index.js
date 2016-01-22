@@ -30,28 +30,35 @@ const NotesApp = React.createClass({
 
     // FIXME duplicate with list
     handleAddNote() {
-        this.props.onNoteAdd({parentId: this.props.rootNote.get('id')});
+        this.props.onNoteAdd({parentId: this.props.curRootNote.get('id')});
     },
 
     render() {
-        const {rootNote, view, onNoteAdd,
+        const {curRootNote, view, onNoteAdd,
                onNoteUpdate, onNoteDelete,
-               onSetActiveNote, onNoteUpdatePosition} = this.props;
+               onSetActiveNote, onNoteUpdatePosition,
+               pathToRoot} = this.props;
         const activeNote = view.get('activeNote');
         return (
             <HotKeys keyMap={hotkeysMap}>
+                {
+                    pathToRoot.reverse().map((path) => {
+                        return (
+                            <Link className="_link-without-decorations" to={`/root/${path.get('id')}`}>
+                                { path.get('title') }
+                            </Link>
+                        );
+                    }).interpose(" > ")
+                }
             <div className="row panel _full-height">
-                <Link className="_link-without-decorations" to={`/`}>
-                    home
-                </Link>
                 <div className="column column-20 _full-height">
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
                 <div className="notes-sidebar">
-                <NotesList notes={rootNote.get('children')}
+                <NotesList notes={curRootNote.get('children')}
                            globalOrder={this.props.globalOrder}
-                           parentNote={rootNote}
+                           parentNote={curRootNote}
                            activeNoteId={view.get('activeListNoteId')}
                            onNoteAdd={onNoteAdd}
                            onNoteUpdate={onNoteUpdate}

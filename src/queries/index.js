@@ -34,6 +34,14 @@ function rootNote(state, rootId) {
     return rootNote;
 }
 
+export function pathToRoot(state, note, acc = []) {
+    if (!note) return fromJS(acc);
+
+    let newAcc = acc;
+    newAcc.push({id: note.get('id'), title: note.get('title')});
+    return pathToRoot(state, state.getIn(['notes', note.get('parentId')]), newAcc);
+}
+
 // TODO надо globalOrder и order засунуть в view стейт, чтобы не
 // пересчитывать на каждое движение
 export function globalOrder(state, rootId) {
