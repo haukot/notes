@@ -39,9 +39,9 @@ let NotesList = React.createClass({
 
     render() {
         return (
-            <ul className="notes-list">
+            <div className="notes-list">
                 {this.renderNotes(this.props.notes)}
-            </ul>
+            </div>
         );
     }
 });

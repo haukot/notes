@@ -47,7 +47,43 @@
     }
 }
 
-.notes-item {
+/* исключая первый notes-list */
+.notes-list .notes-list > .notes-item {
+    margin-left: 35px;
+}
+
+.notes-item_bullet {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    position: relative;
+    vertical-align: middle;
+    margin-top: -4px;
+    /* border-radius: 5px; */
+    &::after {
+        $size: 8px;
+        height: $size;
+        width: $size;
+        display: block;
+        content: " ";
+        background-color: #9b4dca;
+        position: absolute;
+        border-radius: 10px;
+        top: 7px;
+        left: 7px;
+    }
+    &:hover::before {
+        border: 11px solid  rgba(146, 160, 172, 0.48);
+        border-radius: 15px;
+        position: absolute;
+        display: block;
+        content: " ";
+    }
+}
+
+.notes-item_title {
+    display: inline-block;
+    margin-left: 10px;
 }
 
 .notes-item_inner {
