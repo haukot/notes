@@ -150,9 +150,10 @@ export default React.createClass({
                 <div className="notes-item" key={note.get('id')}>
                 <Link className="_link-without-decorations notes-item_bullet" to={`/root/${note.get('id')}`}>
                 </Link>
+                <div className="notes-item_inner">
                 <div className="notes-item_title">
                   <HotKeys handlers={handlers}>
-                     <input className="clean notes-item_inner" value={note.get('title')}
+                     <input className="clean notes-item_input" value={note.get('title')}
                             ref='title'
                             onClick={this.handleSetActiveNote}
                             onKeyUp={this.handleKeyUp}
@@ -161,6 +162,7 @@ export default React.createClass({
                   </HotKeys>
                 </div>
                 {children}
+                </div>
                </div>
         );
     }

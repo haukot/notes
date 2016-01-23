@@ -58,8 +58,9 @@
     height: 22px;
     position: relative;
     vertical-align: middle;
-    margin-top: -4px;
-    /* border-radius: 5px; */
+    margin-top: 3px;
+    margin-left: 5px;
+    float: left;
     &::after {
         $size: 8px;
         height: $size;
@@ -79,6 +80,15 @@
         display: block;
         content: " ";
     }
+    &:hover + .notes-item_inner, &:hover + .notes-item_inner .notes-item_input {
+        background-color: rgb(249, 251, 252);
+    }
+}
+
+.notes-item_inner {
+    padding-top: 2px;
+    border-radius: 5px;
+    display: block;
 }
 
 .notes-item_title {
@@ -86,7 +96,8 @@
     margin-left: 10px;
 }
 
-.notes-item_inner {
+.notes-item_input {
+    margin-bottom: initial;
     display: inline-block;
     min-width: 50%;
     min-height: 16px;
