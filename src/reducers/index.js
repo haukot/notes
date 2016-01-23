@@ -31,7 +31,8 @@ const initialState = fromJS({
     notes: {
         /*
           id: {
-             id, title, body, date, parentId: 0, children: [ids]
+             id, title, body, date, parentId: 0, children: [ids],
+    hiddenChildren: false
           }
          */
     }
@@ -89,6 +90,11 @@ export default createReducer(initialState, {
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
         return state.setIn(['view', 'activeNoteId'], attrs.id)
             .setIn(['view', 'activeListNoteId'], attrs.id);
+    },
+
+    [ActionTypes.TOGGLE_NOTE_CHILDREN](state, {attrs}) {
+        let oldVal = state.getIn(['notes', attrs.id, 'hiddenChildren']);
+        return state.setIn(['notes', attrs.id, 'hiddenChildren'], !oldVal);
     }
 
 });

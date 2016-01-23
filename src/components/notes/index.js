@@ -37,7 +37,7 @@ const NotesApp = React.createClass({
         const {curRootNote, view, onNoteAdd,
                onNoteUpdate, onNoteDelete,
                onSetActiveNote, onNoteUpdatePosition,
-               pathToRoot} = this.props;
+               pathToRoot, onToggleNoteChildren} = this.props;
         const activeNote = view.get('activeNote');
         return (
             <HotKeys keyMap={hotkeysMap}>
@@ -65,6 +65,7 @@ const NotesApp = React.createClass({
                            onNoteUpdatePosition={onNoteUpdatePosition}
                            onNoteDelete={onNoteDelete}
                            onSetActiveNote={onSetActiveNote}
+                           onToggleNoteChildren={onToggleNoteChildren}
                 />
                 </div>
 

@@ -32,6 +32,7 @@ let NotesList = React.createClass({
                             onNoteUpdatePosition={this.props.onNoteUpdatePosition}
                             onNoteDelete={this.props.onNoteDelete}
                             onSetActiveNote={this.props.onSetActiveNote}
+                            onToggleNoteChildren={this.props.onToggleNoteChildren}
                     />
             );
         }));

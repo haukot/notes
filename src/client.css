@@ -7,6 +7,11 @@
     max-width: 200rem;
 }
 
+/* for react hot keys stupid div */
+div[tabindex="-1"]:focus {
+    outline: 0;
+}
+
 /* end overrides */
 
 /* utilites */
@@ -52,6 +57,21 @@
     margin-left: 35px;
 }
 
+.notes-item {
+    position: relative;
+}
+
+.notes-item_expand_children {
+    position: absolute;
+    width: 20px;
+    display: inline-block;
+    left: -15px;
+    cursor: pointer;
+    text-align: center;
+    .minus, .plus {
+    }
+}
+
 .notes-item_bullet {
     display: inline-block;
     width: 22px;
@@ -93,7 +113,7 @@
 
 .notes-item_title {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 6px;
 }
 
 .notes-item_input {

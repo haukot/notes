@@ -4,7 +4,9 @@ import {connect} from 'react-redux'
 import Notes from 'components/notes';
 import Window from 'components/window';
 import {notes, view, globalOrder, pathToRoot} from 'queries';
-import {addNote, updateNote, deleteNote, setActiveNote, updateNotePosition} from 'actions';
+import {addNote, updateNote, deleteNote,
+        setActiveNote, updateNotePosition,
+        toggleNoteChildren} from 'actions';
 
 const App = React.createClass({
     propTypes: {
@@ -24,6 +26,7 @@ const App = React.createClass({
                        onNoteUpdatePosition={attrs => dispatch(updateNotePosition(attrs))}
                        onNoteDelete={attrs => dispatch(deleteNote(attrs))}
                        onSetActiveNote={attrs => dispatch(setActiveNote(attrs))}
+                       onToggleNoteChildren={attrs => dispatch(toggleNoteChildren(attrs))}
                 />
 
                 {React.Children.count(this.props.children) == 1 &&

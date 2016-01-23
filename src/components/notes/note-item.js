@@ -99,6 +99,10 @@ export default React.createClass({
         this.props.onNoteDelete({id: this.props.note.get('id')});
     },
 
+    handleToggleChildren() {
+        this.props.onToggleNoteChildren({id: this.props.note.get('id')});
+    },
+
     handleKeyDown(e) {
         switch(e.key) {
         case "Backspace":
@@ -132,22 +136,32 @@ export default React.createClass({
         };
         const note = this.props.note;
         let children = "";
+        let expandButtonSpan = "";
         let noteHasChildren = note.get('children').count() > 0;
         if (noteHasChildren) {
-            children = (<NotesList
-                        notes={note.get('children')}
-                        parentNote={note}
-                        globalOrder={this.props.globalOrder}
-                        activeNoteId={this.props.activeNoteId}
-                        onNoteAdd={this.props.onNoteAdd}
-                        onNoteUpdate={this.props.onNoteUpdate}
-                        onNoteUpdatePosition={this.props.onNoteUpdatePosition}
-                        onNoteDelete={this.props.onNoteDelete}
-                        onSetActiveNote={this.props.onSetActiveNote}
-                        />);
+            expandButtonSpan = note.get('hiddenChildren')
+                ? <span className="plus">+</span>
+                : <span className="minus">-</span>;
+            if (!note.get('hiddenChildren')) {
+                children = (<NotesList
+                            notes={note.get('children')}
+                            parentNote={note}
+                            globalOrder={this.props.globalOrder}
+                            activeNoteId={this.props.activeNoteId}
+                            onNoteAdd={this.props.onNoteAdd}
+                            onNoteUpdate={this.props.onNoteUpdate}
+                            onNoteUpdatePosition={this.props.onNoteUpdatePosition}
+                            onNoteDelete={this.props.onNoteDelete}
+                            onSetActiveNote={this.props.onSetActiveNote}
+                            onToggleNoteChildren={this.props.onToggleNoteChildren}
+                            />);
+            }
         }
         return (
                 <div className="notes-item" key={note.get('id')}>
+                <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
+                    { expandButtonSpan }
+                </a>
                 <Link className="_link-without-decorations notes-item_bullet" to={`/root/${note.get('id')}`}>
                 </Link>
                 <div className="notes-item_inner">

@@ -3,7 +3,8 @@ import * as types from 'constants/action-types';
 export function addNote(attrs) {
     return {
         type: types.ADD_NOTE,
-        attrs: Object.assign({title: "", body: "", parentId: 0, children: []}, attrs)
+        attrs: Object.assign({title: "", body: "", parentId: 0,
+                              children: [], hiddenChildren: false}, attrs)
     }
 }
 export function updateNote(attrs) {
@@ -27,6 +28,12 @@ export function deleteNote(attrs) {
 export function setActiveNote(attrs) {
     return {
         type: types.SET_ACTIVE_NOTE,
+        attrs
+    }
+}
+export function toggleNoteChildren(attrs) {
+    return {
+        type: types.TOGGLE_NOTE_CHILDREN,
         attrs
     }
 }
