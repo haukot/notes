@@ -4,9 +4,8 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 // maybe for more compicated hotkeys
 import {HotKeys} from 'react-hotkeys';
 
-// for drag'n drop
-// import {DragDropContext} from 'react-dnd';
-// import HTML5Backend from 'react-dnd-html5-backend';
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 
 import Search from './search';
@@ -57,6 +56,7 @@ const NotesApp = React.createClass({
 
                 <div className="notes-sidebar">
                 <NotesList notes={curRootNote.get('children')}
+                           cantBeDropTarget={false}
                            globalOrder={this.props.globalOrder}
                            parentNote={curRootNote}
                            activeNoteId={view.get('activeListNoteId')}
@@ -78,5 +78,4 @@ const NotesApp = React.createClass({
         )
     }
 });
-// export default DragDropContext(HTML5Backend)(NotesApp);
-export default NotesApp;
+export default DragDropContext(HTML5Backend)(NotesApp);

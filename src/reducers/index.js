@@ -102,10 +102,10 @@ export default createReducer(initialState, {
 // for immutable.js list
 function insertElement(el, initialIndex, arr, attrs) {
     let insertIndex = initialIndex;
-    if (attrs.after || attrs.after == 0) {
+    if (attrs.after !== undefined) {
         insertIndex = arr.indexOf(attrs.after) + 1;
     } else if (attrs.before) {
-        insertIndex = arr.indexOf(attrs.before) - 1;
+        insertIndex = arr.indexOf(attrs.before);
     }
     return arr.splice(insertIndex, 0, el);
 }

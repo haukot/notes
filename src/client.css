@@ -59,6 +59,14 @@ div[tabindex="-1"]:focus {
 
 .notes-item {
     position: relative;
+    &.-dragging {
+        .notes-item_inner, .notes-item_input {
+            background-color: rgb(225, 228, 230);
+        }
+    }
+    &.-over {
+        border-top: 4px solid #cecece;
+    }
 }
 
 .notes-item_expand_children {
