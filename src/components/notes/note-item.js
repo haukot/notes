@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router';
+import {History} from 'react-router';
 import {DragSource, DropTarget} from 'react-dnd';
 import classNames from 'classnames';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
@@ -110,7 +110,7 @@ let NoteItem = React.createClass({
         connectDropTarget: React.PropTypes.func.isRequired
     },
 
-    mixins: [PureRenderMixin],
+    mixins: [PureRenderMixin, History],
 
     // FIXME как то объединить эти два метода?
     componentDidMount() {
@@ -262,15 +262,16 @@ let NoteItem = React.createClass({
             '-dragging': isDragging,
             '-over': !isDragging && canDrop && isOver,
         });
+        let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
         <div className="notes-item">
-                {(connectDropTarget(connectDragSource(
+                {(connectDropTarget(
                     <div className={classes} key={note.get('id')}>
                         <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
                              { expandButtonSpan }
                         </a>
-                        <Link className="_link-without-decorations notes-item_bullet" to={`/root/${note.get('id')}`}>
-                        </Link>
+                        {connectDragSource(<a onClick={goToRoot} className="_link-without-decorations notes-item_bullet">
+                                           </a>)}
                         <div className="notes-item_inner">
                         <div className="notes-item_title">
                         <HotKeys handlers={handlers}>
@@ -284,7 +285,7 @@ let NoteItem = React.createClass({
                         </div>
                         {children}
                         </div>
-                        </div>)))}
+                        </div>))}
             {this.props.lastInList
              && <ChildrenEnd note={note}
                              childEnd={this.props.lastInList}

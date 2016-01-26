@@ -85,6 +85,7 @@ div[tabindex="-1"]:focus {
 }
 
 .notes-item_bullet {
+    cursor: pointer;
     display: inline-block;
     width: 22px;
     height: 22px;
