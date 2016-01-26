@@ -57,10 +57,10 @@ div[tabindex="-1"]:focus {
     margin-left: 35px;
 }
 
-.notes-item {
+div.notes-item {
     position: relative;
     &.-dragging {
-        .notes-item_inner, .notes-item_input {
+        .notes-item_inner, input.notes-item_input {
             background-color: rgb(225, 228, 230);
         }
     }
@@ -113,7 +113,7 @@ div[tabindex="-1"]:focus {
         display: block;
         content: " ";
     }
-    &:hover + .notes-item_inner, &:hover + .notes-item_inner .notes-item_input {
+    &:hover + .notes-item_inner, &:hover + .notes-item_inner input {
         background-color: rgb(249, 251, 252);
     }
 }

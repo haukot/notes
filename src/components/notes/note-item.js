@@ -235,12 +235,12 @@ let NoteItem = React.createClass({
         let children = "";
         let expandButtonSpan = "";
         let noteHasChildren = note.get('children').count() > 0;
+        const cantBeDropTarget = this.props.cantBeDropTarget || isDragging;
         if (noteHasChildren) {
             expandButtonSpan = note.get('hiddenChildren')
                 ? <span className="plus">+</span>
                 : <span className="minus">-</span>;
             if (!note.get('hiddenChildren')) {
-                const cantBeDropTarget = this.props.cantBeDropTarget || isDragging;
                 children = (<NotesList
                             notes={note.get('children')}
                             parentNote={note}
@@ -264,9 +264,9 @@ let NoteItem = React.createClass({
         });
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
-        <div className="notes-item">
+                <div className={classes} key={note.get('id')}>
                 {(connectDropTarget(
-                    <div className={classes} key={note.get('id')}>
+                    <div>
                         <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
                              { expandButtonSpan }
                         </a>
@@ -286,7 +286,7 @@ let NoteItem = React.createClass({
                         {children}
                         </div>
                         </div>))}
-            {this.props.lastInList
+            {this.props.lastInList && !cantBeDropTarget
              && <ChildrenEnd note={note}
                              childEnd={this.props.lastInList}
                              onNoteUpdatePosition={this.props.onNoteUpdatePosition}
