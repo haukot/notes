@@ -7,6 +7,93 @@ import {HotKeys} from 'react-hotkeys';
 
 import NotesList from './list'
 
+
+
+// Drag'n'Drop vars
+const source = {
+    beginDrag(props) {
+        return {
+            id: props.note.get('id')
+        };
+    },
+
+    isDragging(props, monitor) {
+        return props.note.get('id') === monitor.getItem().id
+    }
+};
+
+function collectSource(connect, monitor) {
+    return {
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging()
+    }
+}
+
+const target = {
+    canDrop(props, monitor) {
+        // not allow drop on nested
+        // FIXME need recursive check parent, no one children cant be drop target
+        return !props.cantBeDropTarget;
+        // return props.note.get('parentId') !== monitor.getItem().id;
+    },
+    drop(props, monitor, component) {
+        if (monitor.didDrop()) {
+            // If you want, you can check whether some nested
+            // target already handled drop
+            console.info("return if didDrop");
+            return;
+        }
+        const dragId = monitor.getItem().id;
+        const hoverNote = props.note;
+        const hoverId = hoverNote.get('id');
+
+        if (dragId === hoverId) { return }
+
+
+        if (props.childEnd) {
+            props.onNoteUpdatePosition({
+                id: dragId,
+                parentId: hoverNote.get('parentId'),
+                after: hoverId
+            });
+        } else {
+            props.onNoteUpdatePosition({
+                id: dragId,
+                parentId: hoverNote.get('parentId'),
+                before: hoverId
+            });
+        }
+    }
+};
+// end Drag'n'Drop vars
+
+function collectTarget(connect, monitor) {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop()
+    };
+}
+
+let ChildrenEnd = React.createClass({
+    displayName: 'ChildrenEnd',
+
+    mixins: [PureRenderMixin],
+
+    render() {
+        const classes = classNames({
+            'notes-item': true,
+            'notes-children_end': true,
+            '-over': this.props.canDrop && this.props.isOver,
+        });
+        return this.props.connectDropTarget(
+                <div className={classes}></div>
+        );
+    }
+});
+
+ChildrenEnd = DropTarget('NOTE_ITEM', target, collectTarget)(ChildrenEnd);
+
 let NoteItem = React.createClass({
     displayName: 'NoteItem',
 
@@ -175,88 +262,39 @@ let NoteItem = React.createClass({
             '-dragging': isDragging,
             '-over': !isDragging && canDrop && isOver,
         });
-        // if (canDrop && isOver) debugger;
-        return connectDropTarget(connectDragSource(
-                <div className={classes} key={note.get('id')}>
-                <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
-                    { expandButtonSpan }
-                </a>
-                <Link className="_link-without-decorations notes-item_bullet" to={`/root/${note.get('id')}`}>
-                </Link>
-                <div className="notes-item_inner">
-                <div className="notes-item_title">
-                  <HotKeys handlers={handlers}>
-                     <input className="clean notes-item_input" value={note.get('title')}
+        return (
+        <div className="notes-item">
+                {(connectDropTarget(connectDragSource(
+                    <div className={classes} key={note.get('id')}>
+                        <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
+                             { expandButtonSpan }
+                        </a>
+                        <Link className="_link-without-decorations notes-item_bullet" to={`/root/${note.get('id')}`}>
+                        </Link>
+                        <div className="notes-item_inner">
+                        <div className="notes-item_title">
+                        <HotKeys handlers={handlers}>
+                        <input className="clean notes-item_input" value={note.get('title')}
                             ref='title'
                             onClick={this.handleSetActiveNote}
                             onKeyUp={this.handleKeyUp}
                             onKeyDown={this.handleKeyDown}
                             onChange={this.handleNoteUpdate} />
-                  </HotKeys>
-                </div>
-                {children}
-                </div>
-               </div>
-        ));
+                        </HotKeys>
+                        </div>
+                        {children}
+                        </div>
+                        </div>)))}
+            {this.props.lastInList
+             && <ChildrenEnd note={note}
+                             childEnd={this.props.lastInList}
+                             onNoteUpdatePosition={this.props.onNoteUpdatePosition}
+              />}
+        </div>
+        );
     }
 });
 
-// Drag'n'Drop vars
-const source = {
-    beginDrag(props) {
-        return {
-            id: props.note.get('id')
-        };
-    },
-
-    isDragging(props, monitor) {
-        return props.note.get('id') === monitor.getItem().id
-    }
-};
-
-function collectSource(connect, monitor) {
-    return {
-        connectDragSource: connect.dragSource(),
-        isDragging: monitor.isDragging()
-    }
-}
-
-const target = {
-    canDrop(props, monitor) {
-        // not allow drop on nested
-        // FIXME need recursive check parent, no one children cant be drop target
-        return !props.cantBeDropTarget;
-        // return props.note.get('parentId') !== monitor.getItem().id;
-    },
-    drop(props, monitor, component) {
-        if (monitor.didDrop()) {
-            // If you want, you can check whether some nested
-            // target already handled drop
-            console.info("HUI");
-            return;
-        }
-
-        const dragId = monitor.getItem().id;
-        const hoverNote = props.note;
-        const hoverId = hoverNote.get('id');
-
-        if (dragId === hoverId) { return }
-
-        props.onNoteUpdatePosition({
-            id: dragId,
-            parentId: hoverNote.get('parentId'),
-            before: hoverId
-        });
-    }
-};
-
-function collectTarget(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver({ shallow: true }),
-        canDrop: monitor.canDrop()
-    };
-}
 
 NoteItem = DragSource('NOTE_ITEM', source, collectSource)(NoteItem);
 NoteItem = DropTarget('NOTE_ITEM', target, collectTarget)(NoteItem);

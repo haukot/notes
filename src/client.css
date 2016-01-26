@@ -69,6 +69,10 @@ div[tabindex="-1"]:focus {
     }
 }
 
+.notes-children_end {
+    height: 12px;
+}
+
 .notes-item_expand_children {
     position: absolute;
     width: 20px;

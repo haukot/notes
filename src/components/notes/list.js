@@ -21,9 +21,11 @@ let NotesList = React.createClass({
 
     renderNotes(notes) {
         return (notes.map((note, index) => {
+            const lastElem = index === notes.count() - 1;
             return (
                     <NoteItem key={note.get('id')}
                             note={note}
+                            lastInList={lastElem}
                             cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}
                             parentNote={this.props.parentNote}
