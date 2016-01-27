@@ -56,6 +56,9 @@ div[tabindex="-1"]:focus {
 .notes-list .notes-list > .notes-item {
     margin-left: 35px;
 }
+.notes-list .notes-list > .notes-item:last-child {
+    margin-bottom: 8px;
+}
 
 div.notes-item {
     position: relative;
