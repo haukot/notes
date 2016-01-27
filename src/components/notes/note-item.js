@@ -1,93 +1,22 @@
 import React from 'react';
 import {History} from 'react-router';
-import {DragSource, DropTarget} from 'react-dnd';
 import classNames from 'classnames';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
-
 import NotesList from './list'
 
-
-
-// Drag'n'Drop vars
-const source = {
-    beginDrag(props) {
-        return {
-            id: props.note.get('id')
-        };
-    },
-
-    isDragging(props, monitor) {
-        return props.note.get('id') === monitor.getItem().id
-    }
-};
-
-function collectSource(connect, monitor) {
-    return {
-        connectDragSource: connect.dragSource(),
-        isDragging: monitor.isDragging()
-    }
-}
-
-const target = {
-    canDrop(props, monitor) {
-        // not allow drop on nested
-        // FIXME need recursive check parent, no one children cant be drop target
-        return !props.cantBeDropTarget;
-        // return props.note.get('parentId') !== monitor.getItem().id;
-    },
-    hover(props, monitor, component) {
-        let offset = monitor.getClientOffset()
-        let rect = React.findDOMNode(component).getBoundingClientRect();
-        let isOverTop = offset.y - rect.top < (rect.bottom - rect.top)/2;
-        component.getDecoratedComponentInstance().setState({isOverTop: isOverTop});
-    },
-    drop(props, monitor, component) {
-        if (monitor.didDrop()) {
-            // If you want, you can check whether some nested
-            // target already handled drop
-            console.info("return if didDrop");
-            return;
-        }
-        const dragId = monitor.getItem().id;
-        const hoverNote = props.note;
-        const hoverId = hoverNote.get('id');
-
-        if (dragId === hoverId) { return }
-
-
-        console.info("drop", component.getDecoratedComponentInstance().state.isOverTop);
-        const position = component.getDecoratedComponentInstance().state.isOverTop
-              ? {before: hoverId}
-              : {after: hoverId};
-
-        props.onNoteUpdatePosition(Object.assign({
-            id: dragId,
-            parentId: hoverNote.get('parentId')
-        }, position));
-    }
-};
-// end Drag'n'Drop vars
-
-function collectTarget(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver({ shallow: true }),
-        canDrop: monitor.canDrop()
-    };
-}
+import connectDragNDrop from '../../connectors/item_drag_drop_connect'
 
 let NoteItem = React.createClass({
     displayName: 'NoteItem',
 
     propTypes: {
-        // section: React.PropTypes.object.isRequired,
-        // onChange: React.PropTypes.func.isRequired,
-        // onCardChange: React.PropTypes.func.isRequired
         note: React.PropTypes.object.isRequired,
         cantBeDropTarget: React.PropTypes.bool.isRequired,
+        // from connectDragNDrop:
         isDragging: React.PropTypes.bool.isRequired,
         isOver: React.PropTypes.bool.isRequired,
+        isOverTop: React.PropTypes.bool.isRequired,
         canDrop: React.PropTypes.bool.isRequired,
         connectDragSource: React.PropTypes.func.isRequired,
         connectDropTarget: React.PropTypes.func.isRequired
@@ -95,9 +24,6 @@ let NoteItem = React.createClass({
 
     mixins: [PureRenderMixin, History],
 
-    getInitialState() {
-        return {isOverTop: false};
-    },
 
     // FIXME как то объединить эти два метода?
     componentDidMount() {
@@ -222,7 +148,6 @@ let NoteItem = React.createClass({
         let children = "";
         let expandButtonSpan = "";
         let noteHasChildren = note.get('children').count() > 0;
-        const cantBeDropTarget = this.props.cantBeDropTarget || isDragging;
         if (noteHasChildren) {
             expandButtonSpan = note.get('hiddenChildren')
                 ? <span className="plus">+</span>
@@ -231,7 +156,7 @@ let NoteItem = React.createClass({
                 children = (<NotesList
                             notes={note.get('children')}
                             parentNote={note}
-                            cantBeDropTarget={cantBeDropTarget}
+                            cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}
                             activeNoteId={this.props.activeNoteId}
                             onNoteAdd={this.props.onNoteAdd}
@@ -244,18 +169,16 @@ let NoteItem = React.createClass({
             }
         }
 
-        const isSelectedOver = !isDragging && canDrop && isOver;
         const classes = classNames({
             'notes-item': true,
             '-dragging': isDragging,
-            '-over-bottom': isSelectedOver && !this.state.isOverTop,
-            '-over-top': isSelectedOver && this.state.isOverTop,
+            '-over-bottom': isOver && !this.props.isOverTop,
+            '-over-top': isOver && this.props.isOverTop,
         });
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
-                <div className={classes} key={note.get('id')}>
-                {(connectDropTarget(
-                    <div>
+                connectDropTarget(
+                    <div className={classes} key={note.get('id')}>
                         <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
                              { expandButtonSpan }
                         </a>
@@ -274,14 +197,12 @@ let NoteItem = React.createClass({
                         </div>
                         {children}
                         </div>
-                        </div>))}
-        </div>
+                    </div>
+                )
         );
     }
 });
 
 
-NoteItem = DragSource('NOTE_ITEM', source, collectSource)(NoteItem);
-NoteItem = DropTarget('NOTE_ITEM', target, collectTarget)(NoteItem);
-
+NoteItem = connectDragNDrop(NoteItem);
 export default NoteItem;
