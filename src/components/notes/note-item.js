@@ -36,6 +36,12 @@ const target = {
         return !props.cantBeDropTarget;
         // return props.note.get('parentId') !== monitor.getItem().id;
     },
+    hover(props, monitor, component) {
+        let offset = monitor.getClientOffset()
+        let rect = React.findDOMNode(component).getBoundingClientRect();
+        let isOverTop = offset.y - rect.top < (rect.bottom - rect.top)/2;
+        component.getDecoratedComponentInstance().setState({isOverTop: isOverTop});
+    },
     drop(props, monitor, component) {
         if (monitor.didDrop()) {
             // If you want, you can check whether some nested
@@ -50,19 +56,15 @@ const target = {
         if (dragId === hoverId) { return }
 
 
-        if (props.childEnd) {
-            props.onNoteUpdatePosition({
-                id: dragId,
-                parentId: hoverNote.get('parentId'),
-                after: hoverId
-            });
-        } else {
-            props.onNoteUpdatePosition({
-                id: dragId,
-                parentId: hoverNote.get('parentId'),
-                before: hoverId
-            });
-        }
+        console.info("drop", component.getDecoratedComponentInstance().state.isOverTop);
+        const position = component.getDecoratedComponentInstance().state.isOverTop
+              ? {before: hoverId}
+              : {after: hoverId};
+
+        props.onNoteUpdatePosition(Object.assign({
+            id: dragId,
+            parentId: hoverNote.get('parentId')
+        }, position));
     }
 };
 // end Drag'n'Drop vars
@@ -74,25 +76,6 @@ function collectTarget(connect, monitor) {
         canDrop: monitor.canDrop()
     };
 }
-
-let ChildrenEnd = React.createClass({
-    displayName: 'ChildrenEnd',
-
-    mixins: [PureRenderMixin],
-
-    render() {
-        const classes = classNames({
-            'notes-item': true,
-            'notes-children_end': true,
-            '-over': this.props.canDrop && this.props.isOver,
-        });
-        return this.props.connectDropTarget(
-                <div className={classes}></div>
-        );
-    }
-});
-
-ChildrenEnd = DropTarget('NOTE_ITEM', target, collectTarget)(ChildrenEnd);
 
 let NoteItem = React.createClass({
     displayName: 'NoteItem',
@@ -111,6 +94,10 @@ let NoteItem = React.createClass({
     },
 
     mixins: [PureRenderMixin, History],
+
+    getInitialState() {
+        return {isOverTop: false};
+    },
 
     // FIXME как то объединить эти два метода?
     componentDidMount() {
@@ -257,10 +244,12 @@ let NoteItem = React.createClass({
             }
         }
 
+        const isSelectedOver = !isDragging && canDrop && isOver;
         const classes = classNames({
             'notes-item': true,
             '-dragging': isDragging,
-            '-over': !isDragging && canDrop && isOver,
+            '-over-bottom': isSelectedOver && !this.state.isOverTop,
+            '-over-top': isSelectedOver && this.state.isOverTop,
         });
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
@@ -286,11 +275,6 @@ let NoteItem = React.createClass({
                         {children}
                         </div>
                         </div>))}
-            {this.props.lastInList && !cantBeDropTarget
-             && <ChildrenEnd note={note}
-                             childEnd={this.props.lastInList}
-                             onNoteUpdatePosition={this.props.onNoteUpdatePosition}
-              />}
         </div>
         );
     }

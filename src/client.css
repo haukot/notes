@@ -64,8 +64,11 @@ div.notes-item {
             background-color: rgb(225, 228, 230);
         }
     }
-    &.-over {
+    &.-over-top {
         border-top: 4px solid #cecece;
+    }
+    &.-over-bottom {
+        border-bottom: 4px solid #cecece;
     }
 }
 
