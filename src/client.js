@@ -7,9 +7,12 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 import {Provider} from 'react-redux';
 import transit from 'transit-immutable-js';
 
+import Modal from 'react-modal';
+
 import routes from 'routes';
 import configureStore from 'store/configure-store';
 import DevTools from 'containers/dev-tools';
+
 
 const history = createBrowserHistory();
 const store = configureStore(transit.fromJSON(window.__INITIAL_STATE__));

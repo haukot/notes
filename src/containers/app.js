@@ -6,7 +6,7 @@ import Window from 'components/window';
 import {notes, view, globalOrder, pathToRoot} from 'queries';
 import {addNote, updateNote, deleteNote,
         setActiveNote, updateNotePosition,
-        toggleNoteChildren} from 'actions';
+        toggleNoteChildren, importOPML} from 'actions';
 
 const App = React.createClass({
     propTypes: {
@@ -27,6 +27,7 @@ const App = React.createClass({
                        onNoteDelete={attrs => dispatch(deleteNote(attrs))}
                        onSetActiveNote={attrs => dispatch(setActiveNote(attrs))}
                        onToggleNoteChildren={attrs => dispatch(toggleNoteChildren(attrs))}
+                       onImportOPML={attrs => dispatch(importOPML(attrs))}
                 />
 
                 {React.Children.count(this.props.children) == 1 &&

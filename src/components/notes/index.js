@@ -7,10 +7,14 @@ import {HotKeys} from 'react-hotkeys';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
+import Modal from 'react-modal';
+
 
 import Search from './search';
 import NotesList from './list';
 import NoteEdit from './note-edit';
+import ImportModal from './import-modal';
+
 
 
 const hotkeysMap = {
@@ -27,9 +31,21 @@ const NotesApp = React.createClass({
 
     mixins: [PureRenderMixin],
 
+    getInitialState() {
+        return {importModalIsOpen: false};
+    },
+
     // FIXME duplicate with list
     handleAddNote() {
         this.props.onNoteAdd({parentId: this.props.curRootNote.get('id')});
+    },
+
+    openImportModal() {
+        this.setState({importModalIsOpen: true});
+    },
+
+    closeImportModal() {
+        this.setState({importModalIsOpen: false});
     },
 
     render() {
@@ -39,6 +55,7 @@ const NotesApp = React.createClass({
                pathToRoot, onToggleNoteChildren} = this.props;
         const activeNote = view.get('activeNote');
         return (
+            <div>
             <HotKeys keyMap={hotkeysMap}>
                 {
                     pathToRoot.reverse().map((path) => {
@@ -53,6 +70,8 @@ const NotesApp = React.createClass({
                 <div className="column column-33 _full-height">
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
+
+                <button className="button float-right" onClick={this.openImportModal}>Import</button>
 
                 <div className="notes-sidebar">
                 <NotesList notes={curRootNote.get('children')}
@@ -73,8 +92,13 @@ const NotesApp = React.createClass({
                 <div className="column column-60 _full-height">
                     <NoteEdit note={activeNote} onNodeChange={onNoteUpdate} />
                 </div>
-            </div>
+                </div>
             </HotKeys>
+             <ImportModal isOpen={this.state.importModalIsOpen}
+                          onRequestClose={this.closeImportModal}
+                          onImportOPML={this.props.onImportOPML}
+             />
+          </div>
         )
     }
 });

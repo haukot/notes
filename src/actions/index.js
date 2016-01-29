@@ -38,6 +38,13 @@ export function toggleNoteChildren(attrs) {
     }
 }
 
+export function importOPML(attrs) {
+    return {
+        type: types.IMPORT_OPML,
+        attrs
+    }
+}
+
 // function makeActionCreator(type, ...argNames) {
 //   return function(...args) {
 //     let action = { type }

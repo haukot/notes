@@ -95,7 +95,14 @@ export default createReducer(initialState, {
     [ActionTypes.TOGGLE_NOTE_CHILDREN](state, {attrs}) {
         let oldVal = state.getIn(['notes', attrs.id, 'hiddenChildren']);
         return state.setIn(['notes', attrs.id, 'hiddenChildren'], !oldVal);
-    }
+    },
+
+
+    [ActionTypes.IMPORT_OPML](state, {attrs}) {
+        const {data} = attrs;
+        let newState = parseWorkflowyOMPL(data, state);
+        return newState;
+    },
 
 });
 
@@ -108,4 +115,56 @@ function insertElement(el, initialIndex, arr, attrs) {
         insertIndex = arr.indexOf(attrs.before);
     }
     return arr.splice(insertIndex, 0, el);
+}
+
+
+function parseWorkflowyOMPL(data, state) {
+    var oParser = new DOMParser();
+    var oDOM = oParser.parseFromString(data, "text/xml");
+    if (oDOM.documentElement.nodeName == "parsererror") {
+        console.error('Error while parsing opml data');
+        return [];
+    }
+    let root = oDOM.documentElement.getElementsByTagName('body')[0];
+
+    return createNoteFromXML(root, state, null);
+}
+
+function createNoteFromXML(xmlNote, state, parentId=0) {
+    let {state: newState, id} = parentId !== null // == null if xmlNote - <body>
+        ? createNote(
+            {
+                title: xmlNote.getAttribute('text'),
+                body: xmlNote.getAttribute('note'),
+                children: [],
+                hiddenChildren: false,
+                parentId
+            }, state)
+        : {state: state, id: 0};
+    console.log(id);
+    const children = xmlNote.children;
+    for (var i = children.length - 1; i >= 0; i--) {
+        const afterChildState = createNoteFromXML(children[i], newState, id);
+        newState = afterChildState;
+    }
+    return newState;
+}
+
+// use this in ADD_NOTE
+function createNote(attrs, state) {
+    let stateWithIncSeq = increaseSequence(state);
+    const id = getSequenceValue(stateWithIncSeq);
+
+    const fullAttrs = Object.assign(attrs, {id});
+    const insertIndex = 0;
+
+    // console.log("parentId", fullAttrs);
+    // console.log("hui", state);
+    return {state: stateWithIncSeq
+            .setIn(['notes', id], fromJS(fullAttrs))
+            .updateIn(['notes', fullAttrs.parentId, 'children'],
+                      (children) => {
+                          return insertElement(id, 0, children, attrs)
+                      }),
+                      id};
 }
