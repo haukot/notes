@@ -2,7 +2,10 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import Modal from 'react-modal';
 
-document.addEventListener('DOMContentLoaded', () => Modal.setAppElement('body'));
+// in server document not exist
+if (typeof document !== 'undefined' && document) {
+    document.addEventListener('DOMContentLoaded', () => Modal.setAppElement('body'));
+}
 
 const ImportModal = React.createClass({
     displayName: 'ImportModal',

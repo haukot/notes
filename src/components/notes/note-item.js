@@ -1,9 +1,13 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {History} from 'react-router';
 import classNames from 'classnames';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
+import ContentEditable from 'react-contenteditable';
+
+import {placeCaretAtEnd} from '../../utils'
 
 import connectDragNDrop from '../../connectors/item_drag_drop_connect'
 
@@ -24,24 +28,30 @@ let NoteItem = React.createClass({
 
     mixins: [PureRenderMixin, History],
 
-
+    maybeFocusNote() {
+        if (this.props.note.get('id') === this.props.activeNote.get('id')) {
+            console.info(this.props.note.get('id'), "hui", this.props.activeNote.get('id'));
+            if (this.props.activeNote.get('caretAtEnd')) {
+                placeCaretAtEnd(ReactDOM.findDOMNode(this.refs.title));
+            } else {
+                ReactDOM.findDOMNode(this.refs.title).focus();
+            }
+        }
+    },
     // FIXME как то объединить эти два метода?
     componentDidMount() {
-        if (this.props.note.get('id') === this.props.activeNoteId) {
-            this.refs.title.focus();
-        }
+        this.maybeFocusNote();
     },
 
     componentDidUpdate() {
-        if (this.props.note.get('id') === this.props.activeNoteId) {
-            this.refs.title.focus();
-        }
+        this.maybeFocusNote();
     },
 
-    handleNoteUpdate() {
+    handleNoteUpdate(evt) {
+        // TODO ContentEditable send onChange after click, even if html not changed
         this.props.onNoteUpdate({
             id: this.props.note.get("id"),
-            title: this.refs.title.value,
+            title: evt.target.value,
         });
     },
 
@@ -68,13 +78,17 @@ let NoteItem = React.createClass({
         e.preventDefault();
     },
 
-    handleGoToUpNote(e) {
+    setActiveUpNote(opts={caretAtEnd: false}) {
         const upperElementOrderId = this.props.note.get('globalOrder') - 1;
         const upperElement = this.props.globalOrder.get(upperElementOrderId + "");
         if (upperElement.get('id') === 0) {
             return;
         }
-        this.props.onSetActiveNote({id: upperElement.get('id')});
+        this.props.onSetActiveNote({id: upperElement.get('id'), caretAtEnd: opts.caretAtEnd});
+    },
+
+    handleGoToUpNote(e) {
+        this.setActiveUpNote();
         e.preventDefault();
         e.stopPropagation();
     },
@@ -103,6 +117,7 @@ let NoteItem = React.createClass({
     },
 
     handleRemoveNote() {
+        this.setActiveUpNote({caretAtEnd: true});
         this.props.onNoteDelete({id: this.props.note.get('id')});
     },
 
@@ -158,7 +173,7 @@ let NoteItem = React.createClass({
                             parentNote={note}
                             cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}
-                            activeNoteId={this.props.activeNoteId}
+                            activeNote={this.props.activeNote}
                             onNoteAdd={this.props.onNoteAdd}
                             onNoteUpdate={this.props.onNoteUpdate}
                             onNoteUpdatePosition={this.props.onNoteUpdatePosition}
@@ -187,7 +202,7 @@ let NoteItem = React.createClass({
                         <div className="notes-item_inner">
                         <div className="notes-item_title">
                         <HotKeys handlers={handlers}>
-                        <input className="clean notes-item_input" value={note.get('title')}
+                        <ContentEditable className="clean notes-item_input" html={note.get('title') || ""}
                             ref='title'
                             onClick={this.handleSetActiveNote}
                             onKeyUp={this.handleKeyUp}

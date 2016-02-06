@@ -1,5 +1,5 @@
 {
-  "name": "trello-clone",
+  "name": "notes",
   "version": "1.0.0",
   "description": "",
   "author": "",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "app-module-path": "^1.0.5",
-    "classnames": "^2.2.1",
+    "clssnames": "^2.2.1",
     "express": "^4.13.3",
     "history": "^1.17.0",
     "immutable": "^3.7.6",

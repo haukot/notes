@@ -133,13 +133,16 @@ div.notes-item {
 .notes-item_title {
     display: inline-block;
     margin-left: 6px;
+    width: 80%;
 }
 
 .notes-item_input {
     margin-bottom: initial;
     display: inline-block;
     min-width: 50%;
+    width: 100%;
     min-height: 16px;
+    word-wrap: break-word;
 }
 
 .notes-add_children {

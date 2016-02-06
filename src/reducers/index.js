@@ -24,8 +24,7 @@ const initialState = fromJS({
     sequence: 0,
     view: {
         /*
-           activeNoteId: id,
-           activeListNoteId: id
+           activeNote: {id:, caretAtEnd: false}
          */
     },
     notes: {
@@ -59,8 +58,7 @@ export default createReducer(initialState, {
                       (children) => {
                           return insertElement(id, 0, children, attrs)
                       })
-            .setIn(['view', 'activeNoteId'], id)
-            .setIn(['view', 'activeListNoteId'], id);
+            .setIn(['view', 'activeNote', 'id'], id);
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
@@ -83,13 +81,12 @@ export default createReducer(initialState, {
         return state.deleteIn(['notes', attrs.id])
             .updateIn(['notes', note.get('parentId'), 'children'],
                       (children) => children.splice(children.indexOf(attrs.id), 1)
-                     )
-            .setIn(['view', 'activeNoteId'], state.get('notes').first.id);
+                     );
     },
 
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
-        return state.setIn(['view', 'activeNoteId'], attrs.id)
-            .setIn(['view', 'activeListNoteId'], attrs.id);
+        return state.setIn(['view', 'activeNote', 'id'], attrs.id)
+            .setIn(['view', 'activeNote', 'caretAtEnd'], attrs.caretAtEnd || false);
     },
 
     [ActionTypes.TOGGLE_NOTE_CHILDREN](state, {attrs}) {

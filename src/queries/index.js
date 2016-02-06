@@ -77,12 +77,5 @@ export function notes(state, rootId) {
 
 export function view(state) {
     let viewState = state.getIn(['view']);
-    if (viewState.get('activeNoteId') === undefined) {
-        viewState = viewState.set('activeNote', state.get('notes').last());
-    } else {
-        viewState = viewState.set('activeNote',
-                                  state.getIn(['notes', viewState.get('activeNoteId')])
-                                 );
-    }
     return viewState;
 }
