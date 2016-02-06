@@ -67,7 +67,7 @@ const NotesApp = React.createClass({
                     }).interpose(" > ")
                 }
             <div className="row panel _full-height">
-                <div className="column column-33 _full-height">
+                <div className="column column-50 _full-height">
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
@@ -89,7 +89,7 @@ const NotesApp = React.createClass({
                 </div>
 
                 </div>
-                <div className="column column-60 _full-height">
+                <div className="column column-50 _full-height">
                     <NoteEdit note={activeNote} onNodeChange={onNoteUpdate} />
                 </div>
                 </div>

@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 
 import Notes from 'components/notes';
 import Window from 'components/window';
-import {notes, view, globalOrder, pathToRoot} from 'queries';
+import {currentRootNoteSelector, viewSelector,
+        globalOrderSelector, pathToRootSelector} from 'queries';
 import {addNote, updateNote, deleteNote,
         setActiveNote, updateNotePosition,
         toggleNoteChildren, importOPML} from 'actions';
@@ -41,12 +42,10 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state, props) {
-    let rootId = props.params.id;
-    let rootNote = notes(state, rootId);
-    return {curRootNote: rootNote,
-            pathToRoot: pathToRoot(state, rootNote),
-            view: view(state),
-            globalOrder: globalOrder(state, rootId)};
+    return {curRootNote: currentRootNoteSelector(state, props),
+            pathToRoot: pathToRootSelector(state, props),
+            view: viewSelector(state, props),
+            globalOrder: globalOrderSelector(state, props)};
 }
 
 export default connect(mapStateToProps)(App);

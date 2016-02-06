@@ -30,11 +30,16 @@ let NoteItem = React.createClass({
 
     maybeFocusNote() {
         if (this.props.note.get('id') === this.props.activeNote.get('id')) {
-            console.info(this.props.note.get('id'), "hui", this.props.activeNote.get('id'));
+            let input = ReactDOM.findDOMNode(this.refs.title);
+            // проблема с этим, что после таба не фокусится. наверно лучше хранить ещё prevFocusedNote
+            // if (document.activeElement.className !== input.className) {
+            //     // чтобы другие элементы фокусились.
+            //     return;
+            // }
             if (this.props.activeNote.get('caretAtEnd')) {
-                placeCaretAtEnd(ReactDOM.findDOMNode(this.refs.title));
+                placeCaretAtEnd(input);
             } else {
-                ReactDOM.findDOMNode(this.refs.title).focus();
+                input.focus();
             }
         }
     },
