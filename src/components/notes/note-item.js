@@ -54,10 +54,13 @@ let NoteItem = React.createClass({
 
     handleNoteUpdate(evt) {
         // TODO ContentEditable send onChange after click, even if html not changed
-        this.props.onNoteUpdate({
-            id: this.props.note.get("id"),
-            title: evt.target.value,
-        });
+        const changedTitle = evt.target.value;
+        if (this.props.note.get('title') !== changedTitle) {
+            this.props.onNoteUpdate({
+                id: this.props.note.get("id"),
+                title: changedTitle,
+            });
+        }
     },
 
     handleTabNoteLeft(e) {

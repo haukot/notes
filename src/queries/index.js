@@ -27,7 +27,7 @@ function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
     return {counter: newCounter, note: newNote, acc: newAcc};
 }
 
-const notesSelector = (state) => state.getIn(['notes']);
+const notesSelector = (state) => state.present.getIn(['notes'])
 const rootIdSelector = (state, props) => props.params.id;
 
 const rootNoteSelector = createSelector(
@@ -43,7 +43,7 @@ const rootNoteSelector = createSelector(
 );
 
 
-export const viewSelector = (state) => state.getIn(['view']);
+export const viewSelector = (state) => state.present.getIn(['view']);
 
 export const currentRootNoteSelector = createSelector(
     notesSelector,

@@ -8,6 +8,7 @@ import {currentRootNoteSelector, viewSelector,
 import {addNote, updateNote, deleteNote,
         setActiveNote, updateNotePosition,
         toggleNoteChildren, importOPML} from 'actions';
+import { ActionCreators } from 'redux-undo';
 
 const App = React.createClass({
     propTypes: {
@@ -29,6 +30,8 @@ const App = React.createClass({
                        onSetActiveNote={attrs => dispatch(setActiveNote(attrs))}
                        onToggleNoteChildren={attrs => dispatch(toggleNoteChildren(attrs))}
                        onImportOPML={attrs => dispatch(importOPML(attrs))}
+                       onUndo={() => dispatch(ActionCreators.undo())}
+                       onRedo={() => dispatch(ActionCreators.redo())}
                 />
 
                 {React.Children.count(this.props.children) == 1 &&

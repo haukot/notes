@@ -22,8 +22,9 @@ const hotkeysMap = {
     'tabNoteRight': 'tab',
     'tabNoteLeft': 'shift+tab',
     'goToUpNote': 'up',
-    'goToDownNote': 'down'
-
+    'goToDownNote': 'down',
+    'undo': 'ctrl+z',
+    'redo': 'ctrl+shift+z'
 };
 
 const NotesApp = React.createClass({
@@ -49,14 +50,20 @@ const NotesApp = React.createClass({
     },
 
     render() {
-        const {curRootNote, view, onNoteAdd,
-               onNoteUpdate, onNoteDelete,
-               onSetActiveNote, onNoteUpdatePosition,
-               pathToRoot, onToggleNoteChildren} = this.props;
+        const {
+            curRootNote, view, onNoteAdd,
+            onNoteUpdate, onNoteDelete,
+            onSetActiveNote, onNoteUpdatePosition,
+            pathToRoot, onToggleNoteChildren
+        } = this.props;
         const activeNote = view.get('activeNote');
+        const hotkeysHandlers = {
+            'undo': this.props.onUndo,
+            'redo': this.props.onRedo
+        };
         return (
-            <div>
-            <HotKeys keyMap={hotkeysMap}>
+           <div>
+            <HotKeys keyMap={hotkeysMap} handlers={hotkeysHandlers}>
                 {
                     pathToRoot.reverse().map((path) => {
                         return (

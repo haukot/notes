@@ -1,15 +1,21 @@
 import {fromJS} from 'immutable';
+import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
 
 function createReducer(initialState, handlers) {
-    return function reducer(state, action) {
+    const reducer = (state, action) => {
         if (typeof state === 'undefined') return initialState;
         if (handlers.hasOwnProperty(action.type)) {
-            return handlers[action.type](state, action)
+            return handlers[action.type](state, action);
         } else {
             return state
         }
     }
+    const excludedActions = [
+        ActionTypes.SET_ACTIVE_NOTE,
+        ActionTypes.TOGGLE_NOTE_CHILDREN
+    ];
+    return undoable(reducer, { filter: excludeAction(excludedActions) });
 }
 
 function increaseSequence(state) {
@@ -93,7 +99,6 @@ export default createReducer(initialState, {
         let oldVal = state.getIn(['notes', attrs.id, 'hiddenChildren']);
         return state.setIn(['notes', attrs.id, 'hiddenChildren'], !oldVal);
     },
-
 
     [ActionTypes.IMPORT_OPML](state, {attrs}) {
         const {data} = attrs;
