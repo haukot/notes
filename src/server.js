@@ -25,7 +25,7 @@ function pageTemplate(html, initialState) {
           <head>
             <title>Kanban</title>
             <script>
-                window.__INITIAL_STATE__ = '${transit.toJSON(initialState)}';
+                window.__INITIAL_STATE__ = '${transit.toJSON(initialState).replace(/\'/g, "\\\'")}';
             </script>
             <script src="/assets/bundle.js"></script>
           </head>
@@ -66,7 +66,7 @@ function routerMiddleware(req, res, next) {
             // const store = configureStore();
             // fillStore(store);
 
-            console.log(store.getState().present.getIn(['notes']));
+            // console.log(store.getState().present.getIn(['notes']));
 
             const pageHtml = render(store, renderProps);
 

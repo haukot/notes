@@ -7,6 +7,12 @@
     max-width: 200rem;
 }
 
+body {
+    color: rgb(51, 51, 51);
+    font-size: 15px;
+}
+
+
 /* for react hot keys stupid div */
 div[tabindex="-1"]:focus {
     outline: 0;
@@ -53,8 +59,10 @@ div[tabindex="-1"]:focus {
 }
 
 /* исключая первый notes-list */
-.notes-list .notes-list > .notes-item {
-    margin-left: 35px;
+.notes-list .notes-list {
+    border-left: 1px solid #eee;
+    margin-left: 15px;
+    padding-left: 25px;
 }
 .notes-list .notes-list > .notes-item:last-child {
     margin-bottom: 8px;

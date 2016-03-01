@@ -14,7 +14,6 @@ function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
                   children
                   .map((childId, id) => {
                       let child = notes.getIn([childId.toString()])
-                      console.log(childId, notes);
                       if (childCallback) {
                           child = childCallback(child, children, id, newCounter, acc); // callback
                       }
@@ -62,7 +61,7 @@ export const currentRootNoteSelector = createSelector(
         };
         let {counter, note} = notesIterator(notes, rootNote, 0, {},
                                             noteCallback, childCallback);
-        console.log("notes", note.toJS());
+        // console.log("notes", note.toJS());
         return note;
     }
 )
@@ -98,7 +97,7 @@ export const globalOrderSelector = createSelector(
         };
         let {counter, acc} = notesIterator(notes, rootNote, 0, {},
                                            noteCallback, null);
-        console.log("acc", fromJS(acc).toJS());
+        // console.log("acc", fromJS(acc).toJS());
         return fromJS(acc);
     }
 );

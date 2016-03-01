@@ -14,7 +14,7 @@ module.exports = {
     },
     entry: {
         app: [
-            'webpack-dev-server/client?http://localhost:3000',
+            'webpack-dev-server/client?http://localhost:4444',
             'webpack/hot/only-dev-server',
             path.join(__dirname, 'src', 'client.js')
         ]

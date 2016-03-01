@@ -111,8 +111,8 @@ export default createReducer(initialState, {
         let stateJson = JSON.stringify(state.toJS());
         fetch('/save', {method: 'post', body: stateJson,
                         headers: {'Content-Type': 'application/json'}})
-            .then(() => console.info("Saved ok!"))
-            .catch(() => console.error("ERROR in save!"));
+            .then(() => alert("Saved ok!"))
+            .catch(() => alert("ERROR in save!"));
         localStorage['my_state'] = stateJson;
         return state;
     },

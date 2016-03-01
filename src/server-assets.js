@@ -15,8 +15,8 @@ const devServer = new WebpackDevServer(webpack(config), {
     }
 });
 
-devServer.listen(3000, 'localhost', (err, result) => {
+devServer.listen(4444, 'localhost', (err, result) => {
     if (err) { console.log(err); }
 
-    console.log('Listening at localhost:3000');
+    console.log('Listening at localhost:4444');
 });
