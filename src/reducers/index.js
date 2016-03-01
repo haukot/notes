@@ -111,8 +111,13 @@ export default createReducer(initialState, {
         let stateJson = JSON.stringify(state.toJS());
         fetch('/save', {method: 'post', body: stateJson,
                         headers: {'Content-Type': 'application/json'}})
-            .then(() => alert("Saved ok!"))
-            .catch(() => alert("ERROR in save!"));
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    alert("Saved ok!");
+                } else {
+                    alert(`ERROR in save! ${response.status} : ${response.statusText}`);
+                }
+            }).catch(() => alert("ERROR in save, request failed!"));
         localStorage['my_state'] = stateJson;
         return state;
     },

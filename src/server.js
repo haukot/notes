@@ -9,7 +9,7 @@ import {match, RoutingContext} from 'react-router';
 import {Provider} from 'react-redux';
 import transit from 'transit-immutable-js';
 
-import saveStorage from 'server/storage';
+import savesStorage from 'server/storage';
 import routes from 'routes';
 import {addNote, loadState} from 'actions';
 import {notes} from 'queries';
@@ -41,21 +41,24 @@ function routerMiddleware(req, res, next) {
         } else if (redirectLocation) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
+            savesStorage.load((initialState) => {
+                let store = null;
+                if(initialState) {
+                    store = configureStore({present: fromJS(initialState)});
+                } else {
+                    store = configureStore();
+                    fillStore(store);
+                }
 
-            const initialState = saveStorage.load();
-            const store = configureStore({present: fromJS(initialState)});
-            // const store = configureStore();
-            // fillStore(store);
+                // console.log(store.getState().present.getIn(['notes']));
 
-            // console.log(store.getState().present.getIn(['notes']));
+                const pageHtml = render(store, renderProps);
 
-            const pageHtml = render(store, renderProps);
-
-            res.status(200).send(pageHtml);
+                res.status(200).send(pageHtml);
+                res.end();
+            });
         }
     });
-
-    next();
 }
 
 function pageTemplate(html, initialState) {
@@ -79,17 +82,17 @@ function pageTemplate(html, initialState) {
 
 
 const app = express();
-app.use(routerMiddleware);
 app.use(bodyParser.json());
+
+app.post('/save', function(req, res) {
+    savesStorage.save(req.body, () => {res.sendStatus(200)}, () => {res.sendStatus(500)});
+});
+
+app.use(routerMiddleware);
 
 const server = app.listen(8080, () => {
     var host = server.address().address;
     var port = server.address().port;
 
     console.log('Example app listening at http://%s:%s', host, port)
-});
-
-app.post('/save', function(req, res) {
-    saveStorage.save(req.body);
-    res.sendStatus(200);
 });

@@ -9,6 +9,7 @@
     "dev": "concurrent --kill-others \"npm run dev-server\" \"npm run dev-server-assets\"",
     "dev-server": "nodemon --exec babel-node src/server.js",
     "dev-server-assets": "babel-node src/server-assets.js",
+    "console": "babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "babel": {
