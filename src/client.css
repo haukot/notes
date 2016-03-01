@@ -115,26 +115,26 @@ div.notes-item {
     margin-left: 5px;
     float: left;
     &::after {
-        $size: 8px;
+        $size: 7px;
         height: $size;
         width: $size;
         display: block;
         content: " ";
-        background-color: #9b4dca;
+        background-color: #666;
         position: absolute;
         border-radius: 10px;
-        top: 7px;
-        left: 7px;
+        top: 6.5px;
+        left: 6.5px;
     }
     &:hover::before {
-        border: 11px solid  rgba(146, 160, 172, 0.48);
+        border: 10.5px solid rgba(101, 109, 117, 0.4);
         border-radius: 15px;
         position: absolute;
         display: block;
         content: " ";
     }
     &:hover + .notes-item_inner, &:hover + .notes-item_inner input {
-        background-color: rgb(249, 251, 252);
+        background-color: rgb(248, 248, 248);
     }
 }
 
@@ -146,7 +146,7 @@ div.notes-item {
 
 .notes-item_title {
     display: inline-block;
-    margin-left: 6px;
+    margin-left: 4px;
     width: 80%;
 }
 
