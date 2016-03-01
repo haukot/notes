@@ -6,3 +6,5 @@ export const SET_ACTIVE_NOTE = 'SET_ACTIVE_NOTE';
 export const TOGGLE_NOTE_CHILDREN = 'TOGGLE_NOTE_CHILDREN';
 
 export const IMPORT_OPML = 'IMPORT_OPML';
+export const SAVE_STATE = 'SAVE_STATE';
+export const LOAD_STATE = 'LOAD_STATE';

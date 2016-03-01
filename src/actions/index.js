@@ -45,6 +45,20 @@ export function importOPML(attrs) {
     }
 }
 
+export function saveState(attrs) {
+    return {
+        type: types.SAVE_STATE,
+        attrs
+    }
+}
+
+export function loadState(attrs) {
+    return {
+        type: types.LOAD_STATE,
+        attrs
+    }
+}
+
 // function makeActionCreator(type, ...argNames) {
 //   return function(...args) {
 //     let action = { type }

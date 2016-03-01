@@ -13,7 +13,8 @@ function createReducer(initialState, handlers) {
     }
     const excludedActions = [
         ActionTypes.SET_ACTIVE_NOTE,
-        ActionTypes.TOGGLE_NOTE_CHILDREN
+        ActionTypes.TOGGLE_NOTE_CHILDREN,
+        ActionTypes.SAVE_STATE,
     ];
     return undoable(reducer, { filter: excludeAction(excludedActions) });
 }
@@ -41,8 +42,8 @@ const initialState = fromJS({
           }
          */
     }
-}).setIn(['notes', 0], fromJS({
-            id: 0,
+}).setIn(['notes', "0"], fromJS({
+            id: "0",
             title: "root",
             body: "",
             children: []
@@ -51,7 +52,7 @@ const initialState = fromJS({
 export default createReducer(initialState, {
     [ActionTypes.ADD_NOTE](state, {attrs}) {
         let stateWithIncSeq = increaseSequence(state);
-        const id = getSequenceValue(stateWithIncSeq);
+        const id = getSequenceValue(stateWithIncSeq).toString();
 
         const fullAttrs = Object.assign(attrs, {id});
         const insertIndex = 0;
@@ -60,7 +61,7 @@ export default createReducer(initialState, {
         // console.log("hui", state);
         return stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))
-            .updateIn(['notes', fullAttrs.parentId, 'children'],
+            .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
                       (children) => {
                           return insertElement(id, 0, children, attrs)
                       })
@@ -68,42 +69,56 @@ export default createReducer(initialState, {
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
-        return state.mergeIn(['notes', attrs.id], attrs);
+        return state.mergeIn(['notes', attrs.id.toString()], attrs);
     },
 
     [ActionTypes.UPDATE_NOTE_POSITION](state, {attrs}) {
-        const oldParentId = state.getIn(['notes', attrs.id, 'parentId']);
-        return state.setIn(['notes', attrs.id, 'parentId'], attrs.parentId)
-            .updateIn(['notes', oldParentId, 'children'],
-                      children => children.splice(children.indexOf(attrs.id), 1))
-            .updateIn(['notes', attrs.parentId, 'children'],
+        const oldParentId = state.getIn(['notes', attrs.id.toString(), 'parentId']);
+        return state.setIn(['notes', attrs.id.toString(), 'parentId'], attrs.parentId.toString())
+            .updateIn(['notes', oldParentId.toString(), 'children'],
+                      children => children.splice(children.indexOf(attrs.id.toString()), 1))
+            .updateIn(['notes', attrs.parentId.toString(), 'children'],
                       children => {
-                          return insertElement(attrs.id, children.length, children, attrs);
+                          return insertElement(attrs.id.toString(), children.length, children, attrs);
                       })
     },
 
     [ActionTypes.DELETE_NOTE](state, {attrs}) {
-        const note = state.getIn(['notes', attrs.id]);
-        return state.deleteIn(['notes', attrs.id])
-            .updateIn(['notes', note.get('parentId'), 'children'],
-                      (children) => children.splice(children.indexOf(attrs.id), 1)
+        const note = state.getIn(['notes', attrs.id.toString()]);
+        return state.deleteIn(['notes', attrs.id.toString()])
+            .updateIn(['notes', note.get('parentId').toString(), 'children'],
+                      (children) => children.splice(children.indexOf(attrs.id.toString()), 1)
                      );
     },
 
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
-        return state.setIn(['view', 'activeNote', 'id'], attrs.id)
+        return state.setIn(['view', 'activeNote', 'id'], attrs.id.toString())
             .setIn(['view', 'activeNote', 'caretAtEnd'], attrs.caretAtEnd || false);
     },
 
     [ActionTypes.TOGGLE_NOTE_CHILDREN](state, {attrs}) {
-        let oldVal = state.getIn(['notes', attrs.id, 'hiddenChildren']);
-        return state.setIn(['notes', attrs.id, 'hiddenChildren'], !oldVal);
+        let oldVal = state.getIn(['notes', attrs.id.toString(), 'hiddenChildren']);
+        return state.setIn(['notes', attrs.id.toString(), 'hiddenChildren'], !oldVal);
     },
 
     [ActionTypes.IMPORT_OPML](state, {attrs}) {
         const {data} = attrs;
         let newState = parseWorkflowyOMPL(data, state);
         return newState;
+    },
+
+    [ActionTypes.SAVE_STATE](state) {
+        let stateJson = JSON.stringify(state.toJS());
+        fetch('/save', {method: 'post', body: stateJson,
+                        headers: {'Content-Type': 'application/json'}})
+            .then(() => console.info("Saved ok!"))
+            .catch(() => console.error("ERROR in save!"));
+        localStorage['my_state'] = stateJson;
+        return state;
+    },
+
+    [ActionTypes.LOAD_STATE](state, {attrs}) {
+        return fromJS(attrs.state);
     },
 
 });
@@ -132,7 +147,7 @@ function parseWorkflowyOMPL(data, state) {
     return createNoteFromXML(root, state, null);
 }
 
-function createNoteFromXML(xmlNote, state, parentId=0) {
+function createNoteFromXML(xmlNote, state, parentId="0") {
     let {state: newState, id} = parentId !== null // == null if xmlNote - <body>
         ? createNote(
             {
@@ -155,7 +170,7 @@ function createNoteFromXML(xmlNote, state, parentId=0) {
 // use this in ADD_NOTE
 function createNote(attrs, state) {
     let stateWithIncSeq = increaseSequence(state);
-    const id = getSequenceValue(stateWithIncSeq);
+    const id = getSequenceValue(stateWithIncSeq).toString();
 
     const fullAttrs = Object.assign(attrs, {id});
     const insertIndex = 0;
@@ -164,7 +179,7 @@ function createNote(attrs, state) {
     // console.log("hui", state);
     return {state: stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))
-            .updateIn(['notes', fullAttrs.parentId, 'children'],
+            .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
                       (children) => {
                           return insertElement(id, 0, children, attrs)
                       }),

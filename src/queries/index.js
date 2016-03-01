@@ -13,7 +13,8 @@ function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
           .update('children', children =>
                   children
                   .map((childId, id) => {
-                      let child = notes.getIn([childId])
+                      let child = notes.getIn([childId.toString()])
+                      console.log(childId, notes);
                       if (childCallback) {
                           child = childCallback(child, children, id, newCounter, acc); // callback
                       }
@@ -35,9 +36,9 @@ const rootNoteSelector = createSelector(
     rootIdSelector,
     (notes, rootId) => {
         if (!rootId) {
-            rootId = 0;
+            rootId = "0";
         }
-        let rootNote = notes.getIn([Number(rootId)]);
+        let rootNote = notes.getIn([rootId]);
         return rootNote;
     }
 );
@@ -52,7 +53,7 @@ export const currentRootNoteSelector = createSelector(
         let childCallback = (child, children, id, counter, acc) => {
             let newChild = child
                 .set('order', id)
-                .set('prevId', children.get(id - 1));
+                .set('prevId', children.get((Number(id) - 1).toString()));
             return newChild;
         };
         let noteCallback = (note, counter, acc) => {

@@ -54,7 +54,8 @@ const NotesApp = React.createClass({
             curRootNote, view, onNoteAdd,
             onNoteUpdate, onNoteDelete,
             onSetActiveNote, onNoteUpdatePosition,
-            pathToRoot, onToggleNoteChildren
+            pathToRoot, onToggleNoteChildren,
+            saveState
         } = this.props;
         const activeNote = view.get('activeNote');
         const hotkeysHandlers = {
@@ -79,6 +80,7 @@ const NotesApp = React.createClass({
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
                 <button className="button float-right" onClick={this.openImportModal}>Import</button>
+                <button className="button float-right" onClick={saveState}>Save</button>
 
                 <div className="notes-sidebar">
                 <NotesList notes={curRootNote.get('children')}
