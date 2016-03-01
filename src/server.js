@@ -2,8 +2,6 @@ import "app-module-path/register";
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import fs from 'fs';
-
 
 import React from 'react';
 import {renderToString} from 'react-dom/server';
@@ -11,6 +9,7 @@ import {match, RoutingContext} from 'react-router';
 import {Provider} from 'react-redux';
 import transit from 'transit-immutable-js';
 
+import saveStorage from 'server/storage';
 import routes from 'routes';
 import {addNote, loadState} from 'actions';
 import {notes} from 'queries';
@@ -18,24 +17,6 @@ import configureStore from 'store/configure-store';
 
 import {fromJS} from 'immutable';
 
-function pageTemplate(html, initialState) {
-    return `
-        <!doctype html>
-        <html>
-          <head>
-            <title>Kanban</title>
-            <script>
-                window.__INITIAL_STATE__ = '${transit.toJSON(initialState).replace(/\'/g, "\\\'")}';
-            </script>
-            <script src="/assets/bundle.js"></script>
-          </head>
-          <body>
-            <div id='root'>${html}</div>
-            <div id='dev_tools'></div>
-          </body>
-        </html>
-    `
-}
 
 function render(store, renderProps) {
     const renderedComponent = renderToString(
@@ -61,7 +42,7 @@ function routerMiddleware(req, res, next) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
 
-            const initialState = JSON.parse(fs.readFileSync(".saves/last_save.json", "utf8"));
+            const initialState = saveStorage.load();
             const store = configureStore({present: fromJS(initialState)});
             // const store = configureStore();
             // fillStore(store);
@@ -77,6 +58,26 @@ function routerMiddleware(req, res, next) {
     next();
 }
 
+function pageTemplate(html, initialState) {
+    return `
+        <!doctype html>
+        <html>
+          <head>
+            <title>Kanban</title>
+            <script>
+                window.__INITIAL_STATE__ = '${transit.toJSON(initialState).replace(/\'/g, "\\\'")}';
+            </script>
+            <script src="/assets/bundle.js"></script>
+          </head>
+          <body>
+            <div id='root'>${html}</div>
+            <div id='dev_tools'></div>
+          </body>
+        </html>
+    `
+}
+
+
 const app = express();
 app.use(routerMiddleware);
 app.use(bodyParser.json());
@@ -88,23 +89,7 @@ const server = app.listen(8080, () => {
     console.log('Example app listening at http://%s:%s', host, port)
 });
 
-function saveStateToFile(filename, data) {
-    var filepath = ".saves/" + filename;
-    fs.closeSync(fs.openSync(filepath, 'w'));
-    fs.writeFile(filepath, data, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        console.log("The state was saved! File %s", filename);
-    });
-}
-
 app.post('/save', function(req, res) {
-    var body = JSON.stringify(req.body);
-    console.log("Save state");
-    var filename = new Date().toISOString() + "_save.json";
-    saveStateToFile(filename, body);
-    saveStateToFile("last_save.json", body);
-
+    saveStorage.save(req.body);
     res.sendStatus(200);
 });
