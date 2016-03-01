@@ -10,6 +10,7 @@
     "dev-server": "nodemon --exec babel-node src/server.js",
     "dev-server-assets": "babel-node src/server-assets.js",
     "console": "babel-node",
+    "backup": "cp .saves/save.db .backups/`date -I's'`_backup.db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "babel": {
