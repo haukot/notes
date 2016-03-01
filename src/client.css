@@ -22,6 +22,10 @@ div[tabindex="-1"]:focus {
 
 /* utilites */
 
+body {
+    background-color: #eee;
+}
+
 .panel {
     margin: 20px;
 }
@@ -48,8 +52,10 @@ div[tabindex="-1"]:focus {
 /* app */
 
 .notes-sidebar {
-    border-right: 1px #cce solid;
-    height: 100%;
+    margin-bottom: 30px;
+    background-color: white;
+    padding: 3rem 3rem 250px 3rem;
+    border: 1px solid #aaa;
 }
 
 .notes-list {

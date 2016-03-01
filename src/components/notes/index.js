@@ -74,8 +74,8 @@ const NotesApp = React.createClass({
                         );
                     }).interpose(" > ")
                 }
-            <div className="row panel _full-height">
-                <div className="column column-50 _full-height">
+            <div className="row _full-height">
+                <div className="column column-50 notes-page _full-height">
                 <Search onChange={this.handleSearch} />
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
