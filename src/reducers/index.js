@@ -98,7 +98,8 @@ export default createReducer(initialState, {
 
     [ActionTypes.TOGGLE_NOTE_CHILDREN](state, {attrs}) {
         let oldVal = state.getIn(['notes', attrs.id.toString(), 'hiddenChildren']);
-        return state.setIn(['notes', attrs.id.toString(), 'hiddenChildren'], !oldVal);
+        return state.setIn(['notes', attrs.id.toString(), 'hiddenChildren'], !oldVal)
+            .setIn(['view', 'activeNote', 'id'], attrs.id.toString());
     },
 
     [ActionTypes.IMPORT_OPML](state, {attrs}) {

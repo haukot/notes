@@ -198,14 +198,19 @@ let NoteItem = React.createClass({
             '-over-bottom': isOver && !this.props.isOverTop,
             '-over-top': isOver && this.props.isOverTop,
         });
+        const bulletClasses = classNames({
+            "notes-item_bullet": true,
+            "-canExpandChildren": noteHasChildren && note.get('hiddenChildren')
+        });
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
                 connectDropTarget(
                     <div className={classes} key={note.get('id')}>
+                        { noteHasChildren &&
                         <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
                              { expandButtonSpan }
-                        </a>
-                        {connectDragSource(<a onClick={goToRoot} className="_link-without-decorations notes-item_bullet">
+                        </a> }
+                        {connectDragSource(<a onClick={goToRoot} className={bulletClasses}>
                                            </a>)}
                         <div className="notes-item_inner">
                         <div className="notes-item_title">

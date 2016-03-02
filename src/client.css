@@ -100,7 +100,21 @@ div.notes-item {
     left: -15px;
     cursor: pointer;
     text-align: center;
+    opacity: 0;
+    &:hover {
+        opacity: 1;
+    }
     .minus, .plus {
+        color: #666;
+        vertical-align: baseline;
+    }
+    .minus {
+        font-size: 24px;
+        line-height: 24px;
+    }
+    .plus {
+        font-size: 22px;
+        line-height: 27px;
     }
 }
 
@@ -114,6 +128,7 @@ div.notes-item {
     margin-top: 3px;
     margin-left: 5px;
     float: left;
+    text-decoration: none;
     &::after {
         $size: 7px;
         height: $size;
@@ -126,12 +141,20 @@ div.notes-item {
         top: 6.5px;
         left: 6.5px;
     }
-    &:hover::before {
-        border: 10.5px solid rgba(101, 109, 117, 0.4);
+    &::before {
+        opacity: 0;
         border-radius: 15px;
         position: absolute;
         display: block;
         content: " ";
+    }
+    &:hover::before, &.-canExpandChildren:hover::before {
+        opacity: 1;
+        border: 10.5px solid rgba(47, 48, 49, 0.4);
+    }
+    &.-canExpandChildren::before {
+        opacity: 1;
+        border: 10.5px solid rgba(174, 174, 174, 0.4);
     }
     &:hover + .notes-item_inner, &:hover + .notes-item_inner input {
         background-color: rgb(248, 248, 248);
