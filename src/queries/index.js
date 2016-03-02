@@ -72,7 +72,9 @@ export function pathToRoot(notes, note, acc = []) {
 
     let newAcc = acc;
     newAcc.push({id: note.get('id'), title: note.get('title')});
-    return pathToRoot(notes, notes.getIn([note.get('parentId')]), newAcc);
+    let parentNoteId = note.get('parentId');
+    parentNoteId = parentNoteId !== undefined && parentNoteId.toString();
+    return pathToRoot(notes, notes.getIn([parentNoteId]), newAcc);
 }
 
 export const pathToRootSelector = createSelector(
