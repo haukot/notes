@@ -4,7 +4,7 @@ import sqliteBackend from './sqliteBackend';
 
 function catchPromise(promise, callback, callbackFailure) {
     promise.then((data) => {
-        // console.log("Success!", data);
+        console.log("Success!");
         callback(data);
     }).catch((err) => {
         console.error("Error!", err);
