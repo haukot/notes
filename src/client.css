@@ -68,7 +68,7 @@ body {
 .notes-list .notes-list {
     border-left: 1px solid #eee;
     margin-left: 15px;
-    padding-left: 25px;
+    padding-left: 20px;
 }
 .notes-list .notes-list > .notes-item:last-child {
     margin-bottom: 8px;
