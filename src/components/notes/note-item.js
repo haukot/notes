@@ -7,6 +7,8 @@ import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
 import ContentEditable from 'react-contenteditable';
 
+import _ from 'lodash';
+
 import {placeCaretAtEnd} from '../../utils'
 
 import connectDragNDrop from '../../connectors/item_drag_drop_connect'

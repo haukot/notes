@@ -109,7 +109,7 @@ export default createReducer(initialState, {
     },
 
     [ActionTypes.SAVE_STATE](state) {
-        let stateJson = JSON.stringify(state.toJS());
+        let stateJson = JSON.stringify(state);
         fetch('/save', {method: 'post', body: stateJson,
                         headers: {'Content-Type': 'application/json'}})
             .then((response) => {

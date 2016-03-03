@@ -62,13 +62,14 @@ function routerMiddleware(req, res, next) {
 }
 
 function pageTemplate(html, initialState) {
+    let jsonStr = JSON.stringify(transit.toJSON(initialState));
     return `
         <!doctype html>
         <html>
           <head>
             <title>Kanban</title>
             <script>
-                window.__INITIAL_STATE__ = '${transit.toJSON(initialState).replace(/\'/g, "\\\'")}';
+               window.__INITIAL_STATE__ = ${jsonStr};
             </script>
             <script src="/assets/bundle.js"></script>
           </head>
