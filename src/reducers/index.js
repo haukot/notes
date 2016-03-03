@@ -16,7 +16,8 @@ function createReducer(initialState, handlers) {
         ActionTypes.TOGGLE_NOTE_CHILDREN,
         ActionTypes.SAVE_STATE,
     ];
-    return undoable(reducer, { filter: excludeAction(excludedActions) });
+    let withUndo = undoable(reducer, { filter: excludeAction(excludedActions) });
+    return withUndo;
 }
 
 function increaseSequence(state) {

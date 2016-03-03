@@ -7,8 +7,6 @@ import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
 import ContentEditable from 'react-contenteditable';
 
-import _ from 'lodash';
-
 import {placeCaretAtEnd} from '../../utils'
 
 import connectDragNDrop from '../../connectors/item_drag_drop_connect'
@@ -45,6 +43,7 @@ let NoteItem = React.createClass({
             }
         }
     },
+
     // FIXME как то объединить эти два метода?
     componentDidMount() {
         this.maybeFocusNote();
@@ -55,7 +54,6 @@ let NoteItem = React.createClass({
     },
 
     handleNoteUpdate(evt) {
-        // TODO ContentEditable send onChange after click, even if html not changed
         const changedTitle = evt.target.value;
         if (this.props.note.get('title') !== changedTitle) {
             this.props.onNoteUpdate({

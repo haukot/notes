@@ -1,11 +1,15 @@
-import {createStore, compose} from 'redux';
+import {createStore, compose, applyMiddleware} from 'redux';
 import reducer from 'reducers';
+import debounce from '../middlewares/debounce';
 
 import DevTools from 'containers/dev-tools';
 
 const finalCreateStore = compose(
     // Middleware you want to use in development:
     //applyMiddleware(d1, d2, d3),
+    applyMiddleware(
+        debounce
+    ),
     DevTools.instrument()
 )(createStore);
 

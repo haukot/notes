@@ -10,6 +10,11 @@ export function addNote(attrs) {
 export function updateNote(attrs) {
     return {
         type: types.UPDATE_NOTE,
+        meta: {
+            debounce: {
+                time: 1000
+            }
+        },
         attrs
     }
 }

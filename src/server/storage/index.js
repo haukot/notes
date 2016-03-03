@@ -29,7 +29,7 @@ const save = (data, callback, callbackFailure) => {
 const load = (callback, callbackFailure) => {
     console.log("Load state");
     try {
-        let res = sqliteBackend.load();
+        let res = fileBackend.load();
         if (res && res.then) {
             catchPromise(res, callback, callbackFailure);
         } else {
