@@ -23,14 +23,17 @@ export default () => dispatch => action => {
         key = type
     } = debounce;
 
+    return dispatch(action);
+    // if (type == "@@redux-undo/UNDO") console.log(type);
     if (!time || !key) {
         flushDebounced();
         return dispatch(action);
     }
 
     if (!debouncedFuns[key]) {
+        // let fun = (action) => { console.info('debounced dispatch', action.attrs.title); return dispatch(action) };
         debouncedFuns[key] = {
-            fun: _.throttle(dispatch, time),
+            fun: _.debounce(dispatch, time),
             flushed: false
         };
     }

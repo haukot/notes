@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
-import ContentEditable from 'react-contenteditable';
+import NoteItemEditor from './note-item-editor'
 
 import {placeCaretAtEnd} from '../../utils'
 
@@ -37,9 +37,9 @@ let NoteItem = React.createClass({
             //     return;
             // }
             if (this.props.activeNote.get('caretAtEnd')) {
-                placeCaretAtEnd(input);
+                // placeCaretAtEnd(input);
             } else {
-                input.focus();
+                // input.focus();
             }
         }
     },
@@ -53,8 +53,7 @@ let NoteItem = React.createClass({
         this.maybeFocusNote();
     },
 
-    handleNoteUpdate(evt) {
-        const changedTitle = evt.target.value;
+    handleNoteUpdate(changedTitle) {
         if (this.props.note.get('title') !== changedTitle) {
             this.props.onNoteUpdate({
                 id: this.props.note.get("id"),
@@ -157,13 +156,6 @@ let NoteItem = React.createClass({
     },
 
     render() {
-        const handlers = {
-            'addNote': (e) => this.handleAddNote(e, {after: this.props.note.get('id')}),
-            'tabNoteRight': this.handleTabNoteRight,
-            'tabNoteLeft': this.handleTabNoteLeft,
-            'goToUpNote': this.handleGoToUpNote,
-            'goToDownNote': this.handleGoToDownNote,
-        };
         const note = this.props.note;
         const {connectDragSource, connectDropTarget,
                isDragging, isOver, canDrop} = this.props;
@@ -202,6 +194,7 @@ let NoteItem = React.createClass({
             "notes-item_bullet": true,
             "-canExpandChildren": noteHasChildren && note.get('hiddenChildren')
         });
+        let needFocus = this.props.note.get('id') === this.props.activeNote.get('id');
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
         return (
                 connectDropTarget(
@@ -214,14 +207,9 @@ let NoteItem = React.createClass({
                                            </a>)}
                         <div className="notes-item_inner">
                         <div className="notes-item_title">
-                        <HotKeys handlers={handlers}>
-                        <ContentEditable className="clean notes-item_input" html={note.get('title') || ""}
-                            ref='title'
-                            onClick={this.handleSetActiveNote}
-                            onKeyUp={this.handleKeyUp}
-                            onKeyDown={this.handleKeyDown}
-                            onChange={this.handleNoteUpdate} />
-                        </HotKeys>
+                        <NoteItemEditor html={note.get('title')} needFocus={needFocus}
+                                        onChange={this.handleNoteUpdate}
+                        />
                         </div>
                         {children}
                         </div>
