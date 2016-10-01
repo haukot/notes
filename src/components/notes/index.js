@@ -49,6 +49,10 @@ const NotesApp = React.createClass({
         this.setState({importModalIsOpen: false});
     },
 
+    handleSearch() {
+        // TODO implement
+    },
+
     render() {
         const {
             curRootNote, view, onNoteAdd,
@@ -68,7 +72,7 @@ const NotesApp = React.createClass({
                 {
                     pathToRoot.reverse().map((path) => {
                         return (
-                            <Link className="_link-without-decorations" to={`/root/${path.get('id')}`}>
+                                <Link key={`link_${path.get('id')}`} className="_link-without-decorations" to={`/root/${path.get('id')}`}>
                                 { path.get('title') }
                             </Link>
                         );
@@ -76,7 +80,7 @@ const NotesApp = React.createClass({
                 }
             <div className="row _full-height">
                 <div className="column column-50 notes-page _full-height">
-                <Search onChange={this.handleSearch} />
+                <Search onChange={this.handleSearch} heading='search'/>
                 <button className="button" onClick={this.handleAddNote}>Add a note</button>
 
                 <button className="button float-right" onClick={this.openImportModal}>Import</button>

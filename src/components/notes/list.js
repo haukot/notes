@@ -9,8 +9,6 @@ let NotesList = React.createClass({
 
     propTypes: {
         notes: React.PropTypes.object.isRequired,
-        // onChange: React.PropTypes.func.isRequired,
-        // onCardChange: React.PropTypes.func.isRequired
     },
 
     mixins: [PureRenderMixin],

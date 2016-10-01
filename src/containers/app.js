@@ -12,10 +12,6 @@ import {addNote, updateNote, deleteNote,
 import { ActionCreators } from 'redux-undo';
 
 const App = React.createClass({
-    propTypes: {
-        notes: React.PropTypes.object.isRequired
-    },
-
     render() {
         const {dispatch, curRootNote, pathToRoot, view, globalOrder} = this.props;
         return (
