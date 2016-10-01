@@ -1,0 +1,10 @@
+version: '2'
+volumes:
+  node_modules:
+services:
+  js:
+    build: .
+    volumes:
+      - node_modules:/srv/notes/node_modules
+    ports:
+        - 4444:4444
