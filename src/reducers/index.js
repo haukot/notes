@@ -1,6 +1,7 @@
 import {fromJS} from 'immutable';
 import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
+import {getNotesTree} from './tree_utils.js';
 
 function createReducer(initialState, handlers) {
     const reducer = (state, action) => {
@@ -8,9 +9,9 @@ function createReducer(initialState, handlers) {
         if (handlers.hasOwnProperty(action.type)) {
             return handlers[action.type](state, action);
         } else {
-            return state
+            return state;
         }
-    }
+    };
     const excludedActions = [
         ActionTypes.SET_ACTIVE_NOTE,
         ActionTypes.TOGGLE_NOTE_CHILDREN,
@@ -31,8 +32,13 @@ function getSequenceValue(state) {
 const initialState = fromJS({
     sequence: 0,
     view: {
+        notesTree: {
+            tree: null, //notesTree
+            order: null, //hash order => note,
+            hash: null, //hash noteId => noteInTree
+        },
         /*
-           activeNote: {id:, caretAtEnd: false}
+           activeNote: {id:, caretAtEnd: false},
          */
     },
     notes: {
@@ -60,13 +66,15 @@ export default createReducer(initialState, {
 
         // console.log("parentId", fullAttrs);
         // console.log("hui", state);
-        return stateWithIncSeq
-            .setIn(['notes', id], fromJS(fullAttrs))
-            .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
-                      (children) => {
-                          return insertElement(id, 0, children, attrs)
-                      })
-            .setIn(['view', 'activeNote', 'id'], id);
+        const newState = stateWithIncSeq
+              .setIn(['notes', id], fromJS(fullAttrs))
+              .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
+                        (children) => {
+                            return insertElement(id, 0, children, attrs);
+                        })
+              .setIn(['view', 'activeNote', 'id'], id);
+        const notesTree = getNotesTree(newState.getIn(['notes']));
+        return newState.setIn(['view', 'notesTree'], notesTree);
     },
 
     [ActionTypes.UPDATE_NOTE](state, {attrs}) {
@@ -75,21 +83,25 @@ export default createReducer(initialState, {
 
     [ActionTypes.UPDATE_NOTE_POSITION](state, {attrs}) {
         const oldParentId = state.getIn(['notes', attrs.id.toString(), 'parentId']);
-        return state.setIn(['notes', attrs.id.toString(), 'parentId'], attrs.parentId.toString())
+        const newState = state.setIn(['notes', attrs.id.toString(), 'parentId'], attrs.parentId.toString())
             .updateIn(['notes', oldParentId.toString(), 'children'],
                       children => children.splice(children.indexOf(attrs.id.toString()), 1))
             .updateIn(['notes', attrs.parentId.toString(), 'children'],
                       children => {
                           return insertElement(attrs.id.toString(), children.length, children, attrs);
-                      })
+                      });
+        const notesTree = getNotesTree(newState.getIn(['notes']));
+        return newState.setIn(['view', 'notesTree'], notesTree);
     },
 
     [ActionTypes.DELETE_NOTE](state, {attrs}) {
         const note = state.getIn(['notes', attrs.id.toString()]);
-        return state.deleteIn(['notes', attrs.id.toString()])
+        const newState = state.deleteIn(['notes', attrs.id.toString()])
             .updateIn(['notes', note.get('parentId').toString(), 'children'],
                       (children) => children.splice(children.indexOf(attrs.id.toString()), 1)
                      );
+        const notesTree = getNotesTree(newState.getIn(['notes']));
+        return newState.setIn(['view', 'notesTree'], notesTree);
     },
 
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {

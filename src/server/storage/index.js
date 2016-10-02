@@ -27,18 +27,13 @@ const save = (data, callback, callbackFailure) => {
 }
 
 const load = (callback, callbackFailure) => {
-    console.log("Load state");
-    try {
-        let res = fileBackend.load();
-        if (res && res.then) {
-            catchPromise(res, callback, callbackFailure);
-        } else {
-            callback(res);
-        }
-    } catch (ex) {
-        console.error(ex);
-        callbackFailure();
-    }
-}
+    console.log('Load state');
+    return fileBackend.load().then((res) => {
+        return res;
+    }, (err) => {
+        console.error('Error!', err);
+        return new Promise().reject();
+    });
+};
 
 export default {load, save};
