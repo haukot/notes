@@ -16,6 +16,7 @@ import {notes} from 'queries';
 import configureStore from 'store/configure-store';
 
 import {fromJS} from 'immutable';
+import {EditorState, ContentState, convertToRaw} from 'draft-js';
 
 
 function render(store, renderProps) {
@@ -29,8 +30,9 @@ function render(store, renderProps) {
 }
 
 function fillStore(store) {
-    store.dispatch(addNote({title: 'Todo'}));
-    store.dispatch(addNote({title: 'In process'}));
+    let convert = (text) => convertToRaw(ContentState.createFromText(text));
+    store.dispatch(addNote({title: convert('Todo')}));
+    store.dispatch(addNote({title: convert('In process')}));
     // store.dispatch(loadState({state: initialState}));
 }
 

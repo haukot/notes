@@ -59,7 +59,7 @@ const NotesApp = React.createClass({
             onNoteUpdate, onNoteDelete,
             onSetActiveNote, onNoteUpdatePosition,
             pathToRoot, onToggleNoteChildren,
-            saveState
+            saveState, notes
         } = this.props;
         const activeNote = view.get('activeNote');
         const hotkeysHandlers = {
@@ -87,7 +87,7 @@ const NotesApp = React.createClass({
                 <button className="button float-right" onClick={saveState}>Save</button>
 
                 <div className="notes-sidebar">
-                <NotesList notes={curRootNote.get('children')}
+                <NotesList notes={notes}
                            cantBeDropTarget={false}
                            globalOrder={this.props.globalOrder}
                            parentNote={curRootNote}
@@ -102,9 +102,11 @@ const NotesApp = React.createClass({
                 </div>
 
                 </div>
+                {/*
                 <div className="column column-50 _full-height">
                     <NoteEdit note={activeNote} onNodeChange={onNoteUpdate} />
                 </div>
+                 */}
                 </div>
             </HotKeys>
              <ImportModal isOpen={this.state.importModalIsOpen}

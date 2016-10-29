@@ -1,0 +1,15 @@
+/* istanbul ignore next */'use strict';
+var /* istanbul ignore next */_immutable = require('immutable');
+var /* istanbul ignore next */_tree_utils = require('../tree_utils'); /* global expect, test */
+
+var _module = require('rewire')('../tree_utils');
+var notesIterator = _module.__get__('notesIterator');
+
+test('adds 1 + 2 to equal 3', function () {
+    var note = /* istanbul ignore next */(0, _immutable.fromJS)({});
+    var acc = 'newacc';
+    var counter = 2;
+    var noteCallback = function noteCallback(_note, _counter, _acc) {return { counter: counter, acc: acc, note: note };};
+    expect(notesIterator([], null, 0, 'oldacc', noteCallback, null)).
+    toBe({ counter: counter, acc: acc, note: note });
+});

@@ -30,11 +30,11 @@ const NoteItemEditor = React.createClass({
         return EditorState.push(editorState, newContentState, 'change-text');
     },
 
-    getInitialState() {
-        let initialEditorState = this.initialEditorState(this.props.html);
-        // let editorState = this.updateEditorState(initialEditorState, this.props.html);
-        return {editorState: this.updateEditorState(initialEditorState, this.props.html), html: this.props.html};
-    },
+    // getInitialState() {
+    //     let initialEditorState = this.initialEditorState(this.props.html);
+    //     // let editorState = this.updateEditorState(initialEditorState, this.props.html);
+    //     return {editorState: this.updateEditorState(initialEditorState, this.props.html), html: this.props.html};
+    // },
 
     // shouldComponentUpdate(nextProps) {
     //     return this.state.html !== nextProps.html;
@@ -53,13 +53,14 @@ const NoteItemEditor = React.createClass({
         // this.props.onChange(text);
     },
 
+
     render() {
         // const {editorState} = this.state;
         // let editorState = {editorState: thisgetEditorState(this.props.html)};
         // <HotKeys handlers={handlers}>
 
         // </HotKeys>
-        return <Editor editorState={this.state.editorState} ref='editor' onChange={this.onChange} />;
+        return <Editor editorState={this.props.html} ref='editor' onChange={this.props.onChange} />;
     }
 });
 export default NoteItemEditor;

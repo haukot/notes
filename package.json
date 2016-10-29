@@ -11,7 +11,7 @@
     "dev-server-assets": "babel-node src/server-assets.js",
     "console": "babel-node",
     "backup": "cp .saves/save.db .backups/`date -I's'`_backup.db",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "babel": {
     "presets": [
@@ -21,6 +21,11 @@
     "plugins": [
       "transform-object-rest-spread",
       "transform-object-assign"
+    ]
+  },
+  "jest": {
+    "testPathDirs": [
+      "src"
     ]
   },
   "dependencies": {
@@ -66,6 +71,7 @@
     "babel-preset-react": "^6.3.13",
     "concurrently": "^1.0.0",
     "css-loader": "^0.23.1",
+    "jest-cli": "^16.0.2",
     "nodemon": "^1.8.1",
     "normalize.css": "^3.0.3",
     "postcss-clearfix": "^0.2.0",
@@ -81,6 +87,7 @@
     "redux-devtools": "^3.0.1",
     "redux-devtools-dock-monitor": "^1.0.1",
     "redux-devtools-log-monitor": "^1.0.1",
+    "rewire": "^2.5.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"

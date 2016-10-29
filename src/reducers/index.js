@@ -2,6 +2,7 @@ import {fromJS} from 'immutable';
 import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
 import {getNotesTree} from './tree_utils.js';
+import {convertToRaw, ContentState} from 'draft-js';
 
 function createReducer(initialState, handlers) {
     const reducer = (state, action) => {
@@ -51,7 +52,7 @@ const initialState = fromJS({
     }
 }).setIn(['notes', "0"], fromJS({
             id: "0",
-            title: "root",
+            title: convertToRaw(ContentState.createFromText("root")),
             body: "",
             children: []
         }));

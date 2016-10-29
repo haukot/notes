@@ -4,7 +4,9 @@ import {connect} from 'react-redux'
 import Notes from 'components/notes';
 import Window from 'components/window';
 import {currentRootNoteSelector, viewSelector,
-        globalOrderSelector, pathToRootSelector} from 'queries';
+        globalOrderSelector, pathToRootSelector,
+        notesSelector
+       } from 'queries';
 import {addNote, updateNote, deleteNote,
         setActiveNote, updateNotePosition,
         toggleNoteChildren, importOPML,
@@ -13,13 +15,14 @@ import { ActionCreators } from 'redux-undo';
 
 const App = React.createClass({
     render() {
-        const {dispatch, curRootNote, pathToRoot, view, globalOrder} = this.props;
+        const {dispatch, notes, curRootNote, pathToRoot, view, globalOrder} = this.props;
         return (
             <div className="container">
                 <Notes curRootNote={curRootNote}
                        pathToRoot={pathToRoot}
                        globalOrder={globalOrder}
                        view={view}
+                       notes={notes}
                        onNoteAdd={attrs => dispatch(addNote(attrs))}
                        onNoteUpdate={attrs => dispatch(updateNote(attrs))}
                        onNoteUpdatePosition={attrs => dispatch(updateNotePosition(attrs))}
@@ -44,6 +47,7 @@ const App = React.createClass({
 
 function mapStateToProps(state, props) {
     return {curRootNote: currentRootNoteSelector(state, props),
+            notes: notesSelector(state, props),
             pathToRoot: pathToRootSelector(state, props),
             view: viewSelector(state, props),
             globalOrder: globalOrderSelector(state, props)};

@@ -1,6 +1,6 @@
 import {fromJS} from 'immutable';
 
-function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
+export function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
     let newCounter = counter;
     let res = noteCallback(note, counter, acc);
     let newAcc = res.acc;
@@ -26,22 +26,35 @@ function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
     return {counter: newCounter, note: res.note, acc: res.acc};
 }
 
+// TODO ненужна?
+export function tree(notes, rootNote=notes.getIn(['0'])) {
+    return rootNote.update('children', children => children.map((childId) => {
+        return tree(notes, notes.getIn([childId]));
+    }));
+}
+
+export function order(notes, rootNote=notes.getIn(['0'])) {
+    return rootNote.getIn(['children']).reduce((acc, childId) => {
+        return acc.concat(order(notes, notes.getIn([childId])));
+    }, [rootNote.get('id')]);
+}
+
 export function getNotesTree(notes, rootNote=notes.getIn(['0'])) {
-    let childCallback = (child, children, id, counter, acc) => {
-        let newChild = child
-            .set('order', id)
-            .set('prevId', children.get((Number(id) - 1).toString()));
-        return newChild;
-    };
-    let noteCallback = (note, counter, acc) => {
-        const newNote = note.set('globalOrder', counter);
-        acc.notesHash[note.get('id')] = note;
-        acc.notesOrder[counter] = note;
-        return {note: newNote, acc};
-    };
-    let startAcc = {notesHash: {}, notesOrder: {}};
-    let {counter, note, acc} = notesIterator(notes, rootNote, 0, startAcc,
-                                        noteCallback, childCallback);
-    // console.log("notes", note.toJS());
-    return {tree: note, order: fromJS(acc.notesOrder), hash: acc.notesHash};
+    // let childCallback = (child, children, id, counter, acc) => {
+    //     let newChild = child
+    //         .set('order', id)
+    //         .set('prevId', children.get((Number(id) - 1).toString()));
+    //     return newChild;
+    // };
+    // let noteCallback = (note, counter, acc) => {
+    //     const newNote = note.set('globalOrder', counter);
+    //     acc.notesOrder[counter] = note;
+    //     return {note: newNote, acc};
+    // };
+    // let startAcc = {notesOrder: {}};
+    // let {counter, note, acc} = notesIterator(notes, rootNote, 0, startAcc,
+    //                                     noteCallback, childCallback);
+    // // console.log("notes", note.toJS());
+    // return {tree: note, order: fromJS(acc.notesOrder)};
+    return {tree: tree(notes, rootNote), order: order(notes, rootNote)};
 }

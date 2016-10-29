@@ -169,7 +169,7 @@ let NoteItem = React.createClass({
                 : <span className="minus">-</span>;
             if (!note.get('hiddenChildren')) {
                 children = (<NotesList
-                            notes={note.get('children')}
+                            notes={this.props.notes}
                             parentNote={note}
                             cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}

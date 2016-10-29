@@ -17,12 +17,15 @@ let NotesList = React.createClass({
     //     this.props.onChange({id: this.props.section.get('id'), heading});
     // },
 
-    renderNotes(notes) {
-        return (notes.map((note, index) => {
-            const lastElem = index === notes.count() - 1;
+    renderNotes() {
+        let children = this.props.parentNote.get('children');
+        return children.map((noteId, index) => {
+            let note = this.props.notes.get(noteId);
+            const lastElem = index === children.count() - 1;
             return (
                     <NoteItem key={note.get('id')}
                             note={note}
+                            notes={this.props.notes}
                             lastInList={lastElem}
                             cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}
@@ -36,13 +39,13 @@ let NotesList = React.createClass({
                             onToggleNoteChildren={this.props.onToggleNoteChildren}
                     />
             );
-        }));
+        });
     },
 
     render() {
         return (
             <div className="notes-list">
-                {this.renderNotes(this.props.notes)}
+                {this.renderNotes()}
             </div>
         );
     }
