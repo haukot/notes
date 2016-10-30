@@ -2,7 +2,8 @@ import {fromJS} from 'immutable';
 import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
 import {getNotesTree} from './tree_utils.js';
-import {createRichFromText, createRawFromText} from '../utils/editor';
+import {createRichFromText} from '../utils/editor';
+import {serializeState} from '../utils/save';
 
 function createReducer(initialState, handlers) {
     const reducer = (state, action) => {
@@ -52,7 +53,7 @@ const initialState = fromJS({
     }
 }).setIn(['notes', '0'], fromJS({
     id: '0',
-    title: createRawFromText('root'),
+    title: createRichFromText('root'),
     body: '',
     children: []
 }));
@@ -62,10 +63,8 @@ export default createReducer(initialState, {
         let stateWithIncSeq = increaseSequence(state);
         const id = getSequenceValue(stateWithIncSeq);
 
-        if (!attrs.title) {
-            attrs.title = createRichFromText();
-        }
-        const fullAttrs = Object.assign(attrs, {id});
+        let title = createRichFromText(attrs.title);
+        const fullAttrs = Object.assign(attrs, {id, title});
         const insertIndex = 0;
 
         // console.log('parentId', fullAttrs);
@@ -128,7 +127,7 @@ export default createReducer(initialState, {
     },
 
     [ActionTypes.SAVE_STATE](state) {
-        let stateJson = JSON.stringify(state);
+        let stateJson = serializeState(state);
         fetch('/save', {method: 'post', body: stateJson,
                         headers: {'Content-Type': 'application/json'}})
             .then((response) => {

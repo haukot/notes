@@ -12,17 +12,10 @@ import Modal from 'react-modal';
 import routes from 'routes';
 import configureStore from 'store/configure-store';
 import DevTools from 'containers/dev-tools';
-import {deserialize} from './utils/editor';
-
+import {deserializeState} from './utils/save';
 
 const history = createBrowserHistory();
-let initialState = transit.fromJSON(window.__INITIAL_STATE__);
-// TODO для past и future не работает
-// Object.keys(initialState).map((key) => {
-//     initialState[key] = // в past - Array, в present - текущий стейт мапой
-// });
-initialState.present = initialState.present.updateIn(['notes'], (notes) =>
-                                    notes.map((note) => note.updateIn(['title'], deserialize)));
+let initialState = deserializeState(window.__INITIAL_STATE__);
 const store = configureStore(initialState);
 
 const renderApp = () => {

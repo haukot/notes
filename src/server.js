@@ -16,8 +16,8 @@ import {notes} from 'queries';
 import configureStore from 'store/configure-store';
 
 import {fromJS} from 'immutable';
+import {serializeState, deserializeState} from './utils/save';
 import {createRawFromText} from './utils/editor';
-
 
 function render(store, renderProps) {
     const renderedComponent = renderToString(
@@ -30,8 +30,8 @@ function render(store, renderProps) {
 }
 
 function fillStore(store) {
-    store.dispatch(addNote({title: createRawFromText('Todo')}));
-    store.dispatch(addNote({title: createRawFromText('In process')}));
+    store.dispatch(addNote({title: 'Todo'}));
+    store.dispatch(addNote({title: 'In process'}));
     // store.dispatch(loadState({state: initialState}));
 }
 
@@ -42,9 +42,9 @@ function routerMiddleware(req, res, next) {
         } else if (redirectLocation) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search);
         } else if (renderProps) {
-            savesStorage.load().then((initialState) => {
+            savesStorage.load().then((stateJson) => {
                 console.log('Load store success - get initialState');
-                return configureStore({present: fromJS(initialState)});
+                return configureStore(deserializeState(stateJson));
                 // console.log(store.getState().present.getIn(['notes']));
             }, () => {
                 console.log('Load store failed - fill store');
@@ -64,7 +64,7 @@ function routerMiddleware(req, res, next) {
 }
 
 function pageTemplate(html, initialState) {
-    let jsonStr = JSON.stringify(transit.toJSON(initialState));
+    let jsonStr = serializeState(initialState.present);
     return `
         <!doctype html>
         <html>
