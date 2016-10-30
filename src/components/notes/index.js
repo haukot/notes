@@ -18,7 +18,7 @@ const NotesApp = React.createClass({
     mixins: [PureRenderMixin],
 
     getInitialState() {
-        return {importModalIsOpen: false};
+        return {importModalIsOpen: false, leftSide: 'nestedList'};
     },
 
     // FIXME duplicate with list
@@ -51,6 +51,10 @@ const NotesApp = React.createClass({
         }).interpose(' > ');
     },
 
+    handleRenderLeftSide(type) {
+        this.setState({leftSide: type});
+    },
+
     render() {
         const {
             curRootNote, view, onNoteAdd,
@@ -63,6 +67,23 @@ const NotesApp = React.createClass({
             'undo': this.props.onUndo,
             'redo': this.props.onRedo,
         };
+        let leftSide = null;
+        if (this.state.leftSide === 'editor') {
+            leftSide = <NoteEdit onNodeChange={onNoteUpdate} />;
+        } else if (this.state.leftSide === 'nestedList') {
+            leftSide = <NotesList notes={notes}
+                                  cantBeDropTarget={false}
+                                  globalOrder={this.props.globalOrder}
+                                  parentNote={curRootNote}
+                                  activeNote={view.get('activeNote')}
+                                  onNoteAdd={onNoteAdd}
+                                  onNoteUpdate={onNoteUpdate}
+                                  onNoteUpdatePosition={onNoteUpdatePosition}
+                                  onNoteDelete={onNoteDelete}
+                                  onSetActiveNote={onSetActiveNote}
+                                           onToggleNoteChildren={onToggleNoteChildren}
+                       />;
+        }
         return (
             <div>
                 <NotesHotKeys handlers={hotkeysHandlers}>
@@ -74,28 +95,16 @@ const NotesApp = React.createClass({
 
                             <button className="button float-right" onClick={this.openImportModal}>Import</button>
                             <button className="button float-right" onClick={saveState}>Save</button>
+                            <span className="delimiter float-right"></span>
+                            <Link to="/editor" className="button button-black float-right"> Editor </Link>
 
                             <div className="notes-sidebar">
-                                <NotesList notes={notes}
-                                           cantBeDropTarget={false}
-                                           globalOrder={this.props.globalOrder}
-                                           parentNote={curRootNote}
-                                           activeNote={view.get('activeNote')}
-                                           onNoteAdd={onNoteAdd}
-                                           onNoteUpdate={onNoteUpdate}
-                                           onNoteUpdatePosition={onNoteUpdatePosition}
-                                           onNoteDelete={onNoteDelete}
-                                           onSetActiveNote={onSetActiveNote}
-                                           onToggleNoteChildren={onToggleNoteChildren}
-                                />
+                                { leftSide }
                             </div>
 
                         </div>
-                        {/*
-                            <div className="column column-50 _full-height">
-                            <NoteEdit note={activeNote} onNodeChange={onNoteUpdate} />
-                            </div>
-                          */}
+                        <div className="column column-50 _full-height">
+                        </div>
                     </div>
                 </NotesHotKeys>
                 <ImportModal isOpen={this.state.importModalIsOpen}
