@@ -199,10 +199,12 @@ function createNote(attrs, state) {
     const fullAttrs = Object.assign(attrs, {id});
     const insertIndex = 0;
 
-    return {state: stateWithIncSeq
-            .setIn(['notes', id], fromJS(fullAttrs))
+    return {
+        state: stateWithIncSeq.setIn(['notes', id], fromJS(fullAttrs))
             .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
                       (children) => {
                           return insertElement(id, 0, children, attrs);
-                      }), id};
+                      }),
+        id
+    };
 }
