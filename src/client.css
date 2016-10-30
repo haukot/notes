@@ -201,6 +201,14 @@ div.notes-item {
     height: 90%;
 }
 
+
+/* styles for editor(now facebook draft) */
+.public-DraftEditor-content {
+    outline: none;
+}
+
+
+
 /* generic styles for modal */
 .ReactModal__Overlay {
   -webkit-perspective: 600;

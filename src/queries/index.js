@@ -1,77 +1,25 @@
 import {fromJS} from 'immutable';
-import { createSelector } from 'reselect'
+import { createSelector } from 'reselect';
 
-function notesIterator(notes, note, counter, acc, noteCallback, childCallback) {
-    let newCounter = counter;
-    const res = noteCallback(note, counter, acc);
-    let newAcc = res.acc;
-    let newNote = res.note
-    if (!newNote.get('children') || newNote.get('children').count() <= 0) {
-        return {counter: newCounter, acc: newAcc, note: newNote};
-    }
-    newNote = newNote
-          .update('children', children =>
-                  children
-                  .map((childId, id) => {
-                      let child = notes.getIn([childId.toString()])
-                      if (childCallback) {
-                          child = childCallback(child, children, id, newCounter, acc); // callback
-                      }
-                      const expand = notesIterator(notes, child, newCounter + 1,
-                                                   newAcc, noteCallback, childCallback);
-                      newCounter = expand.counter;
-                      newAcc = Object.assign(newAcc, expand.acc);
-                      return expand.note;
-                  })
-                 );
-    return {counter: newCounter, note: newNote, acc: newAcc};
-}
-
-const notesSelector = (state) => state.present.getIn(['notes'])
-const rootIdSelector = (state, props) => props.params.id;
-
-const rootNoteSelector = createSelector(
-    notesSelector,
-    rootIdSelector,
-    (notes, rootId) => {
-        if (!rootId) {
-            rootId = "0";
-        }
-        let rootNote = notes.getIn([rootId]);
-        return rootNote;
-    }
-);
-
+export const notesSelector = (state) => state.present.getIn(['notes']);
+const notesTreeSelector = (state) => state.present.getIn(['view', 'notesTree']);
+const rootIdSelector = (state, props) => props.params.id || '0';
 
 export const viewSelector = (state) => state.present.getIn(['view']);
 
 export const currentRootNoteSelector = createSelector(
     notesSelector,
-    rootNoteSelector,
-    (notes, rootNote) => {
-        let childCallback = (child, children, id, counter, acc) => {
-            let newChild = child
-                .set('order', id)
-                .set('prevId', children.get((Number(id) - 1).toString()));
-            return newChild;
-        };
-        let noteCallback = (note, counter, acc) => {
-            const newNote = note.set('globalOrder', counter);
-            return {note: newNote, acc}
-        };
-        let {counter, note} = notesIterator(notes, rootNote, 0, {},
-                                            noteCallback, childCallback);
-        // console.log("notes", note.toJS());
-        return note;
+    rootIdSelector,
+    (notes, rootId) => {
+        return notes.getIn([rootId]);
     }
-)
-
+);
 
 export function pathToRoot(notes, note, acc = []) {
     if (!note) return fromJS(acc);
 
     let newAcc = acc;
-    newAcc.push({id: note.get('id'), title: note.get('title')});
+    newAcc.push({id: note.get('id'), title: note.get('title').getCurrentContent().getPlainText(" ")});
     let parentNoteId = note.get('parentId');
     parentNoteId = parentNoteId !== undefined && parentNoteId.toString();
     return pathToRoot(notes, notes.getIn([parentNoteId]), newAcc);
@@ -85,21 +33,9 @@ export const pathToRootSelector = createSelector(
     }
 );
 
-
-// TODO надо globalOrder и order засунуть в view стейт, чтобы не
-// пересчитывать на каждое движение
 export const globalOrderSelector = createSelector(
-    notesSelector,
-    rootNoteSelector,
-    (notes, rootNote) => {
-        let noteCallback = (note, counter, acc) => {
-            let newAcc = acc;
-            newAcc[counter] = note;
-            return {note, acc: newAcc};
-        };
-        let {counter, acc} = notesIterator(notes, rootNote, 0, {},
-                                           noteCallback, null);
-        // console.log("acc", fromJS(acc).toJS());
-        return fromJS(acc);
+    notesTreeSelector,
+    (notesTree) => {
+        return notesTree.order;
     }
 );

@@ -6,7 +6,6 @@ export default React.createClass({
 
     propTypes: {
         note: React.PropTypes.object.isRequired,
-        // onChange: React.PropTypes.func.isRequired,
         // onCardChange: React.PropTypes.func.isRequired
     },
 

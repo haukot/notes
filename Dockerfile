@@ -8,4 +8,6 @@ WORKDIR /srv/notes
 
 RUN npm install
 
+RUN alias npm-exec='PATH=$(npm bin):$PATH'
+
 CMD ["npm", "run", "dev"]

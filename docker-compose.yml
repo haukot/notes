@@ -5,6 +5,7 @@ services:
   js:
     build: .
     volumes:
+      - .:/srv/notes
       - node_modules:/srv/notes/node_modules
     ports:
         - 4444:4444

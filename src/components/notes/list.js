@@ -1,7 +1,7 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-import NoteItem from './note-item';
+import NoteItem from './note';
 
 
 let NotesList = React.createClass({
@@ -9,42 +9,38 @@ let NotesList = React.createClass({
 
     propTypes: {
         notes: React.PropTypes.object.isRequired,
-        // onChange: React.PropTypes.func.isRequired,
-        // onCardChange: React.PropTypes.func.isRequired
     },
 
     mixins: [PureRenderMixin],
 
-    // handleHeadingChange(heading) {
-    //     this.props.onChange({id: this.props.section.get('id'), heading});
-    // },
-
-    renderNotes(notes) {
-        return (notes.map((note, index) => {
-            const lastElem = index === notes.count() - 1;
+    renderNotes() {
+        let children = this.props.parentNote.get('children');
+        return children.map((noteId, index) => {
+            let note = this.props.notes.get(noteId);
             return (
-                    <NoteItem key={note.get('id')}
-                            note={note}
-                            lastInList={lastElem}
-                            cantBeDropTarget={this.props.cantBeDropTarget}
-                            globalOrder={this.props.globalOrder}
-                            parentNote={this.props.parentNote}
-                            activeNote={this.props.activeNote}
-                            onNoteAdd={this.props.onNoteAdd}
-                            onNoteUpdate={this.props.onNoteUpdate}
-                            onNoteUpdatePosition={this.props.onNoteUpdatePosition}
-                            onNoteDelete={this.props.onNoteDelete}
-                            onSetActiveNote={this.props.onSetActiveNote}
-                            onToggleNoteChildren={this.props.onToggleNoteChildren}
-                    />
+                <NoteItem key={note.get('id')}
+                          note={note}
+                          notes={this.props.notes}
+                          order={index}
+                          cantBeDropTarget={this.props.cantBeDropTarget}
+                          globalOrder={this.props.globalOrder}
+                          parentNote={this.props.parentNote}
+                          activeNote={this.props.activeNote}
+                          onNoteAdd={this.props.onNoteAdd}
+                          onNoteUpdate={this.props.onNoteUpdate}
+                          onNoteUpdatePosition={this.props.onNoteUpdatePosition}
+                          onNoteDelete={this.props.onNoteDelete}
+                          onSetActiveNote={this.props.onSetActiveNote}
+                          onToggleNoteChildren={this.props.onToggleNoteChildren}
+                />
             );
-        }));
+        });
     },
 
     render() {
         return (
             <div className="notes-list">
-                {this.renderNotes(this.props.notes)}
+                {this.renderNotes()}
             </div>
         );
     }

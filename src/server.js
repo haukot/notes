@@ -16,6 +16,7 @@ import {notes} from 'queries';
 import configureStore from 'store/configure-store';
 
 import {fromJS} from 'immutable';
+import {createRawFromText} from './utils/editor';
 
 
 function render(store, renderProps) {
@@ -29,30 +30,31 @@ function render(store, renderProps) {
 }
 
 function fillStore(store) {
-    store.dispatch(addNote({title: 'Todo'}));
-    store.dispatch(addNote({title: 'In process'}));
+    store.dispatch(addNote({title: createRawFromText('Todo')}));
+    store.dispatch(addNote({title: createRawFromText('In process')}));
     // store.dispatch(loadState({state: initialState}));
 }
 
 function routerMiddleware(req, res, next) {
     match({routes, location: req.url}, (error, redirectLocation, renderProps) => {
         if (error) {
-            res.status(500).send(error.message)
+            res.status(500).send(error.message);
         } else if (redirectLocation) {
-            res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+            res.redirect(302, redirectLocation.pathname + redirectLocation.search);
         } else if (renderProps) {
-            savesStorage.load((initialState) => {
-                let store = null;
-                if(initialState) {
-                    store = configureStore({present: fromJS(initialState)});
-                } else {
-                    store = configureStore();
-                    fillStore(store);
-                }
-
+            savesStorage.load().then((initialState) => {
+                console.log('Load store success - get initialState');
+                return configureStore({present: fromJS(initialState)});
                 // console.log(store.getState().present.getIn(['notes']));
-
-                const pageHtml = render(store, renderProps);
+            }, () => {
+                console.log('Load store failed - fill store');
+                let store = configureStore();
+                fillStore(store);
+                return store;
+            }).then((store) => {
+                console.log('render page');
+                // const pageHtml = render(store, renderProps);
+                const pageHtml = pageTemplate("", store.getState());
 
                 res.status(200).send(pageHtml);
                 res.end();
