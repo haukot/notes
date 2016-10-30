@@ -14,9 +14,6 @@ import Search from './search';
 import NotesList from './list';
 import NoteEdit from './note-edit';
 import ImportModal from './import-modal';
-import {EditorState} from 'draft-js';
-
-
 
 const hotkeysMap = {
     'addNote': 'enter',
@@ -40,8 +37,7 @@ const NotesApp = React.createClass({
     // FIXME duplicate with list
     handleAddNote() {
         this.props.onNoteAdd({
-            parentId: this.props.curRootNote.get('id'),
-            title: EditorState.createEmpty()
+            parentId: this.props.curRootNote.get('id')
         });
     },
 

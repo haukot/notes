@@ -12,7 +12,7 @@ import Modal from 'react-modal';
 import routes from 'routes';
 import configureStore from 'store/configure-store';
 import DevTools from 'containers/dev-tools';
-import {EditorState, convertFromRaw} from 'draft-js';
+import {deserialize} from './utils/editor';
 
 
 const history = createBrowserHistory();
@@ -22,13 +22,7 @@ let initialState = transit.fromJSON(window.__INITIAL_STATE__);
 //     initialState[key] = // в past - Array, в present - текущий стейт мапой
 // });
 initialState.present = initialState.present.updateIn(['notes'], (notes) =>
-                              notes.map((note) =>
-                                        note.updateIn(['title'], (jsonTitle) => {
-                                            let content = convertFromRaw(jsonTitle.toJS());
-                                            return EditorState.createWithContent(content);
-                                        })
-                                       )
-                             );
+                                    notes.map((note) => note.updateIn(['title'], deserialize)));
 const store = configureStore(initialState);
 
 const renderApp = () => {

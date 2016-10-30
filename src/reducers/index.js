@@ -2,7 +2,7 @@ import {fromJS} from 'immutable';
 import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
 import {getNotesTree} from './tree_utils.js';
-import {EditorState, convertToRaw, ContentState} from 'draft-js';
+import {createRichFromText, createRawFromText} from '../utils/editor';
 
 function createReducer(initialState, handlers) {
     const reducer = (state, action) => {
@@ -51,17 +51,20 @@ const initialState = fromJS({
          */
     }
 }).setIn(['notes', "0"], fromJS({
-            id: "0",
-            title: convertToRaw(ContentState.createFromText("root")),
-            body: "",
-            children: []
-        }));
+    id: "0",
+    title: createRawFromText("root"),
+    body: "",
+    children: []
+}));
 
 export default createReducer(initialState, {
     [ActionTypes.ADD_NOTE](state, {attrs}) {
         let stateWithIncSeq = increaseSequence(state);
         const id = getSequenceValue(stateWithIncSeq);
 
+        if (!attrs.title) {
+            attrs.title = createRichFromText();
+        }
         const fullAttrs = Object.assign(attrs, {id});
         const insertIndex = 0;
 
@@ -173,7 +176,7 @@ function createNoteFromXML(xmlNote, state, parentId="0") {
     let {state: newState, id} = parentId !== null // == null if xmlNote - <body>
         ? createNote(
             {
-                title: EditorState.createWithContent(ContentState.createFromText(xmlNote.getAttribute('text'))),
+                title: createRichFromText(xmlNote.getAttribute('text')),
                 body: xmlNote.getAttribute('note'),
                 children: [],
                 hiddenChildren: false,

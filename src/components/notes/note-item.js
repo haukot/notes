@@ -6,7 +6,6 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
 import NoteItemEditor from './note-item-editor'
-import {EditorState} from 'draft-js';
 
 import {placeCaretAtEnd} from '../../utils'
 
@@ -103,8 +102,7 @@ let NoteItem = React.createClass({
     handleAddNote(e) {
         this.props.onNoteAdd({
             parentId: this.props.parentNote.get('id'),
-            after: this.props.note.get('id'),
-            title: EditorState.createEmpty()
+            after: this.props.note.get('id')
         });
         e.preventDefault();
         e.stopPropagation();
