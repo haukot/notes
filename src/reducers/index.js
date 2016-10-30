@@ -2,7 +2,7 @@ import {fromJS} from 'immutable';
 import undoable, {excludeAction} from 'redux-undo';
 import * as ActionTypes from 'constants/action-types';
 import {getNotesTree} from './tree_utils.js';
-import {convertToRaw, ContentState} from 'draft-js';
+import {EditorState, convertToRaw, ContentState} from 'draft-js';
 
 function createReducer(initialState, handlers) {
     const reducer = (state, action) => {
@@ -27,7 +27,7 @@ function increaseSequence(state) {
 }
 
 function getSequenceValue(state) {
-    return state.getIn(['sequence']);
+    return state.getIn(['sequence']).toString();
 }
 
 const initialState = fromJS({
@@ -60,7 +60,7 @@ const initialState = fromJS({
 export default createReducer(initialState, {
     [ActionTypes.ADD_NOTE](state, {attrs}) {
         let stateWithIncSeq = increaseSequence(state);
-        const id = getSequenceValue(stateWithIncSeq).toString();
+        const id = getSequenceValue(stateWithIncSeq);
 
         const fullAttrs = Object.assign(attrs, {id});
         const insertIndex = 0;
@@ -74,6 +74,7 @@ export default createReducer(initialState, {
                             return insertElement(id, 0, children, attrs);
                         })
               .setIn(['view', 'activeNote', 'id'], id);
+
         const notesTree = getNotesTree(newState.getIn(['notes']));
         return newState.setIn(['view', 'notesTree'], notesTree);
     },
@@ -106,6 +107,7 @@ export default createReducer(initialState, {
     },
 
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
+        console.log("SET ACTIVE NOTE");
         return state.setIn(['view', 'activeNote', 'id'], attrs.id.toString())
             .setIn(['view', 'activeNote', 'caretAtEnd'], attrs.caretAtEnd || false);
     },
@@ -171,7 +173,7 @@ function createNoteFromXML(xmlNote, state, parentId="0") {
     let {state: newState, id} = parentId !== null // == null if xmlNote - <body>
         ? createNote(
             {
-                title: xmlNote.getAttribute('text'),
+                title: EditorState.createWithContent(ContentState.createFromText(xmlNote.getAttribute('text'))),
                 body: xmlNote.getAttribute('note'),
                 children: [],
                 hiddenChildren: false,
@@ -190,7 +192,7 @@ function createNoteFromXML(xmlNote, state, parentId="0") {
 // use this in ADD_NOTE
 function createNote(attrs, state) {
     let stateWithIncSeq = increaseSequence(state);
-    const id = getSequenceValue(stateWithIncSeq).toString();
+    const id = getSequenceValue(stateWithIncSeq);
 
     const fullAttrs = Object.assign(attrs, {id});
     const insertIndex = 0;

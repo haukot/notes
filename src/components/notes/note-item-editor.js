@@ -2,80 +2,71 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState, ContentState, SelectionState, Modifier} from 'draft-js';
 
+console.error = (function() {
+    var error = console.error
+
+    return function(exception) {
+        if ((exception + '').indexOf('Warning: A component is `contentEditable`') != 0) {
+            error.apply(console, arguments)
+        }
+    }
+})()
+
 const NoteItemEditor = React.createClass({
-    initialEditorState(text) {
-        let state = text
-            ? EditorState.createWithContent(ContentState.createFromText(this.props.html))
-            : EditorState.createEmpty();
-        return state;
-    },
-
-    updateEditorState(editorState, newText) {
-        let selectionState = editorState.getSelection();
-        let offset = selectionState.getStartOffset();
-
-        let contentState = editorState.getCurrentContent();
-        let block = contentState.getLastBlock();
-        let newBlock = block.merge({text: newText});
-
-        var newContentState = contentState.merge({
-            blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
-            // selectionAfter: selectionState.merge({
-            //     anchorOffset: offset + newText.length,
-            //     focusOffset: offset + newText.length,
-            // })
-        });
-        // let newSelectionState = selectionState.merge({anchorOffset: 0, focusOffset: newText.length});
-        // let newContentState = Modifier.replaceText(contentState, newSelectionState, newText);
-        return EditorState.push(editorState, newContentState, 'change-text');
-    },
-
     // getInitialState() {
-    //     let initialEditorState = this.initialEditorState(this.props.html);
-    //     // let editorState = this.updateEditorState(initialEditorState, this.props.html);
-    //     return {editorState: this.updateEditorState(initialEditorState, this.props.html), html: this.props.html};
+    //     return {editorState: EditorState.createWithContent(this.props.value),
+    //             contentState: this.props.value};
     // },
 
-    // shouldComponentUpdate(nextProps) {
-    //     return this.state.html !== nextProps.html;
-    // },
-
-    // componentDidUpdate() {
-    //     console.log('update');
-    //     this.setState({editorState: this.updateEditorState(this.state.editorState, this.props.html),
-    //                    html: this.props.html})
-    // },
-
-    onChange(editorState) {
-        // console.log(editorState.toJS());
-        this.setState({editorState: editorState});
-        // let text = editorState.getCurrentContent().getPlainText();
-        // this.props.onChange(text);
+    componentDidMount() {
+        if (this.props.needFocus) {
+            this.refs.editor.focus();
+        }
     },
 
+    componentWillReceiveProps(newProps, oldProps) {
+        if (newProps.needFocus && !this.props.needFocus) {
+            this.refs.editor.focus();
+        }
+        // if (newProps.value !== this.state.contentState) {
+        //     this.setState({
+        //         editorState: EditorState.createWithContent(this.props.value),
+        //         contentState: this.props.value
+        //     });
+        // }
+    },
+
+    // onChange(editorState) {
+    //     this.setState({editorState: editorState, contentState: editorState.getCurrenContent()}, () => {
+    //         this.props.onChange(this.state.contentState);
+    //     });
+    //     // let text = editorState.getCurrentContent().getPlainText();
+    // },
+
+    handleKeyCommand(command) {
+        if (command === 'backspace' || command === 'backspace-word') {
+            if (!this.props.html.getCurrentContent().hasText()) {
+                this.props.onSuicide();
+                return 'handled';
+            }
+            return 'not-handled';
+        }
+        console.log(command);
+        return 'handled';
+    },
 
     render() {
-        // const {editorState} = this.state;
-        // let editorState = {editorState: thisgetEditorState(this.props.html)};
-        // <HotKeys handlers={handlers}>
-
-        // </HotKeys>
-        return <Editor editorState={this.props.html} ref='editor' onChange={this.props.onChange} />;
+        // TODO заменить on(Up|Down)Arrow, onTab на чистый HotKeys. Сейчас после удаления ноты
+        // эти хендлеры срабатывают, но HotKeys в note-item не ловит события
+        return <Editor editorState={this.props.html}
+                       ref='editor'
+                       onUpArrow={this.props.onUpArrow}
+                       onDownArrow={this.props.onDownArrow}
+                       onTab={this.props.onTab}
+                       handleReturn={this.props.onReturn}
+                       onChange={this.props.onChange}
+                       handleKeyCommand={this.handleKeyCommand}
+            />;
     }
 });
 export default NoteItemEditor;
-
-// this.hotKeysHandlers = {
-//     'addNote': (e) => this.handleAddNote(e, {after: this.props.note.get('id')}),
-//     'tabNoteRight': this.handleTabNoteRight,
-//     'tabNoteLeft': this.handleTabNoteLeft,
-//     'goToUpNote': this.handleGoToUpNote,
-//     'goToDownNote': this.handleGoToDownNote,
-// };
-
-// <ContentEditable className="clean notes-item_input" html={note.get('title') || ""}
-//     ref='title'
-//     onClick={this.handleSetActiveNote}
-//     onKeyUp={this.handleKeyUp}
-//     onKeyDown={this.handleKeyDown}
-//     onChange={this.handleNoteUpdate} />

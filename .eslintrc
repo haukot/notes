@@ -41,7 +41,7 @@
         //"vars-on-top": [1],
         "wrap-iife": [2, "inside"],
         "yoda": [2, "never", { "exceptRange": true }],
-        "no-undefined": [1],
+        "no-undefined": [0],
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
         "comma-style": [2, "first", {exceptions: {ArrayExpression: true, ObjectExpression: true} }],
         //"consistent-this": [1, "self"],

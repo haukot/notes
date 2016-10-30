@@ -6,6 +6,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {HotKeys} from 'react-hotkeys';
 import NotesList from './list'
 import NoteItemEditor from './note-item-editor'
+import {EditorState} from 'draft-js';
 
 import {placeCaretAtEnd} from '../../utils'
 
@@ -28,31 +29,6 @@ let NoteItem = React.createClass({
 
     mixins: [PureRenderMixin, History],
 
-    maybeFocusNote() {
-        if (this.props.note.get('id') === this.props.activeNote.get('id')) {
-            let input = ReactDOM.findDOMNode(this.refs.title);
-            // проблема с этим, что после таба не фокусится. наверно лучше хранить ещё prevFocusedNote
-            // if (document.activeElement.className !== input.className) {
-            //     // чтобы другие элементы фокусились.
-            //     return;
-            // }
-            if (this.props.activeNote.get('caretAtEnd')) {
-                // placeCaretAtEnd(input);
-            } else {
-                // input.focus();
-            }
-        }
-    },
-
-    // FIXME как то объединить эти два метода?
-    componentDidMount() {
-        this.maybeFocusNote();
-    },
-
-    componentDidUpdate() {
-        this.maybeFocusNote();
-    },
-
     handleNoteUpdate(changedTitle) {
         if (this.props.note.get('title') !== changedTitle) {
             this.props.onNoteUpdate({
@@ -74,24 +50,33 @@ let NoteItem = React.createClass({
         e.preventDefault();
     },
 
+    getPrevNoteId(note) {
+        const upperElementOrderId = this.props.globalOrder.indexOf(note.get('id')) - 1;
+        return this.props.globalOrder[upperElementOrderId];
+    },
+
+    getNextNoteId(note) {
+        const bottomElementOrderId = this.props.globalOrder.indexOf(note.get('id')) + 1;
+        return this.props.globalOrder[bottomElementOrderId];
+    },
+
     handleTabNoteRight(e) {
         // note with order 0 - самая верхняя в своем ряду, и не может стать более вложенной
-        if (this.props.note.get('order') !== 0) {
+        if (this.props.order !== 0) {
             this.props.onNoteUpdatePosition({
-                id: this.props.note.get("id"),
-                parentId: this.props.note.get('prevId')
+                id: this.props.note.get('id'),
+                parentId: this.getPrevNoteId(this.props.note),
             });
         }
         e.preventDefault();
     },
 
     setActiveUpNote(opts={caretAtEnd: false}) {
-        const upperElementOrderId = this.props.note.get('globalOrder') - 1;
-        const upperElement = this.props.globalOrder.get(upperElementOrderId + "");
-        if (upperElement.get('id') === 0) {
+        const upperElementId = this.getPrevNoteId(this.props.note);
+        if (upperElementId === '0') {
             return;
         }
-        this.props.onSetActiveNote({id: upperElement.get('id'), caretAtEnd: opts.caretAtEnd});
+        this.props.onSetActiveNote({id: upperElementId, caretAtEnd: opts.caretAtEnd});
     },
 
     handleGoToUpNote(e) {
@@ -101,58 +86,41 @@ let NoteItem = React.createClass({
     },
 
     handleGoToDownNote(e) {
-        const bottomElementOrderId = this.props.note.get('globalOrder') + 1;
-        const bottomElement = this.props.globalOrder.get(bottomElementOrderId + "");
+        const bottomElementId = this.getNextNoteId(this.props.note);
         // последний элемент в списке
-        if (bottomElement === undefined) {
+        if (bottomElementId === undefined) {
             return;
         }
-        this.props.onSetActiveNote({id: bottomElement.get('id')});
+        this.props.onSetActiveNote({id: bottomElementId});
         e.preventDefault();
+        e.stopPropagation();
     },
 
     handleSetActiveNote() {
         this.props.onSetActiveNote({id: this.props.note.get('id')});
     },
 
-    handleAddNote(e, opts) {
-        this.props.onNoteAdd(Object.assign(opts, {
-            parentId: this.props.note.get('parentId'),
-        }));
+    handleAddNote(e) {
+        this.props.onNoteAdd({
+            parentId: this.props.parentNote.get('id'),
+            after: this.props.note.get('id'),
+            title: EditorState.createEmpty()
+        });
         e.preventDefault();
         e.stopPropagation();
     },
 
     handleRemoveNote() {
-        this.setActiveUpNote({caretAtEnd: true});
-        this.props.onNoteDelete({id: this.props.note.get('id')});
+        // и ещё пара ебучих условий\
+        if (!(this.props.order === 0 && this.props.note.get('children').count() > 0)) {
+            this.setActiveUpNote({caretAtEnd: true});
+            // надо ещё всех чайлдов переводить к верхней ноте
+            this.props.onNoteDelete({id: this.props.note.get('id')});
+        }
     },
 
     handleToggleChildren() {
         this.props.onToggleNoteChildren({id: this.props.note.get('id')});
-    },
-
-    handleKeyDown(e) {
-        switch(e.key) {
-        case "Backspace":
-            if (this.props.note.get('title') === "") {
-                this.handleRemoveNote();
-                e.preventDefault();
-            }
-            break;
-        }
-    },
-
-    handleKeyUp(e) {
-        switch(e.key) {
-        case "Backspace":
-            e.preventDefault();
-            break;
-        }
-    },
-
-    handleClick() {
-        this.props.onClick(this.props.note.get('id'));
     },
 
     render() {
@@ -196,6 +164,15 @@ let NoteItem = React.createClass({
         });
         let needFocus = this.props.note.get('id') === this.props.activeNote.get('id');
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
+
+        let hotKeysHandlers = {
+            'addNote': this.handleAddNote,
+            'tabNoteRight': this.handleTabNoteRight,
+            'tabNoteLeft': this.handleTabNoteLeft,
+            'goToUpNote': this.handleGoToUpNote,
+            'goToDownNote': this.handleGoToDownNote,
+        };
+
         return (
                 connectDropTarget(
                     <div className={classes} key={note.get('id')}>
@@ -206,10 +183,18 @@ let NoteItem = React.createClass({
                         {connectDragSource(<a onClick={goToRoot} className={bulletClasses}>
                                            </a>)}
                         <div className="notes-item_inner">
-                        <div className="notes-item_title">
+                        <div className="notes-item_title" onClick={this.handleSetActiveNote}>
+
+                        <HotKeys handlers={hotKeysHandlers}>
                         <NoteItemEditor html={note.get('title')} needFocus={needFocus}
                                         onChange={this.handleNoteUpdate}
+                                        onSuicide={this.handleRemoveNote}
+                                        onUpArrow={this.handleGoToUpNote}
+                                        onDownArrow={this.handleGoToDownNote}
+                                        onTab={this.handleTabNoteRight}
+                                        onReturn={this.handleAddNote}
                         />
+                        </HotKeys>
                         </div>
                         {children}
                         </div>

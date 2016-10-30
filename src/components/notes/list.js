@@ -26,6 +26,7 @@ let NotesList = React.createClass({
                     <NoteItem key={note.get('id')}
                             note={note}
                             notes={this.props.notes}
+                            order={index}
                             lastInList={lastElem}
                             cantBeDropTarget={this.props.cantBeDropTarget}
                             globalOrder={this.props.globalOrder}

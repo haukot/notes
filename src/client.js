@@ -17,6 +17,7 @@ import {EditorState, convertFromRaw} from 'draft-js';
 
 const history = createBrowserHistory();
 let initialState = transit.fromJSON(window.__INITIAL_STATE__);
+// TODO для past и future не работает
 // Object.keys(initialState).map((key) => {
 //     initialState[key] = // в past - Array, в present - текущий стейт мапой
 // });
