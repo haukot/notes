@@ -16,7 +16,7 @@ function catchPromise(promise, callback, callbackFailure) {
 const save = (data, callback, callbackFailure) => {
     console.log("Save state");
     try {
-        let res = sqliteBackend.save(data);
+        let res = fileBackend.save(data);
         if (res && res.then) {
             catchPromise(res, callback, callbackFailure);
         }
