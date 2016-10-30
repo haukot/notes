@@ -2,14 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {History} from 'react-router';
 import classNames from 'classnames';
-import PureRenderMixin from 'react-addons-pure-render-mixin'
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {HotKeys} from 'react-hotkeys';
-import NotesList from './list'
-import NoteItemEditor from './note-item-editor'
+import NotesList from './list';
+import NoteItemEditor from './note-editor';
 
-import {placeCaretAtEnd} from '../../utils'
-
-import connectDragNDrop from '../../connectors/item_drag_drop_connect'
+import connectDragNDrop from '../../connectors/item_drag_drop_connect';
 
 let NoteItem = React.createClass({
     displayName: 'NoteItem',
@@ -37,26 +35,17 @@ let NoteItem = React.createClass({
         }
     },
 
+    // tabs - tab and tabLeft
     handleTabNoteLeft(e) {
         // менее вложенным, чем зависеть от parentId=0 нельзя
         if (this.props.note.get('parentId') !== 0) {
             this.props.onNoteUpdatePosition({
-                id: this.props.note.get("id"),
+                id: this.props.note.get('id'),
                 parentId: this.props.parentNote.get('parentId'),
-                after: this.props.parentNote.get('id')
+                after: this.props.parentNote.get('id'),
             });
         }
         e.preventDefault();
-    },
-
-    getPrevNoteId(note) {
-        const upperElementOrderId = this.props.globalOrder.indexOf(note.get('id')) - 1;
-        return this.props.globalOrder[upperElementOrderId];
-    },
-
-    getNextNoteId(note) {
-        const bottomElementOrderId = this.props.globalOrder.indexOf(note.get('id')) + 1;
-        return this.props.globalOrder[bottomElementOrderId];
     },
 
     handleTabNoteRight(e) {
@@ -69,12 +58,21 @@ let NoteItem = React.createClass({
         }
         e.preventDefault();
     },
+    // end tabs
+
+    getPrevNoteId(note) {
+        const upperElementOrderId = this.props.globalOrder.indexOf(note.get('id')) - 1;
+        return this.props.globalOrder[upperElementOrderId];
+    },
+
+    getNextNoteId(note) {
+        const bottomElementOrderId = this.props.globalOrder.indexOf(note.get('id')) + 1;
+        return this.props.globalOrder[bottomElementOrderId];
+    },
 
     setActiveUpNote(opts={caretAtEnd: false}) {
         const upperElementId = this.getPrevNoteId(this.props.note);
-        if (upperElementId === '0') {
-            return;
-        }
+        if (upperElementId === '0') return;
         this.props.onSetActiveNote({id: upperElementId, caretAtEnd: opts.caretAtEnd});
     },
 
@@ -87,9 +85,7 @@ let NoteItem = React.createClass({
     handleGoToDownNote(e) {
         const bottomElementId = this.getNextNoteId(this.props.note);
         // последний элемент в списке
-        if (bottomElementId === undefined) {
-            return;
-        }
+        if (bottomElementId === undefined) return;
         this.props.onSetActiveNote({id: bottomElementId});
         e.preventDefault();
         e.stopPropagation();
@@ -126,26 +122,28 @@ let NoteItem = React.createClass({
         const {connectDragSource, connectDropTarget,
                isDragging, isOver, canDrop} = this.props;
 
-        let children = "";
-        let expandButtonSpan = "";
+        let children = '';
+        let expandChildrenButton = '';
         let noteHasChildren = note.get('children').count() > 0;
         if (noteHasChildren) {
-            expandButtonSpan = note.get('hiddenChildren')
-                ? <span className="plus">+</span>
-                : <span className="minus">-</span>;
+            let expandSpan = note.get('hiddenChildren')
+                ? <span className="plus">+</span> : <span className="minus">-</span>;
+            expandChildrenButton = (
+                <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
+                    { expandSpan }
+                </a>);
             if (!note.get('hiddenChildren')) {
-                children = (<NotesList
-                            notes={this.props.notes}
-                            parentNote={note}
-                            cantBeDropTarget={this.props.cantBeDropTarget}
-                            globalOrder={this.props.globalOrder}
-                            activeNote={this.props.activeNote}
-                            onNoteAdd={this.props.onNoteAdd}
-                            onNoteUpdate={this.props.onNoteUpdate}
-                            onNoteUpdatePosition={this.props.onNoteUpdatePosition}
-                            onNoteDelete={this.props.onNoteDelete}
-                            onSetActiveNote={this.props.onSetActiveNote}
-                            onToggleNoteChildren={this.props.onToggleNoteChildren}
+                children = (<NotesList notes={this.props.notes}
+                                       parentNote={note}
+                                       cantBeDropTarget={this.props.cantBeDropTarget}
+                                       globalOrder={this.props.globalOrder}
+                                       activeNote={this.props.activeNote}
+                                       onNoteAdd={this.props.onNoteAdd}
+                                       onNoteUpdate={this.props.onNoteUpdate}
+                                       onNoteUpdatePosition={this.props.onNoteUpdatePosition}
+                                       onNoteDelete={this.props.onNoteDelete}
+                                       onSetActiveNote={this.props.onSetActiveNote}
+                                       onToggleNoteChildren={this.props.onToggleNoteChildren}
                             />);
             }
         }
@@ -157,49 +155,44 @@ let NoteItem = React.createClass({
             '-over-top': isOver && this.props.isOverTop,
         });
         const bulletClasses = classNames({
-            "notes-item_bullet": true,
-            "-canExpandChildren": noteHasChildren && note.get('hiddenChildren')
+            'notes-item_bullet': true,
+            '-canExpandChildren': noteHasChildren && note.get('hiddenChildren'),
         });
         let needFocus = this.props.note.get('id') === this.props.activeNote.get('id');
         let goToRoot = () => this.history.pushState(null, `/root/${note.get('id')}`);
 
         let hotKeysHandlers = {
-            'addNote': this.handleAddNote,
-            'tabNoteRight': this.handleTabNoteRight,
-            'tabNoteLeft': this.handleTabNoteLeft,
-            'goToUpNote': this.handleGoToUpNote,
-            'goToDownNote': this.handleGoToDownNote,
+            'enter': this.handleAddNote,
+            'tab': this.handleTabNoteRight,
+            'tabLeft': this.handleTabNoteLeft,
+            'up': this.handleGoToUpNote,
+            'down': this.handleGoToDownNote,
         };
 
         return (
-                connectDropTarget(
-                    <div className={classes} key={note.get('id')}>
-                        { noteHasChildren &&
-                        <a className="notes-item_expand_children" onClick={this.handleToggleChildren}>
-                             { expandButtonSpan }
-                        </a> }
-                        {connectDragSource(<a onClick={goToRoot} className={bulletClasses}>
-                                           </a>)}
-                        <div className="notes-item_inner">
-                        <div className="notes-item_title" onClick={this.handleSetActiveNote}>
-
-                        <HotKeys handlers={hotKeysHandlers}>
-                        <NoteItemEditor html={note.get('title')} needFocus={needFocus}
-                                        onChange={this.handleNoteUpdate}
-                                        onSuicide={this.handleRemoveNote}
-                                        onUpArrow={this.handleGoToUpNote}
-                                        onDownArrow={this.handleGoToDownNote}
-                                        onTab={this.handleTabNoteRight}
-                                        onReturn={this.handleAddNote}
-                        />
-                        </HotKeys>
-                        </div>
-                        {children}
-                        </div>
-                    </div>
-                )
+            connectDropTarget(
+                <div className={classes} key={note.get('id')}>
+                    { expandChildrenButton }
+                    { connectDragSource(<a onClick={goToRoot} className={bulletClasses}></a>) }
+                      <div className="notes-item_inner">
+                          <div className="notes-item_title" onClick={this.handleSetActiveNote}>
+                              <HotKeys handlers={hotKeysHandlers}>
+                                  <NoteItemEditor html={note.get('title')} needFocus={needFocus}
+                                                  onChange={this.handleNoteUpdate}
+                                                  onSuicide={this.handleRemoveNote}
+                                                  onUpArrow={this.handleGoToUpNote}
+                                                  onDownArrow={this.handleGoToDownNote}
+                                                  onTab={this.handleTabNoteRight}
+                                                  onReturn={this.handleAddNote}
+                                  />
+                              </HotKeys>
+                          </div>
+                          { children }
+                      </div>
+                </div>
+            )
         );
-    }
+    },
 });
 
 

@@ -39,21 +39,21 @@ const initialState = fromJS({
             hash: null, //hash noteId => noteInTree
         },
         /*
-           activeNote: {id:, caretAtEnd: false},
-         */
+          activeNote: {id:, caretAtEnd: false},
+        */
     },
     notes: {
         /*
           id: {
-             id, title, body, date, parentId: 0, children: [ids],
-    hiddenChildren: false
+          id, title, body, date, parentId: 0, children: [ids],
+          hiddenChildren: false
           }
-         */
+        */
     }
-}).setIn(['notes', "0"], fromJS({
-    id: "0",
-    title: createRawFromText("root"),
-    body: "",
+}).setIn(['notes', '0'], fromJS({
+    id: '0',
+    title: createRawFromText('root'),
+    body: '',
     children: []
 }));
 
@@ -68,8 +68,8 @@ export default createReducer(initialState, {
         const fullAttrs = Object.assign(attrs, {id});
         const insertIndex = 0;
 
-        // console.log("parentId", fullAttrs);
-        // console.log("hui", state);
+        // console.log('parentId', fullAttrs);
+        // console.log('hui', state);
         const newState = stateWithIncSeq
               .setIn(['notes', id], fromJS(fullAttrs))
               .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
@@ -89,12 +89,12 @@ export default createReducer(initialState, {
     [ActionTypes.UPDATE_NOTE_POSITION](state, {attrs}) {
         const oldParentId = state.getIn(['notes', attrs.id.toString(), 'parentId']);
         const newState = state.setIn(['notes', attrs.id.toString(), 'parentId'], attrs.parentId.toString())
-            .updateIn(['notes', oldParentId.toString(), 'children'],
-                      children => children.splice(children.indexOf(attrs.id.toString()), 1))
-            .updateIn(['notes', attrs.parentId.toString(), 'children'],
-                      children => {
-                          return insertElement(attrs.id.toString(), children.length, children, attrs);
-                      });
+              .updateIn(['notes', oldParentId.toString(), 'children'],
+                        children => children.splice(children.indexOf(attrs.id.toString()), 1))
+              .updateIn(['notes', attrs.parentId.toString(), 'children'],
+                        children => {
+                            return insertElement(attrs.id.toString(), children.length, children, attrs);
+                        });
         const notesTree = getNotesTree(newState.getIn(['notes']));
         return newState.setIn(['view', 'notesTree'], notesTree);
     },
@@ -102,15 +102,15 @@ export default createReducer(initialState, {
     [ActionTypes.DELETE_NOTE](state, {attrs}) {
         const note = state.getIn(['notes', attrs.id.toString()]);
         const newState = state.deleteIn(['notes', attrs.id.toString()])
-            .updateIn(['notes', note.get('parentId').toString(), 'children'],
-                      (children) => children.splice(children.indexOf(attrs.id.toString()), 1)
-                     );
+              .updateIn(['notes', note.get('parentId').toString(), 'children'],
+                        (children) => children.splice(children.indexOf(attrs.id.toString()), 1)
+                       );
         const notesTree = getNotesTree(newState.getIn(['notes']));
         return newState.setIn(['view', 'notesTree'], notesTree);
     },
 
     [ActionTypes.SET_ACTIVE_NOTE](state, {attrs}) {
-        console.log("SET ACTIVE NOTE");
+        console.log('SET ACTIVE NOTE');
         return state.setIn(['view', 'activeNote', 'id'], attrs.id.toString())
             .setIn(['view', 'activeNote', 'caretAtEnd'], attrs.caretAtEnd || false);
     },
@@ -133,11 +133,11 @@ export default createReducer(initialState, {
                         headers: {'Content-Type': 'application/json'}})
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    alert("Saved ok!");
+                    alert('Saved ok!');
                 } else {
                     alert(`ERROR in save! ${response.status} : ${response.statusText}`);
                 }
-            }).catch(() => alert("ERROR in save, request failed!"));
+            }).catch(() => alert('ERROR in save, request failed!'));
         localStorage['my_state'] = stateJson;
         return state;
     },
@@ -159,11 +159,10 @@ function insertElement(el, initialIndex, arr, attrs) {
     return arr.splice(insertIndex, 0, el);
 }
 
-
 function parseWorkflowyOMPL(data, state) {
     var oParser = new DOMParser();
-    var oDOM = oParser.parseFromString(data, "text/xml");
-    if (oDOM.documentElement.nodeName == "parsererror") {
+    var oDOM = oParser.parseFromString(data, 'text/xml');
+    if (oDOM.documentElement.nodeName === 'parsererror') {
         console.error('Error while parsing opml data');
         return [];
     }
@@ -172,7 +171,7 @@ function parseWorkflowyOMPL(data, state) {
     return createNoteFromXML(root, state, null);
 }
 
-function createNoteFromXML(xmlNote, state, parentId="0") {
+function createNoteFromXML(xmlNote, state, parentId='0') {
     let {state: newState, id} = parentId !== null // == null if xmlNote - <body>
         ? createNote(
             {
@@ -180,7 +179,7 @@ function createNoteFromXML(xmlNote, state, parentId="0") {
                 body: xmlNote.getAttribute('note'),
                 children: [],
                 hiddenChildren: false,
-                parentId
+                parentId,
             }, state)
         : {state: state, id: 0};
     console.log(id);
@@ -200,13 +199,10 @@ function createNote(attrs, state) {
     const fullAttrs = Object.assign(attrs, {id});
     const insertIndex = 0;
 
-    // console.log("parentId", fullAttrs);
-    // console.log("hui", state);
     return {state: stateWithIncSeq
             .setIn(['notes', id], fromJS(fullAttrs))
             .updateIn(['notes', fullAttrs.parentId.toString(), 'children'],
                       (children) => {
-                          return insertElement(id, 0, children, attrs)
-                      }),
-                      id};
+                          return insertElement(id, 0, children, attrs);
+                      }), id};
 }

@@ -1,17 +1,26 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import { ActionCreators } from 'redux-undo';
 
 import Notes from 'components/notes';
-import Window from 'components/window';
-import {currentRootNoteSelector, viewSelector,
-        globalOrderSelector, pathToRootSelector,
-        notesSelector
-       } from 'queries';
-import {addNote, updateNote, deleteNote,
-        setActiveNote, updateNotePosition,
-        toggleNoteChildren, importOPML,
-        saveState} from 'actions';
-import { ActionCreators } from 'redux-undo';
+import {
+    currentRootNoteSelector,
+    viewSelector,
+    globalOrderSelector,
+    pathToRootSelector,
+    notesSelector,
+} from 'queries';
+
+import {
+    addNote,
+    updateNote,
+    deleteNote,
+    setActiveNote,
+    updateNotePosition,
+    toggleNoteChildren,
+    importOPML,
+    saveState,
+} from 'actions';
 
 const App = React.createClass({
     render() {
@@ -34,23 +43,19 @@ const App = React.createClass({
                        onRedo={() => dispatch(ActionCreators.redo())}
                        saveState={attrs => dispatch(saveState(attrs))}
                 />
-
-                {React.Children.count(this.props.children) == 1 &&
-                <Window>
-                    {this.props.children}
-                </Window>
-                }
             </div>
-        )
-    }
+        );
+    },
 });
 
 function mapStateToProps(state, props) {
-    return {curRootNote: currentRootNoteSelector(state, props),
-            notes: notesSelector(state, props),
-            pathToRoot: pathToRootSelector(state, props),
-            view: viewSelector(state, props),
-            globalOrder: globalOrderSelector(state, props)};
+    return {
+        curRootNote: currentRootNoteSelector(state, props),
+        notes: notesSelector(state, props),
+        pathToRoot: pathToRootSelector(state, props),
+        view: viewSelector(state, props),
+        globalOrder: globalOrderSelector(state, props),
+    };
 }
 
 export default connect(mapStateToProps)(App);
